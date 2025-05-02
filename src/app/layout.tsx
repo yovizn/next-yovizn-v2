@@ -1,38 +1,46 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import { env } from '@/configs/env.config'
+import { fontVariables } from '@/fonts'
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import '@/styles/globals.css'
+import GlobalStoreProvider from '@/providers/global-store.provider'
 
 export const metadata: Metadata = {
   title: {
-    default: "Yovi Zulkarnaen - Frontend Developer",
-    template: "Yovi Zulkarnaen's %s",
+    default: 'Yovi Zulkarnaen - Frontend Developer',
+    template: `${env.NEXT_PUBLIC_WEBSITE_NAME} %s`,
   },
-  description:
-    "Frontend Developer with expertise in web animations and micro-interactions using Motion. Discover how Yovi Zulkarnaen crafts engaging user experiences through smooth, performant animations.",
-};
+  description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
+  const isProduction = process.env.NODE_ENV === 'production'
+
   return (
-    <html lang="en">
+    <html lang="en" className={fontVariables}>
+      {isProduction && <GoogleTagManager gtmId={env.NEXT_PUBLIC_GTM_ID} />}
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className="tailwind font-sans antialiased"
+        style={{ overflow: 'auto', scrollbarWidth: 'none' }}
       >
-        {children}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${env.NEXT_PUBLIC_GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+        <GlobalStoreProvider>{children}</GlobalStoreProvider>
       </body>
+
+      {isProduction && <GoogleAnalytics gaId={env.NEXT_PUBLIC_GA_ID} />}
     </html>
-  );
+  )
 }

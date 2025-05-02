@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+@import './lenis.css';
+
+@plugin "tailwind-clamp";
+
+
+:root {
+  --background: 0.1 0 0.25;
+  --foreground: 1 0 0;
+  --accent: 0.89 0 0;
+  --primary: 0.5 0.0542 200.61;
+  --secondary: 0.4 0.0576 240.3;
+}
+
+@theme inline {
+  --color-background: oklch(var(--background));
+  --color-foreground: oklch(var(--foreground));
+  --color-accent: oklch(var(--accent));
+  --color-primary: oklch(var(--primary));
+  --color-secondary: oklch(var(--secondary));
+
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-nohemi: var(--font-nohemi);
+  --font-helvetica: var(--font-helvetica);
+}
+
+@layer base {
+  *::selection {
+    background: oklch(var(--accent) / 0.5);
+    color: oklch(var(--primary));
+  }
+
+  body {
+    background: oklch(var(--background));
+    color: oklch(var(--foreground));
+    font-family: var(--font-sans);
+    max-width: 2048px;
+    margin: 0 auto;
+    font-feature-settings:
+      'rlig' 1,
+      'calt' 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family:
+      var(--font-helvetica), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      'Liberation Mono', 'Courier New', monospace;
+    text-wrap: pretty;
+  }
+
+  h1,
+  h2 {
+    font-weight: 700;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 500;
+  }
+
+  code {
+    font-family: var(--font-mono);
+  }
+}
+
+@layer utilities {
+  .text-hero {
+    font-size: clamp(2rem, 10vw, 11rem);
+  }
+
+  .tailwind:is(.bg-background) {
+    background-color: oklch(var(--background));
+  }
+
+  .p-fluid-24-40 {
+    padding: clamp(1.5rem, -0.2143rem + 2.8571vi, 2.5rem);
+  }
+}
