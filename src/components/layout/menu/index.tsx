@@ -74,6 +74,7 @@ export function Menu() {
                 alt="Image Black One by Josh Nuttall"
                 width={640}
                 height={400}
+                sizes='(max-width: 640px) 10vw, 640px'
                 {...(!isReduceMotion ? mountAnim(menuImageVariant) : {})}
                 className="relative z-10 aspect-video h-auto w-auto rounded-xs object-cover sm:h-full"
               />
