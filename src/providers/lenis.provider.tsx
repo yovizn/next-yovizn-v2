@@ -1,10 +1,9 @@
 'use client'
 
-import ReactLenis, { LenisRef, useLenis } from 'lenis/react'
+import ReactLenis, { LenisRef } from 'lenis/react'
 import { LenisOptions } from 'lenis'
 import { cancelFrame, frame } from 'motion'
 import { useEffect, useRef } from 'react'
-import { usePathname } from 'next/navigation'
 
 interface LenisProviderProps {
   options?: LenisOptions
@@ -12,8 +11,6 @@ interface LenisProviderProps {
 
 export default function LenisProvider({ options }: LenisProviderProps) {
   const lenisRef = useRef<LenisRef>(null)
-  const lenis = useLenis()
-  const pathname = usePathname()
 
   useEffect(() => {
     function update(data: { timestamp: number }) {
@@ -25,11 +22,6 @@ export default function LenisProvider({ options }: LenisProviderProps) {
     return () => cancelFrame(update)
   }, [])
 
-  useEffect(() => {
-    lenis?.scrollTo(0)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pathname])
-
   return (
     <ReactLenis
       root
@@ -38,6 +30,7 @@ export default function LenisProvider({ options }: LenisProviderProps) {
         ...options,
         autoRaf: false,
         duration: 1.5,
+        lerp: 0.095,
         easing: (t) => Math.min(1, 1.02 - Math.pow(2, -10 * t)),
       }}
     />

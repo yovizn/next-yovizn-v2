@@ -36,10 +36,9 @@ export function TLink({ href, ...props }: TLinkProps) {
       isTransition: true,
       isTransitionComplete: false,
     })
-
     await sleep(1500)
-    push(href, { scroll: false })
-    await sleep(2500)
+    push(href, { scroll: true })
+    await sleep(3000)
     setPageTransition({ isTransition: false })
   }
 

@@ -6,7 +6,9 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "extract": "bunx sanity schema extract --path ./src/sanity/sanity-schemas.json --enforce-required-fields",
+    "typegen": "bunx sanity typegen generate"
   },
   "dependencies": {
     "@next/third-parties": "^15.3.1",

@@ -26,7 +26,7 @@ export default function RootLayout({
     <html lang="en" className={fontVariables}>
       {isProduction && <GoogleTagManager gtmId={env.NEXT_PUBLIC_GTM_ID} />}
       <body
-        className="tailwind font-sans antialiased"
+        className="tailwind font-sans antialiased min-h-screen"
         style={{ overflow: 'auto', scrollbarWidth: 'none' }}
       >
         <noscript>

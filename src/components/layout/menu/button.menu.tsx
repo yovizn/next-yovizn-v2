@@ -1,8 +1,5 @@
 'use client'
 
-import { useState } from 'react'
-
-import { AnimatePresence, motion } from 'motion/react'
 import { handleGoogleEvent } from '@/lib/analytic/googleEvent'
 import { duration, easing } from '@/lib/constants/animation.constant'
 import { useMenu } from '@/hooks/stores/useMenu.hook'

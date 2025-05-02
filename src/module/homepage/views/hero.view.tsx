@@ -58,13 +58,13 @@ export async function Hero() {
         <div className="relative col-span-full grid grid-cols-4 gap-[1px] lg:auto-rows-[12.5cqi] lg:grid-cols-8">
           <div className="bg-background clamp-[p,4,14] @container col-span-4 lg:row-span-2">
             <h2 className="mt-2 mb-4 font-mono leading-none font-light uppercase sm:mb-6 sm:text-lg">
-              <span className="sr-only">Hello, I'm Yovi.</span>
+              <span className="sr-only">Hello, I&apos;m Yovi.</span>
               <RevealText text="Hello, I'm Yovi." />
             </h2>
 
             <p className="clamp-[text,xs,5xl,@xs,@7xl] font-medium">
               <span className="sr-only">
-                I'm a front-end developer who loves working on web interactions, responsive design,
+                I&apos;m a front-end developer who loves working on web interactions, responsive design,
                 and slick animations. Still got a lot to learn, but hey—we all start somewhere.
               </span>
               <RevealText
