@@ -74,7 +74,7 @@ export function Menu() {
                 alt="Image Black One by Josh Nuttall"
                 width={640}
                 height={400}
-                sizes='(max-width: 640px) 10vw, 640px'
+                sizes="(max-width: 640px) 10vw, 500px"
                 {...(!isReduceMotion ? mountAnim(menuImageVariant) : {})}
                 className="relative z-10 aspect-video h-auto w-auto rounded-xs object-cover sm:h-full"
               />
@@ -107,7 +107,7 @@ export function Menu() {
                 className="h-0 w-full border-b border-dashed sm:h-full sm:w-0 sm:border-r sm:border-b-0"
               />
 
-              <ul className="flex flex-wrap gap-x-4 gap-y-0 self-end sm:gap-x-6 lg:ml-auto">
+              <ul className="flex flex-wrap justify-between w-full gap-x-4 gap-y-0 self-end sm:gap-x-6 lg:ml-auto">
                 {socials.map((social) => (
                   <Li key={social.id}>
                     <GAnchor

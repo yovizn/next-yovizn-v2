@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils/cn'
 import { AnimatePresence, motion } from 'motion/react'
 import { useState } from 'react'
 
-export function Li({ children, className }: { children: React.ReactNode; className?: string }) {
+export function Li({ children, className, onClick }: { children: React.ReactNode; className?: string, onClick?: () => void }) {
   const [isShow, setIsShow] = useState(false)
 
   return (
@@ -16,6 +16,7 @@ export function Li({ children, className }: { children: React.ReactNode; classNa
       )}
       onMouseEnter={() => setIsShow(true)}
       onMouseLeave={() => setIsShow(false)}
+      onClick={onClick}
     >
       {children}
       <AnimatePresence mode="wait">
@@ -25,7 +26,7 @@ export function Li({ children, className }: { children: React.ReactNode; classNa
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: duration.medium, ease: easing.inOut }}
-            className="bg-foreground absolute bottom-0 left-0 h-px w-full"
+            className="bg-foreground absolute bottom-0 left-0 h-px w-full mix-blend-difference"
           />
         )}
       </AnimatePresence>

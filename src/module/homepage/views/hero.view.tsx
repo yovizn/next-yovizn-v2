@@ -1,6 +1,6 @@
 import { RevealText } from '@/components/animations/text/reveal.text'
-import WhiteOne from '@public/images/white-one.jpg'
-import Image from 'next/image'
+
+import { HeroImage } from './hero-image.view'
 
 export async function Hero() {
   return (
@@ -57,27 +57,27 @@ export async function Hero() {
 
         <div className="relative col-span-full grid grid-cols-4 gap-[1px] lg:auto-rows-[12.5cqi] lg:grid-cols-8">
           <div className="bg-background clamp-[p,4,14] @container col-span-4 lg:row-span-2">
-            <h2 className="mt-2 mb-4 font-mono leading-none font-light uppercase sm:mb-6 sm:text-lg">
+            <h2 className="mt-2 mb-4 leading-none font-light sm:mb-6 sm:text-lg">
               <span className="sr-only">Hello, I&apos;m Yovi.</span>
               <RevealText text="Hello, I'm Yovi." />
             </h2>
 
             <p className="clamp-[text,xs,5xl,@xs,@7xl] font-medium">
               <span className="sr-only">
-                I&apos;m a front-end developer who loves working on web interactions, responsive design,
-                and slick animations. Still got a lot to learn, but hey—we all start somewhere.
+                I&apos;m a front-end developer who loves working on web interactions, responsive
+                design, and slick animations. Still got a lot to learn, but hey—we all start
+                somewhere.
               </span>
               <RevealText
                 text="I'm a front-end developer who loves working on web interactions, responsive design, and slick animations. Still got a lot to learn, but hey—we all start somewhere."
+                highlight={['start somewhere.']}
                 amount={[40, 50]}
                 delay={0.5}
               />
             </p>
           </div>
 
-          <div className="bg-background p-fluid-24-40 relative col-span-4 aspect-video lg:aspect-auto h-auto lg:row-span-2">
-            <Image src={WhiteOne} alt="Image White One" fill className="object-cover" />
-          </div>
+          <HeroImage />
         </div>
       </div>
     </header>

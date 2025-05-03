@@ -5,6 +5,7 @@ import { env } from '@/configs/env.config'
 import { fontVariables } from '@/fonts'
 
 import '@/styles/globals.css'
+
 import GlobalStoreProvider from '@/providers/global-store.provider'
 
 export const metadata: Metadata = {
@@ -13,6 +14,10 @@ export const metadata: Metadata = {
     template: `${env.NEXT_PUBLIC_WEBSITE_NAME} %s`,
   },
   description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
+  appleWebApp: {
+    title: env.NEXT_PUBLIC_WEBSITE_NAME,
+    statusBarStyle: 'black',
+  },
 }
 
 export default function RootLayout({

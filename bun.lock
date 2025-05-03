@@ -16,6 +16,7 @@
         "next-sanity": "^9.10.3",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "react-use-measure": "^2.1.7",
         "sanity": "^3.87.0",
         "styled-components": "^6.1.17",
         "zod": "^3.24.3",
@@ -1944,6 +1945,8 @@
     "react-refresh": ["react-refresh@0.17.0", "", {}, "sha512-z6F7K9bV85EfseRCp2bzrpyQ0Gkw1uLoCel9XBVWPg/TjRj94SkJzUTGfOa4bs7iJvBWtQG0Wq7wnI0syw3EBQ=="],
 
     "react-rx": ["react-rx@4.1.28", "", { "dependencies": { "observable-callback": "^1.0.3", "react-compiler-runtime": "19.1.0-rc.1", "use-effect-event": "^1.0.2" }, "peerDependencies": { "react": "^18.3 || >=19.0.0-0", "rxjs": "^7" } }, "sha512-J+JGKz7muwCYF9crUoi635CxoJEEMM34KQW//5OClOt6KyMEVBPjFO7HbAZdk1umJ0hi6T4dx/9vnDZYH1ZR2g=="],
+
+    "react-use-measure": ["react-use-measure@2.1.7", "", { "peerDependencies": { "react": ">=16.13", "react-dom": ">=16.13" }, "optionalPeers": ["react-dom"] }, "sha512-KrvcAo13I/60HpwGO5jpW7E9DfusKyLPLvuHlUyP5zqnmAPhNc6qTRjUQrdTADl0lpPpDVU2/Gg51UlOGHXbdg=="],
 
     "read-pkg": ["read-pkg@5.2.0", "", { "dependencies": { "@types/normalize-package-data": "^2.4.0", "normalize-package-data": "^2.5.0", "parse-json": "^5.0.0", "type-fest": "^0.6.0" } }, "sha512-Ug69mNOpfvKDAc2Q8DRpMjjzdtrnv9HcSMX+4VsZxD1aZ6ZzrIE7rlzXBtWTyhULSMKg076AW6WR5iZpD0JiOg=="],
 

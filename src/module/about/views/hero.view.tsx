@@ -12,8 +12,8 @@ export function Hero() {
       <HeroImage />
 
       <section className="text-background bg-foreground flex items-center justify-center py-40">
-        <h1 className="text-fixed font-helvetica uppercase flex flex-col items-end">
-          <span className="sr-only">Hello, this is about me.</span>
+        <h1 className="text-fixed font-helvetica flex flex-col items-end uppercase">
+          <span className="sr-only">Hello I&apos;m Yovi, and this is about me.</span>
           <RevealText text="About" />
           <RevealText text="Me?" />
         </h1>

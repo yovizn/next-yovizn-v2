@@ -18,6 +18,7 @@ interface RevealTextProps {
   }
   highlight?: string[]
   amount?: [number, number]
+  once?: boolean
 }
 
 export function RevealText({
@@ -26,10 +27,11 @@ export function RevealText({
   className,
   delay = 0,
   highlight = [],
+  once = true,
 }: RevealTextProps) {
   const isDesktop = useMatchMedia(640, 'min')
   const textRef = useRef(null)
-  const isInView = useInView(textRef, { amount: 'all', once: true })
+  const isInView = useInView(textRef, { amount: 'all', once })
   const isReduceMotion = useReducedMotion()
   const {
     page: { isTransitionComplete },

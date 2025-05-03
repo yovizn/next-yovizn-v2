@@ -24,7 +24,7 @@ export default async function MainLayout({ children }: React.PropsWithChildren) 
 
       <Header />
 
-      <div className="bg-accent/5 [container-type:inline-size] mb-24 flex w-full flex-[1_0_100%] flex-col gap-px">
+      <div className="bg-accent/5 [container-type:inline-size] flex w-full flex-[1_0_100%] flex-col gap-px">
         {children}
       </div>
 
