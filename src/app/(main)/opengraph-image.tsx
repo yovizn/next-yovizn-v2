@@ -18,13 +18,13 @@ export default async function Image() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'black',
+          background: 'white',
         }}
       >
         <svg
           id="b"
           xmlns="http://www.w3.org/2000/svg"
-          fill="white"
+          fill="black"
           style={{ width: '500px', height: '500px' }}
           viewBox="0 0 1000 1000"
         >
