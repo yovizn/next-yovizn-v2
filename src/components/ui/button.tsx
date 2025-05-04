@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils/cn'
 import { cva, VariantProps } from 'class-variance-authority'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center cursor-pointer justify-center gap-2 rounded-md text-sm font-medium whitespace-nowrap transition-colors focus-visible:ring-0 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
@@ -36,7 +36,7 @@ export function Button({ className, variant, size, onClick, ...props }: ButtonPr
 
   return (
     <button
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn('outline-none ring-0 focus-visible:ring-0', buttonVariants({ variant, size, className }))}
       onClick={handleClick}
       {...props}
     />

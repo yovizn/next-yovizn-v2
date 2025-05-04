@@ -9,7 +9,7 @@ import { clipPath, duration, easing } from '@/lib/constants/animation.constant'
 import { useMatchMedia } from '@/hooks/useMedia.hook'
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
 
-interface RevealTextProps {
+interface TextRevealProps {
   text?: string
   delay?: number
   className?: {
@@ -18,18 +18,20 @@ interface RevealTextProps {
   }
   highlight?: string[]
   amount?: [number, number]
+  once?: boolean
 }
 
-export function RevealText({
+export function TextReveal({
   text = '',
   amount = [40, 60],
   className,
   delay = 0,
   highlight = [],
-}: RevealTextProps) {
+  once = true,
+}: TextRevealProps) {
   const isDesktop = useMatchMedia(640, 'min')
   const textRef = useRef(null)
-  const isInView = useInView(textRef, { amount: 'all', once: true })
+  const isInView = useInView(textRef, { amount: 'all', once })
   const isReduceMotion = useReducedMotion()
   const {
     page: { isTransitionComplete },

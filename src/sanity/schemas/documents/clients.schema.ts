@@ -26,7 +26,7 @@ export const clientsSchema = defineType({
     defineField({
       name: 'logo',
       title: 'Logo',
-      type: 'imageWithAlt',
+      type: 'imageAlt',
       validation: (r) => r.required(),
     }),
 
@@ -36,4 +36,11 @@ export const clientsSchema = defineType({
       type: 'url',
     }),
   ],
+  preview: {
+    select: {
+      title: 'name',
+      media: 'logo.asset',
+      subtitle: 'link',
+    },
+  },
 })

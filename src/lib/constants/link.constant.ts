@@ -14,9 +14,9 @@ export const links = [
     name: 'Projects',
     href: '/projects',
   },
-  {
-    id: 'contact',
-    name: 'Contact',
-    href: '/contact',
-  },
+  // {
+  //   id: 'contact',
+  //   name: 'Contact',
+  //   href: '/contact',
+  // },
 ] as const

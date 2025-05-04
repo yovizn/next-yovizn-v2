@@ -5,14 +5,19 @@ import { env } from '@/configs/env.config'
 import { fontVariables } from '@/fonts'
 
 import '@/styles/globals.css'
+
 import GlobalStoreProvider from '@/providers/global-store.provider'
 
 export const metadata: Metadata = {
   title: {
-    default: 'Yovi Zulkarnaen - Frontend Developer',
-    template: `${env.NEXT_PUBLIC_WEBSITE_NAME} %s`,
+    default: 'Yovi Zulkarnaen — Frontend Developer',
+    template: `%s — ${env.NEXT_PUBLIC_WEBSITE_NAME}`,
   },
   description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
+  appleWebApp: {
+    title: env.NEXT_PUBLIC_WEBSITE_NAME,
+    statusBarStyle: 'black',
+  },
 }
 
 export default function RootLayout({
@@ -26,7 +31,7 @@ export default function RootLayout({
     <html lang="en" className={fontVariables}>
       {isProduction && <GoogleTagManager gtmId={env.NEXT_PUBLIC_GTM_ID} />}
       <body
-        className="tailwind font-sans antialiased min-h-screen"
+        className="tailwind min-h-screen font-sans antialiased"
         style={{ overflow: 'auto', scrollbarWidth: 'none' }}
       >
         <noscript>
