@@ -1,12 +1,12 @@
 'use client'
 
 import Image from 'next/image'
-import { motion, useMotionValueEvent, useScroll, useTransform } from 'motion/react'
+import { motion, useScroll, useTransform } from 'motion/react'
 import { useRef } from 'react'
 
-import { RevealText } from '@/components/animations/text/reveal.text'
+import { TextReveal } from '@/components/animations/text/reveal.text'
 
-import whiteOne from '@public/images/black-two.jpg'
+import whiteOne from '@public/images/profile-blur.png'
 
 export function HeroSection() {
   const containerRef = useRef(null)
@@ -17,42 +17,40 @@ export function HeroSection() {
 
   const y = useTransform(scrollYProgress, [0, 1], ['-10%', '10%'])
 
-  useMotionValueEvent(y, 'change', (latest) => {
-    console.log(latest)
-  })
-
   return (
     <section
       ref={containerRef}
       id="about"
-      className="relative flex h-screen w-full items-center flex-col justify-center overflow-clip mb-px"
+      className="relative mb-px flex h-screen w-full flex-col items-center justify-center overflow-clip"
       style={{ clipPath: 'polygon(0% 0, 100% 0%, 100% 100%, 0 100%)' }}
     >
-      <div className='h-24 bg-foreground z-20 w-full sticky top-0' />
-      
+      <div className="bg-foreground sticky top-0 z-20 h-24 w-full" />
+
       <div className="text-foreground clamp-[px,4,20] @container relative z-10 flex h-screen w-full flex-col justify-between py-20">
-        <h2 className="clamp-[text,sm,4xl,@sm,@5xl] font-helvetica w-fit self-end text-justify font-medium uppercase">
+        <h2 className="clamp-[text,sm,4xl,@sm,@5xl] font-helvetica text-neutral-900 w-fit self-end text-justify font-medium uppercase">
           <span className="sr-only">
-            Frontend Developer enthusiast, obsessed with creating stunning web animations, sleek
-            designs, and seamless SEO!
+            Frontend Developer enthusiast, super into crafting dope web animations, clean AF
+            designs, and smooth SEO vibes!
           </span>
 
-          <RevealText
-            text="Frontend Developer enthusiast, obsessed with creating stunning web animations, sleek designs, and seamless SEO!"
-            highlight={['obsessed', 'stunning', 'sleek', 'seamless']}
+          <TextReveal
+            text="Frontend Developer enthusiast, super into crafting dope web animations, clean AF designs, and smooth SEO vibes!"
+            highlight={['Frontend Developer', 'dope', 'clean AF', 'smooth SEO']}
+            className={{ highlight: 'text-background italic' }}
             amount={[30, 40]}
           />
         </h2>
 
-        <p className="clamp-[text,base,2xl,@sm,@5xl] w-fit font-light">
+        <p className="clamp-[text,base,2xl,@sm,@5xl] text-neutral-900 w-fit font-medium">
           <span className="sr-only">
             I&apos;m a Frontend Developer, obsessed with creating websites with sick animations,
             awesome designs, and SEO that actually works. Creativity + tech = Google-approved magic!
           </span>
 
-          <RevealText
-            highlight={['obsessed', 'sick', 'awesome', 'SEO', 'Google-approved']}
-            text="I'm a Frontend Developer, obsessed with creating websites with sick animations, awesome designs, and SEO that actually works. Creativity + Tech = Google-approved magic!"
+          <TextReveal
+            highlight={['Frontend Developer', 'clean code', 'pixel-perfect design', 'SEO']}
+            className={{ highlight: 'text-background italic' }}
+            text="I'm a Frontend Developer who lives and breathes clean code and pixel-perfect design. Obsessed with crafting websites that pop with sick animations, slick UI vibes, and SEO that actually gets you noticed. I mix creativity and tech to cook up some serious Google-approved magic—because good design shouldn't just look awesome, it should work awesome too."
             amount={[40, 60]}
           />
         </p>

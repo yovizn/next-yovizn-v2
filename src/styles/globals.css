@@ -2,6 +2,7 @@
 @import './lenis.css';
 
 @plugin "tailwind-clamp";
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: 0.1 0 0.25;

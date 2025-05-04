@@ -2,7 +2,7 @@ export const socials = [
   {
     id: 'email',
     name: 'Email',
-    href: 'mailto:yovizulkarnaen@gmail.com',
+    href: 'mailto:contact@yovizn.com',
   },
   {
     id: 'linkedin',

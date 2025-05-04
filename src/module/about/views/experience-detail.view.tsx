@@ -5,11 +5,12 @@ import { useState } from 'react'
 
 import { Li } from '@/components/animations/li.animation'
 import { Button } from '@/components/ui/button'
-import { RevealText } from '@/components/animations/text/reveal.text'
+import { TextReveal } from '@/components/animations/text/reveal.text'
 import { SlidingNumber } from '@/components/animations/number/slidingNumber'
 
 import { experiences } from '@/lib/constants/experience.constant'
 import { mountAnim, TRANSITION } from '@/lib/constants/animation.constant'
+import { yearVariant } from '@/lib/constants/variants/about.variant'
 
 export function ExperienceDetail() {
   const [value, setValue] = useState(experiences[0].value)
@@ -35,6 +36,7 @@ export function ExperienceDetail() {
                   years
                 </motion.span>
               )}
+
               {value <= 1 && (
                 <motion.span
                   key="year"
@@ -55,14 +57,17 @@ export function ExperienceDetail() {
         <ul className="col-span-full grid grid-cols-subgrid gap-px">
           {experiences.map((exp) => {
             return (
-              <Li key={exp.label} className="bg-background col-span-full h-full w-full outline-none">
+              <Li
+                key={exp.label}
+                className="bg-background col-span-full h-full w-full px-4 outline-none"
+              >
                 <Button
                   name={exp.label}
                   onClick={() => setValue(exp.value)}
-                  className="h-full w-full justify-start ring-0 focus-visible:outline-0! focus-visible:outline-none!"
+                  className="h-full justify-start py-3 lg:w-full"
                 >
                   <span className="sr-only">{exp.label}</span>
-                  <RevealText
+                  <TextReveal
                     text={'— ' + exp.label}
                     className={{ text: 'clamp-[text,base,xl] font-nohemi uppercase' }}
                   />
@@ -74,10 +79,4 @@ export function ExperienceDetail() {
       </div>
     </div>
   )
-}
-
-const yearVariant = {
-  initial: { opacity: 0, y: '100%' },
-  enter: { opacity: 1, y: '0%' },
-  exit: { opacity: 0, y: '-100%' },
 }

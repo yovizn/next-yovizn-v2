@@ -67,7 +67,7 @@ export function PageTransition() {
                     opacity: 0,
                     transition: { duration: duration.short, ease: easing.in },
                   }}
-                  className="text-foreground font-helvetica absolute right-6 bottom-6 text-2xl font-bold uppercase sm:text-3xl lg:text-5xl"
+                  className="text-foreground font-helvetica absolute right-6 bottom-6  font-bold uppercase clamp-[text,xl,5xl]"
                 >
                   {currentPath}
                 </motion.p>

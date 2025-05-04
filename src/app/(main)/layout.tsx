@@ -1,6 +1,5 @@
 import LenisProvider from '@/providers/lenis.provider'
 
-import { Cursor } from '@/components/animations/cursor.animation'
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { PageTransition } from '@/components/transitions/page.transition'
@@ -8,6 +7,7 @@ import { FirstRenderTransition } from '@/components/transitions/firstRender.tran
 
 import { getFirstRender } from '@/lib/cookies/getFirstRender.cookie'
 import { getDeviceInfo } from '@/lib/device'
+import { Cursor } from '@/components/animations/cursor'
 
 export default async function MainLayout({ children }: React.PropsWithChildren) {
   const isFirstRender = await getFirstRender()
