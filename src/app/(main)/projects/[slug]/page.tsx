@@ -7,10 +7,16 @@ import { ProjectGallery } from '@/module/projects/view/detail/gallery.view'
 import { Header1 } from '@/components/ui/header-1'
 
 import { urlFor } from '@/sanity/lib/image'
-import { getProjectsBySlug } from '@/services/getProjects.service'
+import { getProjectsAll, getProjectsBySlug } from '@/services/getProjects.service'
 
 type Props = {
   params: Promise<{ slug: string }>
+}
+
+export async function generateStaticParams() {
+  const [data] = await getProjectsAll()
+
+  return data?.map((project) => ({ slug: project.slug.current })) || []
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
