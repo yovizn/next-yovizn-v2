@@ -46,7 +46,7 @@ export function Projects({ data }: { data: QueryProjectsOverviewResult }) {
           <ArrowDown className="clamp-[size,1rem,3rem]" />
         </div>
       </div>
-      <div className="bg-background sticky top-0 z-30 col-span-full h-24"></div>
+      <div className="bg-background sticky top-0 z-20 col-span-full h-24"></div>
 
       <ViewCursor as="ul" className="col-span-full grid gap-px lg:grid-cols-2">
         {data.map((project) => {
