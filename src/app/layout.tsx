@@ -1,4 +1,6 @@
 import type { Metadata } from 'next'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 
 import { env } from '@/configs/env.config'
@@ -58,6 +60,13 @@ export default function RootLayout({
           />
         </noscript>
         <GlobalStoreProvider>{children}</GlobalStoreProvider>
+
+        {isProduction && (
+          <>
+            <Analytics />
+            <SpeedInsights />
+          </>
+        )}
       </body>
 
       {isProduction && <GoogleAnalytics gaId={env.NEXT_PUBLIC_GA_ID} />}
