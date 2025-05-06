@@ -2,13 +2,14 @@
 @import './lenis.css';
 
 @plugin "tailwind-clamp";
+@plugin "@tailwindcss/typography";
 
 :root {
   --background: 0.1 0 0.25;
   --foreground: 1 0 0;
   --accent: 0.89 0 0;
-  --primary: 0.5 0.0542 200.61;
-  --secondary: 0.4 0.0576 240.3;
+  --primary: 0.86 0.0309 90.35;
+  --secondary: 0.69 0.0341 73.36;
 
   --font-sz: clamp(2rem, 8vw + 1rem, 10rem);
 }

@@ -68,6 +68,127 @@ export type Geopoint = {
   alt?: number
 }
 
+export type BlockContent = Array<{
+  children?: Array<
+    | {
+        marks?: Array<string>
+        text?: string
+        _type: 'span'
+        _key: string
+      }
+    | {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        _key: string
+        [internalGroqTypeReferenceTo]?: 'clients'
+      }
+  >
+  style?: 'normal' | 'h2' | 'h3' | 'h4'
+  listItem?: 'bullet' | 'number'
+  markDefs?: Array<{
+    href?: string
+    blank?: boolean
+    _type: 'link'
+    _key: string
+  }>
+  level?: number
+  _type: 'block'
+  _key: string
+}>
+
+export type Projects = {
+  _id: string
+  _type: 'projects'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  cover: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'imageAlt'
+  }
+  description: string
+  content: BlockContent
+  service: string
+  credits?: Array<string>
+  client?: {
+    _ref: string
+    _type: 'reference'
+    _weak?: boolean
+    [internalGroqTypeReferenceTo]?: 'clients'
+  }
+  link: string
+  images: Array<{
+    image: {
+      asset?: {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+      }
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      alt: string
+      _type: 'imageAlt'
+    }
+    layout: 'full' | 'half' | 'third'
+    _type: 'imageLayout'
+    _key: string
+  }>
+  date: string
+}
+
+export type ClientsView = {
+  _id: string
+  _type: 'clientsView'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  clients?: Array<{
+    _ref: string
+    _type: 'reference'
+    _weak?: boolean
+    _key: string
+    [internalGroqTypeReferenceTo]?: 'clients'
+  }>
+}
+
+export type Clients = {
+  _id: string
+  _type: 'clients'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  name: string
+  slug: Slug
+  logo: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'imageAlt'
+  }
+  link?: string
+}
+
 export type Slug = {
   _type: 'slug'
   current: string
@@ -151,6 +272,10 @@ export type AllSanitySchemaTypes =
   | SanityImageDimensions
   | SanityFileAsset
   | Geopoint
+  | BlockContent
+  | Projects
+  | ClientsView
+  | Clients
   | Slug
   | ImageAlt
   | SanityImageCrop
@@ -159,3 +284,141 @@ export type AllSanitySchemaTypes =
   | SanityAssetSourceData
   | SanityImageMetadata
 export declare const internalGroqTypeReferenceTo: unique symbol
+// Source: ./src/sanity/queries.ts
+// Variable: queryClientsView
+// Query: *[_type == "clientsView"][0]{        clients[]->{            name,            logo,            link        }    }
+export type QueryClientsViewResult = {
+  clients: Array<{
+    name: string
+    logo: {
+      asset?: {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+      }
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      alt: string
+      _type: 'imageAlt'
+    }
+    link: string | null
+  }> | null
+} | null
+// Variable: queryProjectsOverview
+// Query: *[_type == 'projects'][0...4] | order(date desc){        slug,        cover,    }
+export type QueryProjectsOverviewResult = Array<{
+  slug: Slug
+  cover: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'imageAlt'
+  }
+}>
+// Variable: queryProjectsAll
+// Query: *[_type == 'projects'] | order(date desc){        slug,        cover,        title,        service,        date,        _updatedAt,        _createdAt,    }
+export type QueryProjectsAllResult = Array<{
+  slug: Slug
+  cover: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'imageAlt'
+  }
+  title: string
+  service: string
+  date: string
+  _updatedAt: string
+  _createdAt: string
+}>
+// Variable: queryProjectsBySlug
+// Query: *[_type == 'projects' && slug.current == $slug][0]{        ...,        client->{            logo,            link        },    }
+export type QueryProjectsBySlugResult = {
+  _id: string
+  _type: 'projects'
+  _createdAt: string
+  _updatedAt: string
+  _rev: string
+  title: string
+  slug: Slug
+  cover: {
+    asset?: {
+      _ref: string
+      _type: 'reference'
+      _weak?: boolean
+      [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+    }
+    media?: unknown
+    hotspot?: SanityImageHotspot
+    crop?: SanityImageCrop
+    alt: string
+    _type: 'imageAlt'
+  }
+  description: string
+  content: BlockContent
+  service: string
+  credits?: Array<string>
+  client: {
+    logo: {
+      asset?: {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+      }
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      alt: string
+      _type: 'imageAlt'
+    }
+    link: string | null
+  } | null
+  link: string
+  images: Array<{
+    image: {
+      asset?: {
+        _ref: string
+        _type: 'reference'
+        _weak?: boolean
+        [internalGroqTypeReferenceTo]?: 'sanity.imageAsset'
+      }
+      media?: unknown
+      hotspot?: SanityImageHotspot
+      crop?: SanityImageCrop
+      alt: string
+      _type: 'imageAlt'
+    }
+    layout: 'full' | 'half' | 'third'
+    _type: 'imageLayout'
+    _key: string
+  }>
+  date: string
+} | null
+
+// Query TypeMap
+import '@sanity/client'
+declare module '@sanity/client' {
+  interface SanityQueries {
+    '*[_type == "clientsView"][0]{\n        clients[]->{\n            name,\n            logo,\n            link\n        }\n    }': QueryClientsViewResult
+    "*[_type == 'projects'][0...4] | order(date desc){\n        slug,\n        cover,\n    }": QueryProjectsOverviewResult
+    "*[_type == 'projects'] | order(date desc){\n        slug,\n        cover,\n        title,\n        service,\n        date,\n        _updatedAt,\n        _createdAt,\n    }": QueryProjectsAllResult
+    "*[_type == 'projects' && slug.current == $slug][0]{\n        ...,\n        client->{\n            logo,\n            link\n        },\n    }": QueryProjectsBySlugResult
+  }
+}

@@ -23,3 +23,10 @@ export const clipPath = {
   close: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
   open: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
 } as const
+
+export const TRANSITION = {
+  type: 'spring',
+  stiffness: 280,
+  damping: 18,
+  mass: 0.3,
+} as const

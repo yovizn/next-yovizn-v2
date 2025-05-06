@@ -7,6 +7,7 @@ import { handleGoogleEvent } from '@/lib/analytic/googleEvent'
 import { useLenis } from 'lenis/react'
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
 import { useMenu } from '@/hooks/stores/useMenu.hook'
+import { useCursor } from '@/hooks/stores/useCursor.hook'
 
 type TLinkProps = Omit<React.HTMLProps<HTMLAnchorElement> & LinkProps, 'onClick' | 'classID'>
 
@@ -16,10 +17,12 @@ export function TLink({ href, ...props }: TLinkProps) {
   const { push } = useRouter()
   const { setPageTransition } = usePageTransition()
   const { setMenu } = useMenu()
+  const { setCursor } = useCursor()
 
   const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault()
     setMenu({ isOpen: false })
+    setCursor({ isVisible: false, children: null })
     handleGoogleEvent({ event: 'linkClicked', url: href })
 
     if (pathname === href) {
