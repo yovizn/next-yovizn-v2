@@ -56,7 +56,7 @@ export function Hero({ projects }: { projects: QueryProjectsBySlugResult | undef
 
             <div className="bg-background clamp-[px,4,6] py-8 md:min-h-[250px]">
               <p className="clamp-[text,sm,lg] font-nohemi border-b-accent mb-4 border-b opacity-80">
-                Service
+                Credits
               </p>
               {projects?.credits?.length ? (
                 <div className="flex flex-col gap-4">
