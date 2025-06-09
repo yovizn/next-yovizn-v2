@@ -11,7 +11,7 @@ Welcome to my personal portfolio! This project showcases my work, skills, and jo
 - **Responsive & Accessible:** Looks great on all devices and accessible to everyone.
 - **Social Integrations:** Connect with me on Instagram, LinkedIn, Twitter, and GitHub.
 
-## ech Stack
+## Tech Stack
 
 - [Next.js 15](https://nextjs.org/)
 - [Vercel](https://vercel.com/)
@@ -21,9 +21,7 @@ Welcome to my personal portfolio! This project showcases my work, skills, and jo
 - [Tailwind CSS](https://motion.dev/)
 - [Email Subscription Service] (e.g., Resend, etc.)
 
-![Portfolio Screenshot](./public/logo.png)
-
-## 📬 Connect with Me
+## Connect with Me
 
 - [Instagram](https://instagram.com/yovizn)
 - [LinkedIn](https://linkedin.com/in/yovi-zulkarnaen-793707229)
