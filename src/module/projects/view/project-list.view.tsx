@@ -91,7 +91,7 @@ const RenderCursor = ({ data }: { data: QueryProjectsAllResult }) => {
               style={{ width, height, top: idx !== 0 ? `${idx * 100}%` : '' }}
             >
               <Image
-                src={urlFor(project.cover).url()}
+                src={urlFor(project.cover).width(600).auto('format').url()}
                 alt={project.cover.alt}
                 width={width}
                 height={height}

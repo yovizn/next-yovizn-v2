@@ -79,7 +79,7 @@ export function Hero({ projects }: { projects: QueryProjectsBySlugResult | undef
         <div className="bg-foreground sticky top-0 z-30 col-span-full h-24 w-full" />
         <div className="relative aspect-video h-auto w-full overflow-hidden lg:rounded-sm">
           <Image
-            src={urlFor(projects?.cover || '').url()}
+            src={urlFor(projects?.cover || '').width(2000).auto('format').url()}
             alt={projects?.cover.alt || ''}
             fill
             priority

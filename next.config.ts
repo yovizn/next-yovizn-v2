@@ -8,6 +8,8 @@ const nextConfig: NextConfig = {
         hostname: 'cdn.sanity.io',
       },
     ],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 2678400,
   },
   webpack(config) {
     const svgr = {

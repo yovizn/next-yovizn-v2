@@ -62,7 +62,7 @@ export function Projects({ data }: { data: QueryProjectsOverviewResult }) {
               >
                 <Image
                   fill
-                  src={urlFor(project.cover).url()}
+                  src={urlFor(project.cover).width(1200).auto('format').url()}
                   alt={project.cover.alt}
                   sizes="(max-width: 640px) 640px,(max-width: 1024px) 1024px,(max-width: 1280px) 1280px, 100vw"
                   className="size-full object-cover grayscale-100"

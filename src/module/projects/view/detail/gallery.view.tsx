@@ -48,7 +48,7 @@ export function ProjectGallery({ projects }: { projects: QueryProjectsBySlugResu
             <div key={item._key} className={cn('relative clamp-[p,4,10] bg-background', layout[item.layout])}>
               <div className={cn('relative rounded-sm overflow-hidden', aspect[item.layout])}>
                 <Image
-                  src={urlFor(item.image).url()}
+                  src={urlFor(item.image).width(1600).auto('format').url()}
                   alt={item.image.alt}
                   fill
                   sizes={sizes[item.layout]}
