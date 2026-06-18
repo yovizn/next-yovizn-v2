@@ -1,26 +1,18 @@
-import LenisProvider from '@/providers/lenis.provider'
-
 import { Header } from '@/components/layout/header'
 import { Footer } from '@/components/layout/footer'
 import { PageTransition } from '@/components/transitions/page.transition'
 import { FirstRenderTransition } from '@/components/transitions/firstRender.transition'
 
-import { getFirstRender } from '@/lib/cookies/getFirstRender.cookie'
-import { getDeviceInfo } from '@/lib/device'
+import DeviceChrome from '@/components/animations/device-chrome'
 import { Cursor } from '@/components/animations/cursor'
 
-export default async function MainLayout({ children }: React.PropsWithChildren) {
-  const isFirstRender = await getFirstRender()
-  const { isDesktop } = await getDeviceInfo()
-
+export default function MainLayout({ children }: React.PropsWithChildren) {
   return (
     <>
-      {isDesktop && (
-        <>
-          <LenisProvider />
-          <Cursor />
-        </>
-      )}
+      {/* Lenis is JS-gated to fine pointers client-side; the cursor is
+          always rendered and CSS-hidden on coarse pointers (Task 4). */}
+      <DeviceChrome />
+      <Cursor />
 
       <Header />
 
@@ -30,7 +22,7 @@ export default async function MainLayout({ children }: React.PropsWithChildren) 
 
       <Footer />
 
-      <FirstRenderTransition isFirstRender={isFirstRender} />
+      <FirstRenderTransition />
       <PageTransition />
     </>
   )
