@@ -25,18 +25,30 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   if (error || !project) notFound()
 
+  const ogImage = {
+    url: urlFor(project.cover).width(1200).height(630).url(),
+    width: 1200,
+    height: 630,
+    alt: project.cover.alt,
+  }
+
   return {
-    title: project?.title,
-    description: project?.description,
+    title: project.title,
+    description: project.description,
+    alternates: {
+      canonical: `/projects/${slug}`,
+    },
     openGraph: {
-      title: project?.title,
-      description: project?.description,
-      images: [urlFor(project?.cover || '').url()],
+      type: 'article',
+      title: project.title,
+      description: project.description,
+      url: `/projects/${slug}`,
+      images: [ogImage],
     },
     twitter: {
-      title: project?.title,
-      description: project?.description,
-      images: [urlFor(project?.cover || '').url()],
+      title: project.title,
+      description: project.description,
+      images: [ogImage],
       card: 'summary_large_image',
     },
   }
