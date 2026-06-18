@@ -1,25 +1,24 @@
 'use client'
 
 import Image from 'next/image'
-import { motion, useScroll, useTransform } from 'motion/react'
-import { useRef } from 'react'
+import { motion } from 'motion/react'
 
 import { TextReveal } from '@/components/animations/text/reveal.text'
+import { useParallax } from '@/components/animations/scroll'
 
 import whiteOne from '@public/images/profile-blur.png'
 
 export function HeroSection() {
-  const containerRef = useRef(null)
-  const { scrollYProgress } = useScroll({
-    target: containerRef,
+  const { ref, value, enabled } = useParallax({
     offset: ['start end', 'end start'],
+    range: ['-10%', '10%'],
+    axis: 'y',
+    disabledOnMobile: false,
   })
-
-  const y = useTransform(scrollYProgress, [0, 1], ['-10%', '10%'])
 
   return (
     <section
-      ref={containerRef}
+      ref={ref as React.Ref<HTMLElement>}
       id="about"
       className="relative mb-px flex h-screen w-full flex-col items-center justify-center overflow-clip"
       style={{ clipPath: 'polygon(0% 0, 100% 0%, 100% 100%, 0 100%)' }}
@@ -57,7 +56,7 @@ export function HeroSection() {
       </div>
 
       <div className="absolute top-[-10vh] left-0 h-[110vh] w-full">
-        <motion.div style={{ y }} className="relative size-full">
+        <motion.div style={enabled ? { y: value } : undefined} className="relative size-full">
           <Image
             src={whiteOne}
             alt="Image White One"
