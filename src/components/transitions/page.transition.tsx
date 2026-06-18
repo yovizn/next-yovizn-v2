@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
 import { useScrollControl } from '@/hooks/useScrollControl.hook'
 import { duration, easing, mountAnim } from '@/lib/constants/animation.constant'
+import { normalizePath } from '@/lib/utils/normalizePath'
 import {
   pageTransitionOverlayVariant,
   pageTransitionVariant,
@@ -38,7 +39,7 @@ export function PageTransition() {
   // REAL navigation-arrival signal: once we are fully covered AND the router has
   // committed to the target path (new segment rendered), begin uncovering.
   useEffect(() => {
-    if (page.phase === 'covered' && page.targetPath && pathname === page.targetPath) {
+    if (page.phase === 'covered' && page.targetPath && normalizePath(pathname) === normalizePath(page.targetPath)) {
       setPageTransition({ phase: 'uncovering' })
     }
   }, [page.phase, page.targetPath, pathname, setPageTransition])

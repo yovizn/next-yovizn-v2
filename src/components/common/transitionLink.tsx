@@ -7,6 +7,7 @@ import { useLenis } from 'lenis/react'
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
 import { useMenu } from '@/hooks/stores/useMenu.hook'
 import { useCursor } from '@/hooks/stores/useCursor.hook'
+import { normalizePath } from '@/lib/utils/normalizePath'
 
 type TLinkProps = Omit<React.HTMLProps<HTMLAnchorElement> & LinkProps, 'onClick' | 'classID'>
 
@@ -20,7 +21,7 @@ export function TLink({ href, ...props }: TLinkProps) {
   const { setMenu } = useMenu()
   const { setCursor } = useCursor()
 
-  const target = typeof href === 'object' ? ((href as { pathname?: string }).pathname ?? '') : (href ?? '')
+  const target = normalizePath(typeof href === 'object' ? ((href as { pathname?: string }).pathname ?? '') : (href ?? ''))
 
   const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     // Pointer-intent side effects always run; navigation itself is handled in onNavigate.
@@ -36,11 +37,6 @@ export function TLink({ href, ...props }: TLinkProps) {
   }
 
   const handleNavigate = (e: { preventDefault: () => void }) => {
-    // Same-path: no transition (scroll-to-top already handled in handleClick).
-    if (pathname === target) {
-      e.preventDefault()
-      return
-    }
     // Rapid re-click guard: a cover/cover-hold is already running — let it own the nav.
     if (phase === 'covering' || phase === 'covered') {
       e.preventDefault()
