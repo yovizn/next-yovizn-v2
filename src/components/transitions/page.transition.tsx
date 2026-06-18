@@ -1,6 +1,8 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
 import { useScrollControl } from '@/hooks/useScrollControl.hook'
@@ -9,23 +11,55 @@ import {
   pageTransitionOverlayVariant,
   pageTransitionVariant,
 } from '@/lib/constants/variants/pageTransition.variant'
-import { usePathname } from 'next/navigation'
 import { Logo } from '../common/icon'
 
 export function PageTransition() {
   const { page, setPageTransition } = usePageTransition()
   const pathname = usePathname()
+  const isReduceMotion = useReducedMotion()
 
   const currentPath = pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'home'
 
   useScrollControl(page.isTransitionComplete)
 
+  // Reduced motion: never play the choreography. As soon as a transition is
+  // requested, resolve it immediately (no overlay, no dead time).
+  useEffect(() => {
+    if (isReduceMotion && page.isTransition) {
+      setPageTransition({
+        isTransition: false,
+        isTransitionComplete: true,
+        phase: 'idle',
+        targetPath: null,
+      })
+    }
+  }, [isReduceMotion, page.isTransition, setPageTransition])
+
+  // REAL navigation-arrival signal: once we are fully covered AND the router has
+  // committed to the target path (new segment rendered), begin uncovering.
+  useEffect(() => {
+    if (page.phase === 'covered' && page.targetPath && pathname === page.targetPath) {
+      setPageTransition({ phase: 'uncovering' })
+    }
+  }, [page.phase, page.targetPath, pathname, setPageTransition])
+
+  if (isReduceMotion) return null
+
   return (
     <AnimatePresence
       mode="wait"
-      onExitComplete={() => setPageTransition({ isTransitionComplete: true })}
+      onExitComplete={() =>
+        setPageTransition({
+          isTransition: false,
+          isTransitionComplete: true,
+          phase: 'idle',
+          targetPath: null,
+        })
+      }
     >
-      {page.isTransition && (
+      {/* Overlay stays mounted through covering + covered, and only EXITS when
+          phase is uncovering. Removing the node triggers AnimatePresence exit. */}
+      {page.isTransition && page.phase !== 'uncovering' && (
         <div className="fixed top-0 left-0 z-[999] h-dvh w-full">
           <motion.div
             {...mountAnim(pageTransitionVariant)}
@@ -33,6 +67,10 @@ export function PageTransition() {
           >
             <motion.div
               {...mountAnim(pageTransitionOverlayVariant)}
+              onAnimationComplete={() => {
+                // Fully covered: hand off to the pathname-arrival effect above.
+                if (page.phase === 'covering') setPageTransition({ phase: 'covered' })
+              }}
               className="bg-secondary absolute top-0 left-0 size-full"
             />
 
