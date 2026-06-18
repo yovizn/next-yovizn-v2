@@ -19,6 +19,8 @@ interface TextRevealProps {
   highlight?: string[]
   amount?: [number, number]
   once?: boolean
+  /** Fire on viewport entry alone, skipping the page-transition gate. Default false. */
+  scrollReveal?: boolean
 }
 
 export function TextReveal({
@@ -28,6 +30,7 @@ export function TextReveal({
   delay = 0,
   highlight = [],
   once = true,
+  scrollReveal = false,
 }: TextRevealProps) {
   const isDesktop = useMatchMedia(640, 'min')
   const textRef = useRef(null)
@@ -36,6 +39,8 @@ export function TextReveal({
   const {
     page: { isTransitionComplete },
   } = usePageTransition()
+
+  const triggered = isInView && (scrollReveal || isTransitionComplete)
 
   const splitByLine = transform.textByLine(text, isDesktop ? amount[1] : amount[0])
   const processText = (lineText: string) => {
@@ -100,9 +105,9 @@ export function TextReveal({
               }}
               animate={{
                 transformStyle: 'preserve-3d',
-                clipPath: isInView && isTransitionComplete ? clipPath.open : clipPath.close,
-                translateY: isInView && isTransitionComplete ? '0%' : y,
-                translateZ: isInView && isTransitionComplete ? '0px' : '-10px',
+                clipPath: triggered ? clipPath.open : clipPath.close,
+                translateY: triggered ? '0%' : y,
+                translateZ: triggered ? '0px' : '-10px',
                 transition: {
                   clipPath: { duration: duration.long * 1.2, delay: delay + idx * 0.075, ease },
                   translateY: { duration: duration.long * 1.25, delay: delay + idx * 0.05, ease },

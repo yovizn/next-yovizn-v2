@@ -15,6 +15,7 @@ export function TextBlur({
   distance = 0.25,
   className,
   once = true,
+  scrollReveal = false,
 }: {
   text: string
   delay?: number
@@ -22,6 +23,8 @@ export function TextBlur({
   distance?: number
   className?: string
   once?: boolean
+  /** Fire on viewport entry alone, skipping the page-transition gate. Default false. */
+  scrollReveal?: boolean
 }) {
   const textRef = useRef(null)
   const isInView = useInView(textRef, { amount: 'all', once })
@@ -29,6 +32,8 @@ export function TextBlur({
   const {
     page: { isTransitionComplete },
   } = usePageTransition()
+
+  const triggered = isInView && (scrollReveal || isTransitionComplete)
 
   const splitText = text.split('')
   const getDelay = (idx: number) => {
@@ -60,13 +65,10 @@ export function TextBlur({
                 : `${distance * (direction === 'left' ? -1 : 1)}em`,
             }}
             animate={{
-              filter: isInView && isTransitionComplete ? 'blur(0px)' : 'blur(2px)',
-              opacity: isInView && isTransitionComplete ? 1 : 0,
-              translateZ: isInView && isTransitionComplete ? '0px' : '-10px',
-              translateX:
-                isInView && isTransitionComplete
-                  ? '0em'
-                  : `${distance * (direction === 'left' ? -1 : 1)}em`,
+              filter: triggered ? 'blur(0px)' : 'blur(2px)',
+              opacity: triggered ? 1 : 0,
+              translateZ: triggered ? '0px' : '-10px',
+              translateX: triggered ? '0em' : `${distance * (direction === 'left' ? -1 : 1)}em`,
               transition: {
                 translateX: { duration: duration.medium + 0.45, delay: getDelay(idx), ease },
                 translateZ: { duration: duration.long + 0.45, delay: getDelay(idx), ease },
