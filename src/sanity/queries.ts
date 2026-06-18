@@ -33,6 +33,7 @@ export const queryProjectsBySlug = defineQuery(
   `*[_type == 'projects' && slug.current == $slug][0]{
         ...,
         client->{
+            name,
             logo,
             link
         },
