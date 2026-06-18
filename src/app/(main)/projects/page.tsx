@@ -8,6 +8,7 @@ import { Hero } from '@/module/projects/view/hero.view'
 import { ProjectsList } from '@/module/projects/view/project-list.view'
 import { client } from '@/sanity/lib/client'
 import { queryProjectsAll } from '@/sanity/queries'
+import { Pin } from '@/components/animations/scroll'
 import { ArrowDownRight } from 'lucide-react'
 import { notFound } from 'next/navigation'
 
@@ -41,7 +42,7 @@ export default async function ProjectPage() {
 
       <Header1 />
 
-      <div className='col-span-full sticky h-24 bg-foreground top-0 z-20'></div>
+      <Pin zIndex={20} className="col-span-full h-24 bg-foreground" />
 
       <Hero />
       <div className="col-span-full grid grid-cols-6 gap-px">

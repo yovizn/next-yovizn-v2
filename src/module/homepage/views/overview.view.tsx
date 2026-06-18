@@ -1,3 +1,4 @@
+import { Pin } from '@/components/animations/scroll'
 import { TextReveal } from '@/components/animations/text/reveal.text'
 import { OverviewImage } from './overview-image.view'
 
@@ -5,7 +6,7 @@ export function Overview() {
   return (
     <div className="relative col-span-full grid grid-cols-subgrid gap-px">
       <div className="bg-foreground relative col-span-full grid grid-cols-4 gap-14 lg:auto-rows-[12.5cqi] lg:grid-cols-8">
-        <div className="bg-foreground sticky block sm:hidden top-0 z-20 col-span-full h-24"></div>
+        <Pin zIndex={20} className="bg-foreground block sm:hidden col-span-full h-24" />
 
         <div className="text-background clamp-[p,4,14] @container col-span-4 lg:row-span-2">
           <h2 className="clamp-[text,lg,xl,@xs,@7xl] mt-2 mb-4 leading-none font-light sm:mb-6">

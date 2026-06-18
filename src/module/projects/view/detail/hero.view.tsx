@@ -1,3 +1,4 @@
+import { Pin } from '@/components/animations/scroll'
 import { GAnchor } from '@/components/common/googleAnchor'
 import { urlFor } from '@/sanity/lib/image'
 import { QueryProjectsBySlugResult } from '@/types/sanity.types'
@@ -76,7 +77,7 @@ export function Hero({ projects }: { projects: QueryProjectsBySlugResult | undef
       </div>
 
       <div className="bg-foreground clamp-[px,0,20,sm,xl] relative col-span-full pb-0">
-        <div className="bg-foreground sticky top-0 z-30 col-span-full h-24 w-full" />
+        <Pin zIndex={30} className="bg-foreground col-span-full h-24 w-full" />
         <div className="relative aspect-video h-auto w-full overflow-hidden lg:rounded-sm">
           <Image
             src={urlFor(projects?.cover || '').width(2000).auto('format').url()}

@@ -1,3 +1,4 @@
+import { Pin } from '@/components/animations/scroll'
 import { ViewCursor, ViewCursorTrigger } from '@/components/animations/cursor/view.cursor'
 import { TextBlur } from '@/components/animations/text/blur.text'
 import { urlFor } from '@/sanity/lib/image'
@@ -46,7 +47,7 @@ export function Projects({ data }: { data: QueryProjectsOverviewResult }) {
           <ArrowDown className="clamp-[size,1rem,3rem]" />
         </div>
       </div>
-      <div className="bg-background sticky top-0 z-20 col-span-full h-24"></div>
+      <Pin zIndex={20} className="bg-background col-span-full h-24" />
 
       <ViewCursor as="ul" className="col-span-full grid gap-px lg:grid-cols-2">
         {data.map((project) => {
