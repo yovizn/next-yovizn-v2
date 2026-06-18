@@ -1,6 +1,8 @@
 import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 
+import JsonLd from '@/components/common/json-ld'
+import { buildBreadcrumbList, buildCreativeWork } from '@/lib/seo/structured-data'
 import { Hero } from '@/module/projects/view/detail/hero.view'
 import { ProjectDetailContent } from '@/module/projects/view/detail/content.view'
 import { ProjectGallery } from '@/module/projects/view/detail/gallery.view'
@@ -62,6 +64,15 @@ export default async function ProjectsDetailPage({ params }: Props) {
 
   return (
     <main className="grid grid-cols-4 gap-px lg:grid-cols-6">
+      <JsonLd
+        data={buildBreadcrumbList([
+          { name: 'Home', url: 'https://yovizn.com/' },
+          { name: 'Projects', url: 'https://yovizn.com/projects' },
+          { name: project.title, url: `https://yovizn.com/projects/${slug}` },
+        ])}
+      />
+      <JsonLd data={buildCreativeWork(project)} />
+
       <Header1 />
 
       <Hero projects={project} />

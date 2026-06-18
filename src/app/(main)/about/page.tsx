@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import JsonLd from '@/components/common/json-ld'
+import { buildPersonGraph } from '@/lib/seo/structured-data'
 import { TextReveal } from '@/components/animations/text/reveal.text'
 import { Experience } from '@/module/about/views/experience.view'
 import { HeroImage, HeroSection } from '@/module/about/views/hero.view'
@@ -21,6 +23,8 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <main style={{ perspective: '1000px', perspectiveOrigin: 'center' }}>
+      <JsonLd data={buildPersonGraph()} />
+
       <HeroImage />
 
       <section className="text-background bg-foreground flex items-center justify-center py-40">

@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import JsonLd from '@/components/common/json-ld'
+import { buildBreadcrumbList } from '@/lib/seo/structured-data'
 import { Header1 } from '@/components/ui/header-1'
 import { tryCatch } from '@/lib/utils/tryCatch'
 import { Hero } from '@/module/projects/view/hero.view'
@@ -30,6 +32,13 @@ export default async function ProjectPage() {
 
   return (
     <main className="grid grid-cols-4 gap-px lg:grid-cols-6 xl:grid-cols-8">
+      <JsonLd
+        data={buildBreadcrumbList([
+          { name: 'Home', url: 'https://yovizn.com/' },
+          { name: 'Projects', url: 'https://yovizn.com/projects' },
+        ])}
+      />
+
       <Header1 />
 
       <div className='col-span-full sticky h-24 bg-foreground top-0 z-20'></div>

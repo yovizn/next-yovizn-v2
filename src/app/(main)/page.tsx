@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import JsonLd from '@/components/common/json-ld'
+import { buildPersonGraph } from '@/lib/seo/structured-data'
 import { Header1 } from '@/components/ui/header-1'
 import { CompanyList } from '@/module/homepage/views/company-list.view'
 import { Hero } from '@/module/homepage/views/hero.view'
@@ -31,6 +33,8 @@ export default async function HomePage() {
 
   return (
     <main className="grid grid-cols-4 gap-px lg:grid-cols-6 xl:grid-cols-8">
+      <JsonLd data={buildPersonGraph()} />
+
       <Header1 />
 
       <Hero />
