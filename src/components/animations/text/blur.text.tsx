@@ -70,7 +70,7 @@ export function TextBlur({
               transition: {
                 translateX: { duration: duration.medium + 0.45, delay: getDelay(idx), ease },
                 translateZ: { duration: duration.long + 0.45, delay: getDelay(idx), ease },
-                opacity: { duration: 1.5, delay: getDelay(idx), easing: easing.out },
+                opacity: { duration: 1.5, delay: getDelay(idx), ease: easing.out },
                 filter: { duration: 1, delay: getDelay(idx), ease: easing.out },
               },
             }}

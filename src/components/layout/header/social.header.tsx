@@ -26,7 +26,7 @@ export function SocialHeader() {
           }}
           exit={{
             opacity: 0,
-            transition: { duration: 0.1, type: 'linear' },
+            transition: { duration: 0.1, ease: 'linear' },
           }}
           className="hidden w-fit items-center gap-4 sm:flex"
         >

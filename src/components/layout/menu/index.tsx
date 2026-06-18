@@ -58,7 +58,7 @@ export function Menu() {
               scaleX: 1,
               transition: { duration: duration.short, delay: duration.short, ease: easing.in },
             }}
-            exit={{ opacity: 0, scaleX: 0, transition: { duration: 0.1, type: 'linear' } }}
+            exit={{ opacity: 0, scaleX: 0, transition: { duration: 0.1, ease: 'linear' } }}
             className="bg-background/20 absolute bottom-0 left-0 z-10 hidden h-px w-full origin-left lg:block"
           />
           <motion.div
