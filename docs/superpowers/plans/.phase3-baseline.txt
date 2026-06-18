@@ -1,0 +1,41 @@
+$ next build
+▲ Next.js 16.2.9 (Turbopack)
+- Environments: .env
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 10.1s
+  Running TypeScript ...
+  Finished TypeScript in 3.0s ...
+  Collecting page data using 11 workers ...
+  Generating static pages using 11 workers (0/18) ...
+  Generating static pages using 11 workers (4/18) 
+  Generating static pages using 11 workers (8/18) 
+  Generating static pages using 11 workers (13/18) 
+✓ Generating static pages using 11 workers (18/18) in 316ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ○ /
+├ ○ /_not-found
+├ ○ /about
+├ ○ /about/opengraph-image-2sch2s
+├ ƒ /api/first-render
+├ ○ /apple-icon.png
+├ ○ /manifest.json
+├ ○ /opengraph-image-12jlf3
+├ ○ /projects
+├ ● /projects/[slug]
+│ ├ /projects/kreasiindo-energi-pratama
+│ ├ /projects/dynamics-management-solutions
+│ ├ /projects/design-by-erson
+│ └ /projects/relou-idn
+├ ○ /projects/opengraph-image-1rks41
+├ ○ /robots.txt
+├ ○ /sitemap.xml
+└ ○ /workspace/[[...tool]]
+
+
+○  (Static)   prerendered as static content
+●  (SSG)      prerendered as static HTML (uses generateStaticParams)
+ƒ  (Dynamic)  server-rendered on demand
+
