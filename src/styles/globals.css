@@ -96,4 +96,13 @@
   .about-clip {
     clip-path: inset(calc(var(--nav) + var(--font-size) + 15vh) 0 0 0);
   }
+
+  /* Custom cursor is always rendered (no hydration mismatch) but hidden
+     on coarse-pointer / no-hover devices where there is no mouse to
+     augment. This replaces the former server `headers()` device gate. */
+  @media (pointer: coarse), (hover: none) {
+    .cursor-root {
+      display: none;
+    }
+  }
 }

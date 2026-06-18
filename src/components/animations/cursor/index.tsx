@@ -50,6 +50,10 @@ export function Cursor() {
   ])
 
   useEffect(() => {
+    // No mouse to track on coarse pointers — skip the RAF loop entirely.
+    // (The element is also CSS-hidden in globals.css; this stops wasted work.)
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
     const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
       mouse.current = { x: clientX, y: clientY }
     }
@@ -70,7 +74,7 @@ export function Cursor() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: page.isTransitionComplete ? 1 : 0 }}
-      className="pointer-events-none fixed top-0 left-0 z-50 h-screen w-full"
+      className="cursor-root pointer-events-none fixed top-0 left-0 z-50 h-screen w-full"
     >
       <motion.div style={{ x: smoothCursor.x, y: smoothCursor.y }} className="absolute size-fit z-20">
         <motion.div
