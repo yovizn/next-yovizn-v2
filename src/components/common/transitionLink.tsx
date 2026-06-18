@@ -2,7 +2,6 @@
 
 import Link, { LinkProps } from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { sleep } from '@/lib/utils/sleep'
 import { handleGoogleEvent } from '@/lib/analytic/googleEvent'
 import { useLenis } from 'lenis/react'
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
@@ -15,35 +14,50 @@ export function TLink({ href, ...props }: TLinkProps) {
   const lenis = useLenis()
   const pathname = usePathname()
   const { push } = useRouter()
-  const { setPageTransition } = usePageTransition()
+  const {
+    page: { phase },
+    setPageTransition,
+  } = usePageTransition()
   const { setMenu } = useMenu()
   const { setCursor } = useCursor()
 
-  const handleClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault()
+  const target = typeof href === 'object' ? ((href as { pathname?: string }).pathname ?? '') : (href ?? '')
+
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    // Pointer-intent side effects always run; navigation itself is handled in onNavigate.
     setMenu({ isOpen: false })
     setCursor({ isVisible: false, children: null })
-    handleGoogleEvent({ event: 'linkClicked', url: href })
+    handleGoogleEvent({ event: 'linkClicked', url: target })
 
-    if (pathname === href) {
-      if (lenis) {
-        lenis?.scrollTo(0)
-      } else {
-        window.scrollTo(0, 0)
-      }
+    if (pathname === target) {
+      e.preventDefault()
+      if (lenis) lenis.scrollTo(0)
+      else window.scrollTo(0, 0)
+    }
+  }
 
+  const handleNavigate = (e: { preventDefault: () => void }) => {
+    // Same-path: no transition (scroll-to-top already handled in handleClick).
+    if (pathname === target) {
+      e.preventDefault()
+      return
+    }
+    // Rapid re-click guard: a cover/cover-hold is already running — let it own the nav.
+    if (phase === 'covering' || phase === 'covered') {
+      e.preventDefault()
       return
     }
 
     setPageTransition({
       isTransition: true,
       isTransitionComplete: false,
+      phase: 'covering',
+      targetPath: target,
     })
-    await sleep(1500)
-    push(href, { scroll: true })
-    await sleep(3000)
-    setPageTransition({ isTransition: false })
+    // Drive navigation immediately; the overlay covers in parallel and the
+    // uncover is gated on the REAL pathname arrival (see PageTransition).
+    push(target, { scroll: true })
   }
 
-  return <Link href={href} onClick={handleClick} {...props} />
+  return <Link href={href} onClick={handleClick} onNavigate={handleNavigate} {...props} />
 }
