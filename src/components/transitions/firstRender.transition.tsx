@@ -1,10 +1,9 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useScrollControl } from '@/hooks/useScrollControl.hook'
-import { usePageTransition } from '@/hooks/stores/usePage.hook'
 import { useFirstRender } from '@/hooks/useFirstRender.hook'
 import {
   firstRenderVariant,
@@ -18,10 +17,10 @@ export function FirstRenderTransition() {
   // cookie is read post-hydration inside useFirstRender, which flips
   // this to `false` (play) only on a genuine first visit.
   const [isTransitionDone, setIsTransitionDone] = useState(true)
-  const { setPageTransition } = usePageTransition()
+  const completedRef = useRef(false)
 
   useScrollControl(isTransitionDone)
-  useFirstRender(setIsTransitionDone)
+  const { completeFirstRender } = useFirstRender(setIsTransitionDone)
 
   return (
     <AnimatePresence mode="wait">
@@ -55,7 +54,11 @@ export function FirstRenderTransition() {
                     className="fill-foreground stroke-foreground -rotate-150 stroke-3"
                     {...mountAnim(rectVariant)}
                     onUpdate={(latest) => {
-                      if (latest.y === '-50%') setPageTransition({ isTransitionComplete: true })
+                      // One-shot guard: onUpdate fires every frame; only complete once.
+                      if (latest.y === '-50%' && !completedRef.current) {
+                        completedRef.current = true
+                        completeFirstRender()
+                      }
                     }}
                   />
                 </AnimatePresence>

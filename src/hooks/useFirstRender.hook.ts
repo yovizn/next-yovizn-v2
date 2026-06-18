@@ -1,6 +1,6 @@
 import { tryCatch } from '@/lib/utils/tryCatch'
 import { checkFirstRender } from '@/services/checkFirstRender.service'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { usePageTransition } from './stores/usePage.hook'
 
 /**
@@ -15,6 +15,9 @@ import { usePageTransition } from './stores/usePage.hook'
  * Fail-safe default: the caller initializes `isTransitionDone = true`
  * (skip). We only flip to PLAY when the cookie is absent — so a repeat
  * visit never flashes the overlay even if the effect is delayed.
+ *
+ * Completion is signalled by the animation itself via `completeFirstRender`,
+ * not by a fixed setTimeout — the animation is the single source of truth.
  */
 export function useFirstRender(
   setIsTransitionDone: (isTransitionDone: boolean) => void,
@@ -30,18 +33,20 @@ export function useFirstRender(
       return
     }
 
-    // First visit: play the intro, persist the cookie, then finish.
+    // First visit: play the intro. Completion is driven by the animation
+    // via completeFirstRender — no timer started here.
     setIsTransitionDone(false)
-
-    const handleFirstRender = async () => {
-      const [, error] = await tryCatch(checkFirstRender())
-      setIsTransitionDone(true)
-      if (error) return
-    }
-
-    const timeout = setTimeout(handleFirstRender, 3000)
-
-    return () => clearTimeout(timeout)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  // Called by the intro overlay when its SVG mark finishes animating.
+  // The animation is the single source of truth — no parallel setTimeout.
+  const completeFirstRender = useCallback(async () => {
+    setPageTransition({ isTransitionComplete: true })
+    setIsTransitionDone(true)
+    const [, error] = await tryCatch(checkFirstRender())
+    if (error) return
+  }, [setIsTransitionDone, setPageTransition])
+
+  return { completeFirstRender }
 }
