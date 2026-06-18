@@ -90,7 +90,7 @@ export function AboutProfile() {
         <motion.div style={enabled ? { y: value } : undefined} className="relative size-full">
           <Image
             src={profileBlur}
-            alt="Portrait of Yovi Zulkarnaen"
+            alt=""
             fill
             className="object-cover opacity-30"
             sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 100vw"
