@@ -18,7 +18,7 @@ export function OverviewImage() {
   return (
     <div
       ref={ref as React.Ref<HTMLDivElement>}
-      className="bg-background col-span-4 aspect-video h-auto overflow-clip lg:row-span-2 lg:aspect-auto"
+      className="bg-graphite-2 aspect-video h-auto overflow-clip lg:aspect-auto lg:min-h-120"
     >
       <motion.div
         style={enabled ? { y: value } : undefined}
@@ -26,10 +26,10 @@ export function OverviewImage() {
       >
         <Image
           src={WhiteOne}
-          alt="Image White One"
+          alt="Portrait of Yovi Zulkarnaen"
           fill
           className="object-cover"
-          sizes="(max-width: 640px) 640px,(max-width: 1024px) 1024px,(max-width: 1280px) 1280px, 100vw"
+          sizes="(max-width: 1024px) 100vw, 50vw"
         />
       </motion.div>
     </div>

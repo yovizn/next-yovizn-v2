@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import JsonLd from '@/components/common/json-ld'
 import { buildPersonGraph } from '@/lib/seo/structured-data'
-import { Header1 } from '@/components/ui/header-1'
+import { Contact } from '@/module/homepage/views/contact.view'
 import { CompanyList } from '@/module/homepage/views/company-list.view'
 import { Hero } from '@/module/homepage/views/hero.view'
 import { Overview } from '@/module/homepage/views/overview.view'
@@ -32,18 +32,23 @@ export default async function HomePage() {
   if (error || !data) notFound()
 
   return (
-    <main className="grid grid-cols-4 gap-px lg:grid-cols-6 xl:grid-cols-8">
+    <main className="bg-graphite text-paper min-h-screen">
       <JsonLd data={buildPersonGraph()} />
 
-      <Header1 />
-
+      {/* CUE 01 — Hero: HeroShear wordmark (OGL island) + mono subtitle */}
       <Hero />
 
-      <CompanyList />
-
+      {/* CUE 02 — Overview: TextReveal(scrollReveal) intro copy + parallax portrait */}
       <Overview />
 
+      {/* CUE 03 — Clients: SVG logo wall, staggered reveal */}
+      <CompanyList />
+
+      {/* CUE 04 — Selected Work: project cards with CoverDisplace WebGL islands */}
       <Projects data={data} />
+
+      {/* CUE 05 — Contact: large mono CTA */}
+      <Contact />
     </main>
   )
 }
