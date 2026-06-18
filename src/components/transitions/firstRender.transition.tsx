@@ -13,16 +13,15 @@ import {
 } from '@/lib/constants/variants/firstRender.variant'
 import { mountAnim } from '@/lib/constants/animation.constant'
 
-interface FirstRenderTransitionProps {
-  isFirstRender: boolean
-}
-
-export function FirstRenderTransition({ isFirstRender }: FirstRenderTransitionProps) {
-  const [isTransitionDone, setIsTransitionDone] = useState(isFirstRender)
+export function FirstRenderTransition() {
+  // Default `true` = skip intro (fail-safe for repeat visits). The
+  // cookie is read post-hydration inside useFirstRender, which flips
+  // this to `false` (play) only on a genuine first visit.
+  const [isTransitionDone, setIsTransitionDone] = useState(true)
   const { setPageTransition } = usePageTransition()
 
   useScrollControl(isTransitionDone)
-  useFirstRender(isFirstRender, setIsTransitionDone)
+  useFirstRender(setIsTransitionDone)
 
   return (
     <AnimatePresence mode="wait">
