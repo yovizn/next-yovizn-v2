@@ -1,3 +1,5 @@
+import type { Metadata } from 'next'
+
 import { Header1 } from '@/components/ui/header-1'
 import { tryCatch } from '@/lib/utils/tryCatch'
 import { Hero } from '@/module/projects/view/hero.view'
@@ -6,6 +8,20 @@ import { client } from '@/sanity/lib/client'
 import { queryProjectsAll } from '@/sanity/queries'
 import { ArrowDownRight } from 'lucide-react'
 import { notFound } from 'next/navigation'
+
+export const metadata: Metadata = {
+  title: 'Projects',
+  description:
+    'Selected work by Yovi Zulkarnaen — frontend projects featuring web animation, motion design, and interaction craft.',
+  alternates: {
+    canonical: '/projects',
+  },
+  openGraph: {
+    title: 'Projects — yovizn',
+    description:
+      'Selected work by Yovi Zulkarnaen — frontend projects featuring web animation, motion design, and interaction craft.',
+  },
+}
 
 export default async function ProjectPage() {
   const [data, error] = await tryCatch(client.fetch(queryProjectsAll))

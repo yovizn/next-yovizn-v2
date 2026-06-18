@@ -24,6 +24,9 @@ export const metadata: Metadata = {
     statusBarStyle: 'black',
   },
   metadataBase: new URL(baseUrl),
+  alternates: {
+    canonical: '/',
+  },
   openGraph: {
     type: 'website',
     siteName: env.NEXT_PUBLIC_WEBSITE_NAME,

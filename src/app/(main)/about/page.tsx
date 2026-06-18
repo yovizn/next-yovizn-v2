@@ -1,6 +1,22 @@
+import type { Metadata } from 'next'
+
 import { TextReveal } from '@/components/animations/text/reveal.text'
 import { Experience } from '@/module/about/views/experience.view'
 import { HeroImage, HeroSection } from '@/module/about/views/hero.view'
+
+export const metadata: Metadata = {
+  title: 'About',
+  description:
+    'About Yovi Zulkarnaen — a frontend developer specializing in web animation, micro-interactions, and performant interfaces built with Motion.',
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: 'About — yovizn',
+    description:
+      'About Yovi Zulkarnaen — a frontend developer specializing in web animation, micro-interactions, and performant interfaces built with Motion.',
+  },
+}
 
 export default function AboutPage() {
   return (
