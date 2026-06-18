@@ -233,8 +233,6 @@ export default function HeroShearCanvas({ scrollVelocity, wordmarkRef }: HeroShe
       currentWidth = w
       currentHeight = h
       renderer.setSize(w, h)
-      el.style.width = `${w}px`
-      el.style.height = `${h}px`
       // Re-rasterize at new size
       uploadTexture()
     }
@@ -277,7 +275,9 @@ export default function HeroShearCanvas({ scrollVelocity, wordmarkRef }: HeroShe
       canvas.removeEventListener('webglcontextlost', onContextLost)
       canvas.removeEventListener('webglcontextrestored', onContextRestored)
 
-      // Free GPU resources
+      // Free GPU resources — explicit OGL removal before context loss
+      program.remove()
+      geometry.remove()
       const ext = gl.getExtension('WEBGL_lose_context')
       ext?.loseContext()
     }
