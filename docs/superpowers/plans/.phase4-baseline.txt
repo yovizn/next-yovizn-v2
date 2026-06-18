@@ -1,0 +1,41 @@
+Phase 4 baseline — captured 2026-06-18
+
+tsc: 0 errors (bunx tsc --noEmit produces no output)
+
+Routes (all static markers preserved):
+○ /
+○ /_not-found
+○ /about
+ƒ /api/first-render
+○ /projects
+● /projects/[slug]  (generateStaticParams → static)
+
+First-load JS (rootMainFiles, Turbopack — Turbopack does not print size table in CLI):
+  turbopack-2u58teaw2z5ts.js  : 10.4 KB raw /  4.1 KB gz
+  1jk3a514n7xa-.js            : 29.6 KB raw /  9.1 KB gz
+  0u7piucenl380.js            : 22.7 KB raw /  6.8 KB gz
+  0nkolptf11-si.js            : 134.5 KB raw / 36.5 KB gz
+  2frre91mw29p9.js            : 198.7 KB raw / 62.5 KB gz
+  0mwy1h-pmggd8.js            : 51.0 KB raw / 10.5 KB gz
+TOTAL rootMainFiles gz        : ~129.5 KB  ← BASELINE (budget ceiling: 170 KB)
+
+Note: Turbopack chunk hashes change each build — compare TOTAL, not filenames.
+
+─────────────────────────────────────────────────────────
+Post-WebGLIsland (Task 2) — 2026-06-18
+─────────────────────────────────────────────────────────
+tsc: 0 errors
+
+TOTAL rootMainFiles gz: ~129.5 KB  ← DELTA: 0 KB vs baseline
+(WebGLIsland's gate code is in a lazy client chunk, not rootMainFiles)
+
+OGL chunk status: OGL library code is NOT present in any .next/static/chunks/*.js file.
+This is correct — no effect file yet imports ogl. OGL will appear as a separate lazy
+chunk only when an effect (displacement-canvas, hero-shear-canvas, etc.) is wired in
+and the dynamic() boundary causes Turbopack to split it out. The "separate lazy chunk"
+property is STRUCTURAL (guaranteed by next/dynamic ssr:false boundary) and will be
+empirically verified when Task 3 adds the first call-site.
+
+Routes: unchanged
+○ /   ○ /_not-found   ○ /about   ƒ /api/first-render
+○ /projects   ● /projects/[slug]
