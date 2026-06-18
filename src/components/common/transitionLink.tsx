@@ -1,7 +1,7 @@
 'use client'
 
 import Link, { LinkProps } from 'next/link'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { handleGoogleEvent } from '@/lib/analytic/googleEvent'
 import { useLenis } from 'lenis/react'
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
@@ -13,7 +13,6 @@ type TLinkProps = Omit<React.HTMLProps<HTMLAnchorElement> & LinkProps, 'onClick'
 export function TLink({ href, ...props }: TLinkProps) {
   const lenis = useLenis()
   const pathname = usePathname()
-  const { push } = useRouter()
   const {
     page: { phase },
     setPageTransition,
@@ -54,9 +53,6 @@ export function TLink({ href, ...props }: TLinkProps) {
       phase: 'covering',
       targetPath: target,
     })
-    // Drive navigation immediately; the overlay covers in parallel and the
-    // uncover is gated on the REAL pathname arrival (see PageTransition).
-    push(target, { scroll: true })
   }
 
   return <Link href={href} onClick={handleClick} onNavigate={handleNavigate} {...props} />
