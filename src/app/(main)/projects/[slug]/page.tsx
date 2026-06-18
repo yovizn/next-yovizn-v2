@@ -6,7 +6,7 @@ import { buildBreadcrumbList, buildCreativeWork } from '@/lib/seo/structured-dat
 import { Hero } from '@/module/projects/view/detail/hero.view'
 import { ProjectDetailContent } from '@/module/projects/view/detail/content.view'
 import { ProjectGallery } from '@/module/projects/view/detail/gallery.view'
-import { Header1 } from '@/components/ui/header-1'
+import { NextCase } from '@/module/projects/view/detail/next-case.view'
 
 import { urlFor } from '@/sanity/lib/image'
 import { getProjectsAll, getProjectsBySlug } from '@/services/getProjects.service'
@@ -58,12 +58,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProjectsDetailPage({ params }: Props) {
   const { slug } = await params
-  const [project, error] = await getProjectsBySlug(slug)
+
+  // Both fetches are needed: slug fetch for this project, all fetch for index + next-case
+  const [[project, error], [allProjects]] = await Promise.all([
+    getProjectsBySlug(slug),
+    getProjectsAll(),
+  ])
 
   if (error || !project) notFound()
 
+  // Derive 1-based index in date-ordered reel (matches the projects index reel)
+  const currentIndex = allProjects?.findIndex((p) => p.slug.current === slug) ?? -1
+  const projectIndex = currentIndex >= 0 ? currentIndex + 1 : 1
+
+  // Next project in reel (no wrap-around — last project hides the affordance)
+  const nextProject =
+    allProjects && currentIndex >= 0 && currentIndex < allProjects.length - 1
+      ? allProjects[currentIndex + 1]
+      : undefined
+
   return (
-    <main className="grid grid-cols-4 gap-px lg:grid-cols-6">
+    <main className="bg-graphite text-paper grid min-h-screen grid-cols-4 gap-px lg:grid-cols-6">
+      {/* Phase 0 SEO — MUST-PRESERVE: two JSON-LD scripts */}
       <JsonLd
         data={buildBreadcrumbList([
           { name: 'Home', url: 'https://yovizn.com/' },
@@ -73,13 +89,17 @@ export default async function ProjectsDetailPage({ params }: Props) {
       />
       <JsonLd data={buildCreativeWork(project)} />
 
-      <Header1 />
+      {/* CUE · CASE — hero: index cue + KineticText title + meta row + CoverDisplace */}
+      <Hero projects={project} index={projectIndex} />
 
-      <Hero projects={project} />
-
+      {/* CUE · OVERVIEW — TextReveal body copy */}
       <ProjectDetailContent content={project?.content} />
 
+      {/* CUE · GALLERY — existing subgrid gallery (DOM; subgrid intact) */}
       <ProjectGallery projects={project} />
+
+      {/* CUE · NEXT — next case TLink, advances the transport reel */}
+      <NextCase title={nextProject?.title} slug={nextProject?.slug.current} />
     </main>
   )
 }

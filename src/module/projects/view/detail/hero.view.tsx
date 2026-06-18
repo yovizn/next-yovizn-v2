@@ -1,95 +1,89 @@
-import { Pin } from '@/components/animations/scroll'
-import { GAnchor } from '@/components/common/googleAnchor'
-import { urlFor } from '@/sanity/lib/image'
-import { QueryProjectsBySlugResult } from '@/types/sanity.types'
 import Image from 'next/image'
 
-export function Hero({ projects }: { projects: QueryProjectsBySlugResult | undefined }) {
+import { KineticText } from '@/components/animations/text/kinetic.text'
+import { CoverDisplace } from '@/components/webgl/cover-displace'
+import { urlFor } from '@/sanity/lib/image'
+import { QueryProjectsBySlugResult } from '@/types/sanity.types'
+
+interface HeroProps {
+  projects: QueryProjectsBySlugResult
+  /** 1-based index of this project in the date-ordered reel (drives `01 /` cue) */
+  index: number
+}
+
+export function Hero({ projects, index }: HeroProps) {
+  if (!projects) return null
+
+  const idx = String(index).padStart(2, '0')
+  const year = new Date(projects.date).getFullYear()
+  const clientName = projects.client?.name ?? '—'
+
+  const coverSrc = urlFor(projects.cover).width(1200).auto('format').url()
+
   return (
-    <section className="col-span-full grid grid-cols-subgrid gap-px">
-      <div className="col-span-full grid grid-cols-subgrid gap-px">
-        <div className="bg-background col-span-1"></div>
-        
-        <div className="col-span-4 grid gap-px">
-          <div className="flex w-full flex-col justify-between md:flex-row">
-            <h1 className="bg-background clamp-[p,4,10] clamp-[text,3rem,5rem] font-helvetica w-full leading-none font-normal lg:pb-14">
-              <span className="block max-w-[14ch]">{projects?.title}</span>
-            </h1>
-            <p className="bg-background clamp-[p,4,10] clamp-[text,xs,sm] md:max-w-[50ch] whitespace-pre-line">
-              {projects?.description}
-            </p>
-          </div>
+    <section
+      aria-labelledby="project-detail-heading"
+      className="col-span-full grid grid-cols-subgrid gap-px"
+    >
+      {/* ── CUE header row ────────────────────────────────────────────── */}
+      <div className="col-span-full flex min-h-[40svh] flex-col items-start justify-end gap-4 px-6 pb-12 pt-32 lg:px-10 lg:pt-40">
+        {/* CUE eyebrow */}
+        <p
+          className="font-data text-paper-dim text-[11px] leading-none tracking-[0.12em] uppercase"
+          aria-hidden
+        >
+          CUE &nbsp;·&nbsp; CASE
+        </p>
 
-          <div className="grid gap-px md:grid-cols-3">
-            <div className="bg-background clamp-[px,4,6] py-8 md:min-h-[250px]">
-              <p className="clamp-[text,sm,lg] font-nohemi border-b-accent mb-4 border-b opacity-80">
-                Service
-              </p>
-              <p className="clamp-[text,base,xl] font-medium">{projects?.service}</p>
-            </div>
+        {/* Accessible h1 — project title only (no index; one page heading) */}
+        <h1 id="project-detail-heading" className="sr-only">
+          {projects.title}
+        </h1>
 
-            <div className="bg-background clamp-[px,4,6] py-8 md:min-h-[250px]">
-              <p className="clamp-[text,sm,lg] font-nohemi border-b-accent mb-4 border-b opacity-80">
-                Client
-              </p>
-
-              {projects?.client ? (
-                <div className="flex items-center justify-between">
-                  <Image
-                    src={urlFor(projects?.client.logo).url()}
-                    alt={projects?.client.logo.alt || ''}
-                    width={100}
-                    height={100}
-                    className="clamp-[w,60px,70px] aspect-video object-contain"
-                  />
-                  <GAnchor
-                    href={projects?.client.link || '#'}
-                    target="_blank"
-                    className="font-nohemi clamp-[text,base,lg] text-foreground hover:text-primary/80 transition-colors"
-                  >
-                    Visit
-                  </GAnchor>
-                </div>
-              ) : (
-                <div className="opacity-75">—</div>
-              )}
-            </div>
-
-            <div className="bg-background clamp-[px,4,6] py-8 md:min-h-[250px]">
-              <p className="clamp-[text,sm,lg] font-nohemi border-b-accent mb-4 border-b opacity-80">
-                Credits
-              </p>
-              {projects?.credits?.length ? (
-                <div className="flex flex-col gap-4">
-                  {projects.credits.map((item) => (
-                    <p key={item} className="clamp-[text,base,xl] font-medium">
-                      {item}
-                    </p>
-                  ))}
-                </div>
-              ) : (
-                <div className="opacity-75">—</div>
-              )}
-            </div>
-          </div>
-        </div>
-        <div className="bg-background col-span-1"></div>
-      </div>
-
-      <div className="bg-foreground clamp-[px,0,20,sm,xl] relative col-span-full pb-0">
-        <Pin zIndex={30} className="bg-foreground col-span-full h-24 w-full" />
-        <div className="relative aspect-video h-auto w-full overflow-hidden lg:rounded-sm">
-          <Image
-            src={urlFor(projects?.cover || '').width(2000).auto('format').url()}
-            alt={projects?.cover.alt || ''}
-            fill
-            priority
-            sizes="(max-width: 640px) 640px,(max-width: 1024px) 1024px,(max-width: 1280px) 1280px, 100vw"
-            className="object-cover"
+        {/* Decorative cue line — aria-hidden: mono index + Nohemi title */}
+        <div aria-hidden className="flex items-baseline gap-3">
+          {/* Mono index — instrument readout voice */}
+          <span className="font-data text-paper-dim clamp-[text,sm,xl] leading-none tracking-[0.1em]">
+            {idx} /
+          </span>
+          {/* Nohemi display title — KineticText char stagger */}
+          <KineticText
+            text={projects.title}
+            by="char"
+            stagger={0.03}
+            className="font-nohemi text-paper clamp-[text,2xl,7xl] leading-none font-bold uppercase tracking-tight"
           />
         </div>
 
-        <div className="bg-foreground col-span-full h-24 w-full" />
+        {/* Meta row — CLIENT · YEAR · SERVICE */}
+        <p
+          className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase"
+          aria-label={`Client: ${clientName}, Year: ${year}, Service: ${projects.service}`}
+        >
+          <span aria-hidden>{clientName}</span>
+          <span className="text-signal mx-2" aria-hidden>·</span>
+          <span aria-hidden>{year}</span>
+          <span className="text-signal mx-2" aria-hidden>·</span>
+          <span aria-hidden>{projects.service}</span>
+        </p>
+      </div>
+
+      {/* ── Cover image — CoverDisplace (WebGL hover displacement) ───── */}
+      <div className="bg-graphite-2 clamp-[px,0,20,sm,xl] relative col-span-full pb-0">
+        <div className="relative aspect-video h-auto w-full overflow-hidden lg:rounded-sm">
+          <CoverDisplace src={coverSrc} className="size-full">
+            <Image
+              src={coverSrc}
+              alt={projects.cover.alt}
+              fill
+              priority
+              sizes="(max-width: 640px) 640px,(max-width: 1024px) 1024px,(max-width: 1280px) 1280px, 100vw"
+              className="size-full object-cover"
+            />
+          </CoverDisplace>
+        </div>
+
+        <div className="bg-graphite-2 col-span-full h-24 w-full" />
       </div>
     </section>
   )

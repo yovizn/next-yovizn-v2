@@ -23,48 +23,73 @@ export function ProjectGallery({ projects }: { projects: QueryProjectsBySlugResu
   }
 
   return (
-    <section className="col-span-full grid grid-cols-subgrid gap-px">
+    <section
+      aria-labelledby="gallery-heading"
+      className="col-span-full grid grid-cols-subgrid gap-px"
+    >
+      {/* Spacer row — preserves subgrid rhythm */}
       <div className="col-span-full grid grid-cols-6 gap-px">
-        {Array.from({ length: 6 }).map((_, index) => {
-          return <div key={index} className="bg-background aspect-square"></div>
-        })}
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div key={index} className="bg-graphite-2 aspect-square" />
+        ))}
       </div>
 
+      {/* Sticky gallery bar — TRANSPORT restyle; subgrid child kept intact */}
       <div className="sticky top-0 z-20 col-span-full grid h-24 grid-cols-subgrid gap-px">
-        <div className="bg-background col-span-1 hidden lg:block"></div>
-        <div className="bg-background before:bg-foreground relative col-span-4 grid place-content-center p-4 uppercase before:absolute before:bottom-0 before:left-0 before:h-1 before:w-full">
-          <h3 className="clamp-[text,2xl,4xl] font-helvetica px-2 leading-none font-bold">
+        <div className="bg-graphite col-span-1 hidden lg:block" />
+
+        <div className="bg-graphite relative col-span-4 grid place-content-center p-4">
+          {/* Signal bar — bottom edge */}
+          <div className="bg-signal absolute bottom-0 left-0 h-px w-full" aria-hidden />
+
+          {/* CUE eyebrow */}
+          <p
+            className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase"
+            aria-hidden
+          >
+            CUE &nbsp;·&nbsp; GALLERY
+          </p>
+
+          {/* Accessible h3 */}
+          <h3 id="gallery-heading" className="sr-only">
             Showcase
           </h3>
         </div>
-        <div className="bg-background col-span-1 hidden lg:block"></div>
+
+        <div className="bg-graphite col-span-1 hidden lg:block" />
       </div>
 
-      <div className="bg-background col-span-1 hidden lg:block"></div>
+      {/* Side gutter */}
+      <div className="bg-graphite col-span-1 hidden lg:block" />
 
+      {/* Gallery grid — 6-col subgrid child; DO NOT restructure */}
       <div className="col-span-4 grid grid-cols-6 gap-px">
-        {projects?.images.map((item) => {
-          return (
-            <div key={item._key} className={cn('relative clamp-[p,4,10] bg-background', layout[item.layout])}>
-              <div className={cn('relative rounded-sm overflow-hidden', aspect[item.layout])}>
-                <Image
-                  src={urlFor(item.image).width(1600).auto('format').url()}
-                  alt={item.image.alt}
-                  fill
-                  sizes={sizes[item.layout]}
-                  className="object-cover"
-                />
-              </div>
+        {projects?.images.map((item) => (
+          <div
+            key={item._key}
+            className={cn('relative clamp-[p,4,10] bg-graphite-2', layout[item.layout])}
+          >
+            <div className={cn('relative overflow-hidden rounded-sm', aspect[item.layout])}>
+              <Image
+                src={urlFor(item.image).width(1600).auto('format').url()}
+                alt={item.image.alt}
+                fill
+                sizes={sizes[item.layout]}
+                className="object-cover"
+              />
             </div>
-          )
-        })}
+          </div>
+        ))}
       </div>
 
-      <div className="bg-background col-span-1 hidden lg:block"></div>
+      {/* Side gutter */}
+      <div className="bg-graphite col-span-1 hidden lg:block" />
+
+      {/* Footer spacer */}
       <div className="col-span-full grid grid-cols-4 gap-px">
-        {Array.from({ length: 4 }).map((_, index) => {
-          return <div key={index} className="bg-background aspect-square"></div>
-        })}
+        {Array.from({ length: 4 }).map((_, index) => (
+          <div key={index} className="bg-graphite-2 aspect-square" />
+        ))}
       </div>
     </section>
   )
