@@ -53,9 +53,11 @@ export function FirstRenderTransition() {
                     height="438.15"
                     className="fill-foreground stroke-foreground -rotate-150 stroke-3"
                     {...mountAnim(rectVariant)}
-                    onUpdate={(latest) => {
-                      // One-shot guard: onUpdate fires every frame; only complete once.
-                      if (latest.y === '-50%' && !completedRef.current) {
+                    onAnimationComplete={(definition) => {
+                      // Gate on the 'exit' variant — that is the phase which lands y at '-50%'.
+                      // One-shot guard: fire completeFirstRender exactly once even if
+                      // AnimatePresence somehow triggers the callback multiple times.
+                      if (definition === 'exit' && !completedRef.current) {
                         completedRef.current = true
                         completeFirstRender()
                       }
