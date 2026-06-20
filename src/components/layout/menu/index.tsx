@@ -23,14 +23,16 @@ import { socials } from '@/lib/constants/social.constant'
 import { GAnchor } from '@/components/common/googleAnchor'
 import { Li } from '@/components/animations/li.animation'
 
+// Hoisted out of render: motion.create() must run once, not per-render — inside
+// the component it rebuilt the wrapper every render (remounting the image).
+const MImage = motion.create(Image)
+
 export function Menu() {
   const navRef = useRef<HTMLDivElement>(null)
   const { menu, setMenu } = useMenu()
   const pathname = usePathname()
   const isReduceMotion = useReducedMotion()
   const isDesktop = useMatchMedia(640, 'min')
-
-  const MImage = motion.create(Image)
 
   useEffect(() => {
     setMenu({ isOpen: false })
