@@ -10,8 +10,13 @@ import { GAnchor } from '@/components/common/googleAnchor'
  */
 export function Contact() {
   return (
-    <section aria-labelledby="contact-heading" className="col-span-full">
-      {/* CUE 05 eyebrow */}
+    <section
+      aria-labelledby="contact-heading"
+      // KEEP IN SYNC with the eyebrow below — TransportRail scroll-spies data-cue.
+      data-cue="CUE 05 · CONTACT"
+      className="col-span-full"
+    >
+      {/* CUE 05 eyebrow — mirrors data-cue on the <section> (TransportRail reads it) */}
       <p
         className="font-data text-paper-dim px-6 pt-16 pb-4 text-[11px] tracking-[0.12em] uppercase lg:px-10"
         aria-hidden

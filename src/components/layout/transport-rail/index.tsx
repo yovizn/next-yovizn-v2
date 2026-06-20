@@ -56,6 +56,62 @@ function getCueEntry(pathname: string): CueEntry {
   return CUE_MAP.home
 }
 
+// ─── Active-cue scroll-spy ─────────────────────────────────────────────────────
+
+/**
+ * Tracks which `[data-cue]` section is at the reading line and returns its label,
+ * so the rail narrates the journey down a multi-section page (the homepage steps
+ * CUE 01 · INDEX → 02 · OVERVIEW → … → 05 · CONTACT as you scroll). Routes with
+ * no `[data-cue]` sections (/projects, /about, /projects/[slug]) fall back to the
+ * route-level label — `null` active state ensures the previous page's cue never
+ * leaks across a navigation (effect re-runs on pathname).
+ *
+ * Label-only: the easing glyph stays route-level (page-transition easing readout).
+ * The label snaps on section-cross — instrument-readout authentic, and dodges
+ * layout jank on the vertical-writing-mode text. Not motion → updates under
+ * reduced-motion too (it's wayfinding state, not animation).
+ */
+function useActiveCueLabel(fallbackLabel: string, pathname: string): string {
+  const [activeLabel, setActiveLabel] = useState<string | null>(null)
+
+  useEffect(() => {
+    const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-cue]'))
+    if (nodes.length === 0) {
+      setActiveLabel(null) // no cue sections on this route → use the route fallback
+      return
+    }
+
+    const visible = new Set<HTMLElement>()
+    const sync = () => {
+      // active = the LAST section (document order) still crossing the reading
+      // band — i.e. the lower section wins as it scrolls up into the line.
+      let pick: HTMLElement | null = null
+      for (const n of nodes) if (visible.has(n)) pick = n
+      if (pick?.dataset.cue) setActiveLabel(pick.dataset.cue)
+      // pick === null (between sections) → keep the previous label (no flicker).
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target as HTMLElement)
+          else visible.delete(e.target as HTMLElement)
+        }
+        sync()
+      },
+      // Collapse the root to a single line at the viewport centre: a section is
+      // "active" only while it spans that line, so the label flips exactly as the
+      // boundary between two sections crosses centre — symmetric up/down, no
+      // band-edge early-switching, no boundary flicker.
+      { rootMargin: '-50% 0px -50% 0px', threshold: 0 },
+    )
+    nodes.forEach((n) => io.observe(n))
+    return () => io.disconnect()
+  }, [pathname])
+
+  return activeLabel ?? fallbackLabel
+}
+
 // ─── Timecode formatter ───────────────────────────────────────────────────────
 
 const TOTAL_SECONDS = 200 // 3 min 20 sec total pseudo-runtime
@@ -212,6 +268,8 @@ export function TransportRail() {
   const timecodeValue = useTransform(scrollYProgress, formatTimecode)
 
   const cueEntry = getCueEntry(pathname)
+  // Label tracks the active [data-cue] section (homepage); glyph stays route-level.
+  const activeLabel = useActiveCueLabel(cueEntry.label, pathname)
 
   return (
     <aside
@@ -249,7 +307,7 @@ export function TransportRail() {
           'pl-2 lg:pl-0 lg:pt-3',
         )}
       >
-        {cueEntry.label}
+        {activeLabel}
       </div>
 
       {/* Scrub bar (desktop vertical + mobile horizontal variants inside) */}

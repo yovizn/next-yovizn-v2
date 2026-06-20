@@ -10,8 +10,13 @@ export async function CompanyList() {
   if (error || !data?.clients) return null
 
   return (
-    <section aria-labelledby="clients-heading" className="col-span-full">
-      {/* CUE 03 eyebrow */}
+    <section
+      aria-labelledby="clients-heading"
+      // KEEP IN SYNC with the eyebrow below — TransportRail scroll-spies data-cue.
+      data-cue="CUE 03 · CLIENTS"
+      className="col-span-full"
+    >
+      {/* CUE 03 eyebrow — mirrors data-cue on the <section> (TransportRail reads it) */}
       <p
         className="font-data text-paper-dim px-6 pt-16 pb-4 text-[11px] tracking-[0.12em] uppercase lg:px-10"
         aria-hidden

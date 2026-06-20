@@ -6,9 +6,11 @@ export function Overview() {
   return (
     <section
       aria-labelledby="overview-heading"
+      // KEEP IN SYNC with the eyebrow below — TransportRail scroll-spies data-cue.
+      data-cue="CUE 02 · OVERVIEW"
       className="col-span-full"
     >
-      {/* CUE 02 eyebrow */}
+      {/* CUE 02 eyebrow — mirrors data-cue on the <section> (TransportRail reads it) */}
       <p
         className="font-data text-paper-dim px-6 pt-16 pb-4 text-[11px] tracking-[0.12em] uppercase lg:px-10"
         aria-hidden
