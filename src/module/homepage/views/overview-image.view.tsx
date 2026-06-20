@@ -5,16 +5,15 @@ import { motion } from 'motion/react'
 
 import { useParallax } from '@/components/animations/scroll'
 
-import WhiteOne from '@public/images/white-one.jpg'
+import ProfileBlur from '@public/images/profile-blur.png'
 
-// NOTE: `white-one.jpg` is a TEMPORARY stock flat-lay standing in for Yovi's
-// portrait. Until the real portrait lands it's treated as a monochrome editorial
-// panel — grayscale + tone-mapped into the graphite palette and cropped to the
-// subject (`object-left-top`) — so the stock white desk doesn't read as a jarring
-// bright block on the dark theme. While it's a placeholder the image is decorative
-// (the adjacent bio carries the meaning), so it's `alt=""` + aria-hidden rather
-// than the previous false "Portrait of Yovi Zulkarnaen". Swap in the real portrait
-// → drop the filters + restore the descriptive alt.
+// CUE 02 portrait column. Uses Yovi's real motion-blurred portrait — the same
+// asset the /about hero uses — instead of the old stock succulent placeholder.
+// It's on-brand twice over: an actual portrait for "Hello, I'm Yovi", and the
+// motion blur literally embodies "Frontend · Motion Engineer". Already B&W, so
+// it sits in the graphite palette with only a light contrast lift + a graphite
+// scrim grounding the panel edge into the gap-px grid seam. Meaningful content
+// now (a portrait), so it carries a descriptive alt rather than being decorative.
 export function OverviewImage() {
   const { ref, value, enabled } = useParallax({
     offset: ['start start', 'end start'],
@@ -33,30 +32,24 @@ export function OverviewImage() {
         className="relative h-[calc(100%+100px)] w-full"
       >
         <Image
-          src={WhiteOne}
-          alt=""
-          aria-hidden
+          src={ProfileBlur}
+          alt="Motion-blurred portrait of Yovi Zulkarnaen"
           fill
-          className="origin-top-left scale-[1.7] object-cover object-top-left grayscale brightness-[0.6] contrast-[1.1]"
+          className="object-cover object-center brightness-90 contrast-105"
           sizes="(max-width: 1024px) 100vw, 50vw"
         />
       </motion.div>
 
-      {/* Tone the placeholder into the page: a warm signal whisper in the mids,
-          then graphite scrims that ground the panel into the gap-px grid seams —
-          vertical fades it under the header / into the next section, horizontal
-          dims the bright desk sweep into the panel's right edge. */}
+      {/* Graphite scrims ground the portrait into the dark theme + the gap-px
+          grid seams without hiding the figure — vertical fades the edges, a
+          softer right-edge wash ties the panel into its neighbour. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-signal/10 mix-blend-soft-light"
+        className="pointer-events-none absolute inset-0 bg-linear-to-b from-graphite-2/60 via-transparent to-graphite-2/70"
       />
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 bg-linear-to-b from-graphite-2/70 via-transparent to-graphite-2/80"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-linear-to-l from-graphite-2/65 via-graphite-2/10 to-transparent"
+        className="pointer-events-none absolute inset-0 bg-linear-to-l from-graphite-2/40 to-transparent"
       />
     </div>
   )
