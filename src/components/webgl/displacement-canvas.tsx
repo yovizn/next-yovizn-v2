@@ -82,7 +82,11 @@ const FRAG = /* glsl */ `
   varying vec2      vUv;
 
   // Object-cover UV mapping: scale texture to fill plane without distortion.
-  // Returns remapped UV (may go outside 0..1 — caller clamps).
+  // Multiplying by scale (<= 1 on the cropped axis) keeps vUv [0,1] mapped to a
+  // CENTERED SUBSET of the texture — i.e. a cover crop that stays inside [0,1].
+  // (Dividing here would invert it to object-CONTAIN: UVs overflow [0,1] and
+  // CLAMP_TO_EDGE smears the boundary row across the overflow — visible as
+  // static bands on high-frequency edge content. Stay multiplicative.)
   vec2 coverFit(vec2 uv, float imageAspect, float planeAspect) {
     vec2 scale = vec2(1.0);
     if (planeAspect > imageAspect) {
@@ -92,7 +96,7 @@ const FRAG = /* glsl */ `
       // Plane taller than image: fit height, crop width
       scale.x = planeAspect / imageAspect;
     }
-    return (uv - 0.5) / scale + 0.5;
+    return (uv - 0.5) * scale + 0.5;
   }
 
   void main() {
