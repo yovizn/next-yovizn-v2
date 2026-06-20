@@ -50,7 +50,11 @@ export async function CompanyList() {
               alt={client.logo.alt}
               width={100}
               height={100}
-              className="clamp-[size,56px,70px] aspect-video object-contain opacity-60 transition-opacity duration-500 group-hover:opacity-100"
+              // Quiet monochrome wall at rest (grayscale + dim) so mixed-brand
+              // logos read as one cohesive row on the dark theme; hover/focus
+              // brings the real client to life in full colour. Opacity+filter
+              // only — no scale (a tight grid + everything-scales reads as noise).
+              className="clamp-[size,56px,70px] aspect-video object-contain opacity-60 grayscale transition-[opacity,filter] duration-500 group-hover:opacity-100 group-hover:grayscale-0 group-focus-within:opacity-100 group-focus-within:grayscale-0"
             />
           )
           const cellClass =
