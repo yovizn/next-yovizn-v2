@@ -55,16 +55,15 @@ export function Hero({ projects, index }: HeroProps) {
           />
         </div>
 
-        {/* Meta row — CLIENT · YEAR · SERVICE */}
-        <p
-          className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase"
-          aria-label={`Client: ${clientName}, Year: ${year}, Service: ${projects.service}`}
-        >
-          <span aria-hidden>{clientName}</span>
+        {/* Meta row — CLIENT · YEAR · SERVICE. Values are real text (read by AT);
+            only the decorative · separators are hidden. (aria-label is prohibited
+            on a <p>, so it was dropping all three values for screen readers.) */}
+        <p className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase">
+          <span>{clientName}</span>
           <span className="text-signal mx-2" aria-hidden>·</span>
-          <span aria-hidden>{year}</span>
+          <time dateTime={projects.date}>{year}</time>
           <span className="text-signal mx-2" aria-hidden>·</span>
-          <span aria-hidden>{projects.service}</span>
+          <span>{projects.service}</span>
         </p>
       </div>
 

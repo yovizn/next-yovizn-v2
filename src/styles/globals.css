@@ -88,6 +88,27 @@
   code {
     font-family: var(--font-mono);
   }
+
+  /* Designed keyboard focus ring — the dark graphite theme washes out the UA
+     default outline, so keyboard users couldn't see focus. Keyboard-only via
+     :focus-visible, in the signal accent. (Cards inside overflow-clip set their
+     own inset ring since an outer outline would be clipped.) */
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Mobile interaction polish: drop the 300ms double-tap-zoom delay and the
+     grey tap-flash on our custom-styled interactive elements. */
+  a,
+  button,
+  [role='button'],
+  summary,
+  label {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
 }
 
 @layer utilities {

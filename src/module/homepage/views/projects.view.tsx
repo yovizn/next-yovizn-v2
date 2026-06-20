@@ -39,15 +39,15 @@ function ProjectCard({ project }: ProjectCardProps) {
       <TLink
         href={`/projects/${project.slug.current}`}
         aria-label={`${name} — view project`}
-        className="block size-full"
+        className="group block size-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-signal"
       >
         <CoverDisplace src={src} className="size-full">
           <Image
             fill
             src={src}
             alt={project.cover.alt}
-            sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, (max-width: 1280px) 1280px, 100vw"
-            className="size-full object-cover"
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
           />
         </CoverDisplace>
       </TLink>
@@ -81,9 +81,14 @@ export function Projects({ data }: { data: QueryProjectsOverviewResult }) {
 
       {/* Project grid */}
       <ul className="border-graphite-2 grid gap-px border-t lg:grid-cols-2">
-        {data.map((project) => (
-          <ProjectCard key={project.slug.current} project={project} />
-        ))}
+        {data.length > 0 ? (
+          data.map((project) => <ProjectCard key={project.slug.current} project={project} />)
+        ) : (
+          // Empty-state: never leave the heading dangling over a bare border.
+          <li className="bg-graphite-2 text-paper-dim font-data flex aspect-video items-center justify-center px-6 text-center text-sm tracking-[0.12em] uppercase lg:col-span-2">
+            Selected work coming soon.
+          </li>
+        )}
       </ul>
     </section>
   )

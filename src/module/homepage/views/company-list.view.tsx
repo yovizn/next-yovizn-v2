@@ -44,21 +44,33 @@ export async function CompanyList() {
               />
             )
 
-          return (
+          const logo = (
+            <Image
+              src={urlFor(client.logo).url()}
+              alt={client.logo.alt}
+              width={100}
+              height={100}
+              className="clamp-[size,56px,70px] aspect-video object-contain opacity-60 transition-opacity duration-500 group-hover:opacity-100"
+            />
+          )
+          const cellClass =
+            'bg-graphite-2 group grid aspect-square place-content-center transition-colors duration-300 hover:bg-graphite'
+
+          // Only emit an anchor when there's a real destination — a linkless
+          // client previously rendered a focusable href="#" no-op (dead link).
+          return client.link ? (
             <GAnchor
               key={index}
-              href={client.link || '#'}
-              className="bg-graphite-2 group grid aspect-square place-content-center transition-colors duration-300 hover:bg-graphite"
+              href={client.link}
+              className={cellClass}
               style={{ animationDelay: `${index * 0.08}s` }}
             >
-              <Image
-                src={urlFor(client.logo).url()}
-                alt={client.logo.alt}
-                width={100}
-                height={100}
-                className="clamp-[size,56px,70px] aspect-video object-contain opacity-60 transition-opacity duration-500 group-hover:opacity-100"
-              />
+              {logo}
             </GAnchor>
+          ) : (
+            <div key={index} className={cellClass} style={{ animationDelay: `${index * 0.08}s` }}>
+              {logo}
+            </div>
           )
         })}
       </div>

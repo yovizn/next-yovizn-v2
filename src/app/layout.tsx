@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
@@ -38,6 +38,18 @@ export const metadata: Metadata = {
     title: 'Yovi Zulkarnaen — Frontend Developer',
     description: env.NEXT_PUBLIC_WEBSITE_DESCRIPTION,
   },
+}
+
+export const viewport: Viewport = {
+  // Match the visible page surface (bg-graphite #17151A), not the --background
+  // oklch token, so the mobile URL bar / status bar / notch gutter blend in.
+  themeColor: '#17151A',
+  // The whole site is dark — tells the UA to render scrollbars/form controls/
+  // pre-paint canvas dark (no white flash on dark-mode OSes).
+  colorScheme: 'dark',
+  // Prerequisite for env(safe-area-inset-*) to resolve non-zero (the transport
+  // rail's bottom bar honors the notch). Pinch-zoom intentionally left enabled.
+  viewportFit: 'cover',
 }
 
 export default function RootLayout({

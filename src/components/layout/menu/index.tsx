@@ -47,10 +47,20 @@ export function Menu() {
     return () => window.removeEventListener('click', handleClick)
   }, [])
 
+  // Keyboard dismiss: Escape closes the open drawer (modal nav needs Esc).
+  useEffect(() => {
+    if (!menu.isOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenu({ isOpen: false })
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [menu.isOpen, setMenu])
+
   return (
     <AnimatePresence mode="wait" initial={!isReduceMotion}>
       {menu.isOpen && (
-        <nav ref={navRef} className="fixed top-0 left-0 isolate z-30 h-dvh w-full lg:h-[412px]">
+        <nav id="primary-menu" ref={navRef} className="fixed top-0 left-0 isolate z-30 h-dvh w-full lg:h-[412px]">
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{

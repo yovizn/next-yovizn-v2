@@ -219,10 +219,12 @@ export function TransportRail() {
       className={cn(
         // Fixed, above content, never intercepts pointer events
         'fixed z-45 pointer-events-none select-none',
-        // Mobile-first: bottom horizontal bar
-        'flex flex-row bottom-0 left-0 right-0 h-10',
+        // Mobile-first: bottom horizontal bar. box-content + pb keeps the 40px
+        // instrument bar but extends its graphite into the notch safe area so
+        // the readouts clear the home indicator (needs viewport-fit:cover).
+        'flex flex-row bottom-0 left-0 right-0 h-10 box-content pb-[env(safe-area-inset-bottom)]',
         // Desktop override: left vertical column
-        'lg:flex-col lg:top-0 lg:left-0 lg:bottom-0 lg:right-auto lg:w-10 lg:h-auto',
+        'lg:box-border lg:flex-col lg:top-0 lg:left-0 lg:bottom-0 lg:right-auto lg:w-10 lg:h-auto lg:pb-0',
         // Surface
         'bg-graphite/85 backdrop-blur-[2px]',
         // Mobile: top border; Desktop: right border

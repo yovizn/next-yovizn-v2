@@ -35,7 +35,7 @@ export function SocialHeader() {
               <GAnchor
                 href={social.href}
                 target="_blank"
-                className="outline-foreground block font-light uppercase outline focus-within:outline"
+                className="block font-light uppercase"
               >
                 {social.name === 'Email' ? 'Contact' : social.name}
               </GAnchor>
