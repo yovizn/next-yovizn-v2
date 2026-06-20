@@ -120,26 +120,55 @@ function rasterizeWordmark(
   ctx.fillStyle = GRAPHITE
   ctx.fillRect(0, 0, width, height)
 
-  // Derive font from the live element (gets the hashed next/font family)
+  // Match the DOM <h1> faithfully so the canvas overlay IS the same wordmark —
+  // same font, computed size, letter-spacing, left alignment, and line-wrapping —
+  // not a separate re-render. Deriving the size from container height overshot
+  // the real font-size, so the name overflowed the width and got center-clipped
+  // to its middle ("…I ZULKARN…"). Read the actual computed size + wrap instead.
   const computed = getComputedStyle(wordmarkEl)
   const fontFamily = computed.fontFamily
   const fontWeight = computed.fontWeight
   const cssSize = wordmarkEl.getBoundingClientRect()
 
-  // Scale to DPR
+  // Scale to DPR, then work in logical CSS px below.
   ctx.scale(dpr, dpr)
 
-  // Font size: fill the logical height with some padding
+  const logicalW = cssSize.width || width / dpr
   const logicalH = cssSize.height || height / dpr
-  const fontSize = Math.round(logicalH * 0.72)
+
+  const fontSize = parseFloat(computed.fontSize)
+  const lineHeight = fontSize // the <h1> is leading-none
+  const letterSpacing = parseFloat(computed.letterSpacing) || 0 // tracking-tight
+
   ctx.font = `${fontWeight} ${fontSize}px ${fontFamily}`
   ctx.fillStyle = PAPER
-  ctx.textBaseline = 'middle'
-  ctx.textAlign = 'center'
+  ctx.textBaseline = 'alphabetic'
+  ctx.textAlign = 'left'
+  // Canvas letter-spacing (Chromium/modern). Typed loosely — not in lib.dom yet.
+  ;(ctx as CanvasRenderingContext2D & { letterSpacing?: string }).letterSpacing = `${letterSpacing}px`
 
   const text = wordmarkEl.textContent?.trim() ?? 'YOVI ZULKARNAEN'
-  const logicalW = cssSize.width || width / dpr
-  ctx.fillText(text, logicalW / 2, logicalH / 2)
+
+  // Word-wrap to the element width, mirroring how the DOM <h1> wraps the name.
+  const words = text.split(' ')
+  const lines: string[] = []
+  let current = ''
+  for (const word of words) {
+    const test = current ? `${current} ${word}` : word
+    if (current && ctx.measureText(test).width > logicalW) {
+      lines.push(current)
+      current = word
+    } else {
+      current = test
+    }
+  }
+  if (current) lines.push(current)
+
+  // Vertically center the line block; alphabetic baseline ≈ 0.82·fontSize down.
+  const startY = (logicalH - lines.length * lineHeight) / 2
+  lines.forEach((line, i) => {
+    ctx.fillText(line, 0, startY + i * lineHeight + fontSize * 0.82)
+  })
 
   return offscreen
 }
