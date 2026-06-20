@@ -34,6 +34,6 @@ export const nohemi = local({
     },
   ],
   variable: '--font-nohemi',
-  display: 'auto',
+  display: 'swap',
   style: 'normal',
 })

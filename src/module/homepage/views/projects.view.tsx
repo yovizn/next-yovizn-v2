@@ -29,10 +29,18 @@ interface ProjectCardProps {
 
 function ProjectCard({ project }: ProjectCardProps) {
   const src = urlFor(project.cover).width(1200).auto('format').url()
+  // The card is an image-only link; name it by the project (derived from the
+  // slug — the overview query omits `title`) so its accessible name announces
+  // the destination, not the cover's image description. (WCAG 2.4.4)
+  const name = project.slug.current.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 
   return (
     <li className="bg-graphite-2 relative aspect-video overflow-clip">
-      <TLink href={`/projects/${project.slug.current}`} className="block size-full">
+      <TLink
+        href={`/projects/${project.slug.current}`}
+        aria-label={`${name} — view project`}
+        className="block size-full"
+      >
         <CoverDisplace src={src} className="size-full">
           <Image
             fill

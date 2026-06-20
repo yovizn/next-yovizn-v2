@@ -19,6 +19,6 @@ export const helvetica = local({
     },
   ],
   variable: "--font-helvetica",
-  display: "auto",
+  display: "swap",
   style: "normal",
 });

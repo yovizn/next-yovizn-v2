@@ -17,8 +17,9 @@
  * cue/glyph derive from usePathname (consistent server/client in App Router).
  * No window/document access at render time.
  *
- * Reduced motion: the rail ALWAYS shows (it is wayfinding). Only decorative
- * scrub animation is calmed — informational content is never suppressed.
+ * Reduced motion: the rail ALWAYS shows (it is wayfinding). The moving scrub
+ * head/fill are frozen (static instrument marking) and the glow is dropped;
+ * the timecode/cue/glyph readouts stay (informational, not motion).
  *
  * Content spacing: the (main) layout wrapper gets lg:pl-10 / pb-10 so content
  * is never occluded (done in layout.tsx alongside the mount).
@@ -168,12 +169,12 @@ function ScrubBar({
         {/* Desktop fill — scaleY from top; hidden on mobile */}
         <motion.div
           className="absolute inset-0 bg-signal/40 origin-top hidden lg:block"
-          style={{ scaleY: fillScale }}
+          style={{ scaleY: reducedMotion ? 0 : fillScale }}
         />
         {/* Mobile fill — scaleX from left; hidden on desktop */}
         <motion.div
           className="absolute inset-0 bg-signal/40 origin-left block lg:hidden"
-          style={{ scaleX: fillScale }}
+          style={{ scaleX: reducedMotion ? 0 : fillScale }}
         />
 
         {/* Desktop scrub head: horizontal bar, translates top→bottom */}
@@ -182,7 +183,7 @@ function ScrubBar({
             'absolute left-0 right-0 h-0.5 bg-signal hidden lg:block',
             !reducedMotion && 'shadow-[0_0_4px_var(--signal)]',
           )}
-          style={{ y: yHead }}
+          style={{ y: reducedMotion ? 0 : yHead }}
         />
         {/* Mobile scrub head: vertical bar, translates left→right */}
         <motion.div
@@ -190,7 +191,7 @@ function ScrubBar({
             'absolute top-0 bottom-0 w-0.5 bg-signal block lg:hidden',
             !reducedMotion && 'shadow-[0_0_4px_var(--signal)]',
           )}
-          style={{ x: xHead }}
+          style={{ x: reducedMotion ? 0 : xHead }}
         />
       </div>
     </>

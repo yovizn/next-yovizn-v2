@@ -2,7 +2,7 @@ import { notFound } from 'next/navigation'
 import { Metadata } from 'next'
 
 import JsonLd from '@/components/common/json-ld'
-import { buildBreadcrumbList, buildCreativeWork } from '@/lib/seo/structured-data'
+import { buildBreadcrumbList, buildCreativeWork, SITE_URL } from '@/lib/seo/structured-data'
 import { Hero } from '@/module/projects/view/detail/hero.view'
 import { ProjectDetailContent } from '@/module/projects/view/detail/content.view'
 import { ProjectGallery } from '@/module/projects/view/detail/gallery.view'
@@ -82,9 +82,9 @@ export default async function ProjectsDetailPage({ params }: Props) {
       {/* Phase 0 SEO — MUST-PRESERVE: two JSON-LD scripts */}
       <JsonLd
         data={buildBreadcrumbList([
-          { name: 'Home', url: 'https://yovizn.com/' },
-          { name: 'Projects', url: 'https://yovizn.com/projects' },
-          { name: project.title, url: `https://yovizn.com/projects/${slug}` },
+          { name: 'Home', url: `${SITE_URL}/` },
+          { name: 'Projects', url: `${SITE_URL}/projects` },
+          { name: project.title, url: `${SITE_URL}/projects/${slug}` },
         ])}
       />
       <JsonLd data={buildCreativeWork(project)} />

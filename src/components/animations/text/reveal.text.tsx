@@ -41,11 +41,15 @@ export function TextReveal({
   } = usePageTransition()
 
   const triggered = isInView && (scrollReveal || isTransitionComplete)
+  // Reduced motion: land on the revealed state immediately (no scroll-linked
+  // clip/translate). `initial` is already the open state when reduced, so
+  // matching `animate` to it means Motion plays nothing.
+  const revealed = triggered || isReduceMotion
 
   const splitByLine = transform.textByLine(text, isDesktop ? amount[1] : amount[0])
   const processText = (lineText: string) => {
     if (!highlight.length) return lineText
-    const sortedHighlights = highlight.sort((a, b) => b.length - a.length)
+    const sortedHighlights = [...highlight].sort((a, b) => b.length - a.length)
     const result = lineText
     let segments: { text: string; highlighted: boolean }[] = [{ text: result, highlighted: false }]
 
@@ -105,9 +109,9 @@ export function TextReveal({
               }}
               animate={{
                 transformStyle: 'preserve-3d',
-                clipPath: triggered ? clipPath.open : clipPath.close,
-                translateY: triggered ? '0%' : y,
-                translateZ: triggered ? '0px' : '-10px',
+                clipPath: revealed ? clipPath.open : clipPath.close,
+                translateY: revealed ? '0%' : y,
+                translateZ: revealed ? '0px' : '-10px',
                 transition: {
                   clipPath: { duration: duration.long * 1.2, delay: delay + idx * 0.075, ease },
                   translateY: { duration: duration.long * 1.25, delay: delay + idx * 0.05, ease },

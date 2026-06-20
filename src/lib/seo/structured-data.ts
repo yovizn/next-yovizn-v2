@@ -14,7 +14,7 @@ import { socials } from '@/lib/constants/social.constant'
 import { urlFor } from '@/sanity/lib/image'
 import type { QueryProjectsBySlugResult } from '@/types/sanity.types'
 
-const SITE_URL = env.NEXT_PUBLIC_WEBSITE_URL
+export const SITE_URL = env.NEXT_PUBLIC_WEBSITE_URL
 const PERSON_ID = `${SITE_URL}/#person`
 const WEBSITE_ID = `${SITE_URL}/#website`
 

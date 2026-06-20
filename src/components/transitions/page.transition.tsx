@@ -44,6 +44,17 @@ export function PageTransition() {
     }
   }, [page.phase, page.targetPath, pathname, setPageTransition])
 
+  // Recovery: never stay 'covered' forever. The normal exit is the arrival
+  // effect above, but if the target pathname never commits (e.g. browser
+  // Back/Forward cancels the navigation mid-cover), force-uncover after a
+  // bounded wait so scroll is never permanently locked. Static routes commit
+  // well under this; the timer only fires on a genuinely stuck transition.
+  useEffect(() => {
+    if (page.phase !== 'covered') return
+    const t = setTimeout(() => setPageTransition({ phase: 'uncovering' }), 2000)
+    return () => clearTimeout(t)
+  }, [page.phase, setPageTransition])
+
   if (isReduceMotion) return null
 
   return (

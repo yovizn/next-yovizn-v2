@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
 import JsonLd from '@/components/common/json-ld'
-import { buildBreadcrumbList } from '@/lib/seo/structured-data'
+import { buildBreadcrumbList, SITE_URL } from '@/lib/seo/structured-data'
 import { tryCatch } from '@/lib/utils/tryCatch'
 import { Hero } from '@/module/projects/view/hero.view'
 import { ProjectsList } from '@/module/projects/view/project-list.view'
@@ -33,8 +33,8 @@ export default async function ProjectPage() {
       {/* Phase 0 SEO — BreadcrumbList JSON-LD (must-preserve) */}
       <JsonLd
         data={buildBreadcrumbList([
-          { name: 'Home', url: 'https://yovizn.com/' },
-          { name: 'Projects', url: 'https://yovizn.com/projects' },
+          { name: 'Home', url: `${SITE_URL}/` },
+          { name: 'Projects', url: `${SITE_URL}/projects` },
         ])}
       />
 

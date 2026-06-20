@@ -158,6 +158,9 @@ export default function HeroShearCanvas({ scrollVelocity, wordmarkRef }: HeroShe
     // ── OGL Renderer ─────────────────────────────────────────────────
     const renderer = new Renderer({
       canvas,
+      dpr, // backing store at device DPR — without this OGL defaults to 1× and the
+      // 2× rasterized wordmark texture is downsampled into a 1× framebuffer (blurry
+      // on retina). setSize(w,h) stays in CSS px; OGL applies the dpr multiply.
       alpha: false,
       antialias: false,
       premultipliedAlpha: false,

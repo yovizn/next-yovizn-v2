@@ -34,6 +34,8 @@ export function TextBlur({
   } = usePageTransition()
 
   const triggered = isInView && (scrollReveal || isTransitionComplete)
+  // Reduced motion: render fully revealed immediately, no blur/translate motion.
+  const revealed = triggered || isReduceMotion
 
   const splitText = text.split('')
   const getDelay = (idx: number) => {
@@ -60,15 +62,13 @@ export function TextBlur({
               filter: !isReduceMotion ? 'blur(2px)' : 'blur(0px)',
               opacity: !isReduceMotion ? 0 : 1,
               translateZ: !isReduceMotion ? '-10px' : '0px',
-              translateX: !isReduceMotion
-                ? '0em'
-                : `${distance * (direction === 'left' ? -1 : 1)}em`,
+              translateX: '0em',
             }}
             animate={{
-              filter: triggered ? 'blur(0px)' : 'blur(2px)',
-              opacity: triggered ? 1 : 0,
-              translateZ: triggered ? '0px' : '-10px',
-              translateX: triggered ? '0em' : `${distance * (direction === 'left' ? -1 : 1)}em`,
+              filter: revealed ? 'blur(0px)' : 'blur(2px)',
+              opacity: revealed ? 1 : 0,
+              translateZ: revealed ? '0px' : '-10px',
+              translateX: revealed ? '0em' : `${distance * (direction === 'left' ? -1 : 1)}em`,
               transition: {
                 translateX: { duration: duration.medium + 0.45, delay: getDelay(idx), ease },
                 translateZ: { duration: duration.long + 0.45, delay: getDelay(idx), ease },
