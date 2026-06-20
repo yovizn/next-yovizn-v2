@@ -44,14 +44,29 @@ export function PageTransition() {
     }
   }, [page.phase, page.targetPath, pathname, setPageTransition])
 
-  // Recovery: never stay 'covered' forever. The normal exit is the arrival
-  // effect above, but if the target pathname never commits (e.g. browser
-  // Back/Forward cancels the navigation mid-cover), force-uncover after a
-  // bounded wait so scroll is never permanently locked. Static routes commit
-  // well under this; the timer only fires on a genuinely stuck transition.
+  // Recovery — a transition must never get stuck covering/covered (the overlay
+  // would stay up and scroll would stay locked via useScrollControl):
+  //
+  // 1) Event-driven (primary). Browser Back/Forward during a cover changes the
+  //    route WITHOUT firing TLink.onNavigate, so the arrival effect's pathname
+  //    can never reach targetPath → deadlock. popstate is that exact (and, given
+  //    the TLink re-click guard, only) divergence trigger — reset immediately.
+  //    Race-free: forward navigations use pushState, which does NOT fire popstate.
+  useEffect(() => {
+    const onPopState = () =>
+      setPageTransition({ isTransition: false, isTransitionComplete: true, phase: 'idle', targetPath: null })
+    window.addEventListener('popstate', onPopState)
+    return () => window.removeEventListener('popstate', onPopState)
+  }, [setPageTransition])
+
+  // 2) Defensive backstop. If we stay 'covered' for an unusually long time (a
+  //    slow/failed commit), force-uncover. 6s is far above a normal route commit
+  //    (~2s in dev here) and ANY successful commit clears this via the phase
+  //    change — so it never races a real navigation (the old 2s timer did: a
+  //    commit at ~2.2s would lose to it). It only catches a genuinely stuck one.
   useEffect(() => {
     if (page.phase !== 'covered') return
-    const t = setTimeout(() => setPageTransition({ phase: 'uncovering' }), 2000)
+    const t = setTimeout(() => setPageTransition({ phase: 'uncovering' }), 6000)
     return () => clearTimeout(t)
   }, [page.phase, setPageTransition])
 
