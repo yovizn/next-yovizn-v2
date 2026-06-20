@@ -6,6 +6,9 @@ import { AboutContact } from '@/module/about/views/contact.view'
 import { Experience } from '@/module/about/views/experience.view'
 import { AboutProfile } from '@/module/about/views/hero.view'
 
+// ISR: hourly regeneration so Sanity edits go live without a redeploy. See page.tsx.
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'About',
   description:

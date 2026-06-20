@@ -11,6 +11,10 @@ import { NextCase } from '@/module/projects/view/detail/next-case.view'
 import { urlFor } from '@/sanity/lib/image'
 import { getProjectsAll, getProjectsBySlug } from '@/services/getProjects.service'
 
+// ISR: prerendered per-slug (generateStaticParams) + hourly regeneration so
+// Sanity edits to a case study go live without a redeploy. See page.tsx.
+export const revalidate = 3600
+
 type Props = {
   params: Promise<{ slug: string }>
 }

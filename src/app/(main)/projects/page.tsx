@@ -9,6 +9,9 @@ import { ProjectsList } from '@/module/projects/view/project-list.view'
 import { client } from '@/sanity/lib/client'
 import { queryProjectsAll } from '@/sanity/queries'
 
+// ISR: hourly regeneration so Sanity edits go live without a redeploy. See page.tsx.
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: 'Projects',
   description:

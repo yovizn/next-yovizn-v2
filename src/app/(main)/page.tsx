@@ -10,6 +10,11 @@ import { Projects } from '@/module/homepage/views/projects.view'
 import { getProjectsOverview } from '@/services/getProjects.service'
 import { notFound } from 'next/navigation'
 
+// ISR: regenerate this static page at most once an hour so Sanity edits go live
+// without a redeploy (content was previously frozen to build time). For instant
+// updates, add a Sanity webhook → an on-demand revalidate route.
+export const revalidate = 3600
+
 export const metadata: Metadata = {
   title: {
     absolute: 'Yovi Zulkarnaen — Frontend Developer & Motion Specialist',
