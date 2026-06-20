@@ -25,7 +25,8 @@
  * ✓ MotionValues sampled via .get() inside the frame callback.
  * ✓ DPR capped at Math.min(devicePixelRatio, 2).
  * ✓ webglcontextlost → preventDefault + stop rendering.
- * ✓ Dispose on unmount: cancelFrame + loseContext.
+ * ✓ Dispose on unmount: cancelFrame + program/geometry/texture removal.
+ *   NEVER loseContext() — React Strict Mode reuses the canvas (see cleanup note).
  * ✓ Canvas fills parent aria-hidden span (absolute inset-0, 100% w/h).
  * ✓ ResizeObserver re-rasterizes and re-uploads texture on size changes.
  */
@@ -275,11 +276,14 @@ export default function HeroShearCanvas({ scrollVelocity, wordmarkRef }: HeroShe
       canvas.removeEventListener('webglcontextlost', onContextLost)
       canvas.removeEventListener('webglcontextrestored', onContextRestored)
 
-      // Free GPU resources — explicit OGL removal before context loss
+      // Free GPU resources explicitly. Do NOT call WEBGL_lose_context.loseContext():
+      // React Strict Mode (dev) re-runs this effect on the SAME canvas, and a canvas
+      // only ever hands back ONE context — losing it here gives the next mount a dead
+      // context (linkProgram fails → uniformLocations undefined → forEach crash). The
+      // context is reclaimed by GC when the canvas element unmounts for real.
       program.remove()
       geometry.remove()
-      const ext = gl.getExtension('WEBGL_lose_context')
-      ext?.loseContext()
+      gl.deleteTexture(texture.texture)
     }
   }, [scrollVelocity, wordmarkRef])
 

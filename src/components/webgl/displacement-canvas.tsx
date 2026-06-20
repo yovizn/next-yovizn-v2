@@ -31,7 +31,8 @@
  * ✓ DPR capped at Math.min(devicePixelRatio, 2).
  * ✓ webglcontextlost → preventDefault; webglcontextrestored → re-upload.
  * ✓ Dispose on unmount: cancelFrame + program.remove() + geometry.remove() +
- *   loseContext(). (Texture has no .remove() in OGL — intentionally omitted.)
+ *   gl.deleteTexture(). NEVER loseContext() — it kills the canvas's only context,
+ *   which a React-Strict-Mode remount then reuses dead; GC reclaims it on unmount.
  * ✓ disposed flag guards img.onload (async, can fire after unmount).
  * ✓ Canvas fills parent aria-hidden span (absolute inset-0, 100% w/h).
  * ✓ ResizeObserver re-syncs plane aspect on size changes.
@@ -313,12 +314,14 @@ export default function DisplacementCanvas({
       canvas.removeEventListener('webglcontextlost', onContextLost)
       canvas.removeEventListener('webglcontextrestored', onContextRestored)
 
-      // Free GPU resources (canonical disposal from Build-4 fix)
+      // Free GPU resources explicitly. Do NOT call WEBGL_lose_context.loseContext():
+      // React Strict Mode (dev) re-runs this effect on the SAME canvas, and a canvas
+      // only ever hands back ONE context — losing it here gives the next mount a dead
+      // context (linkProgram fails → uniformLocations undefined → forEach crash). The
+      // context is reclaimed by GC when the canvas element unmounts for real.
       program.remove()
       geometry.remove()
-      const ext = gl.getExtension('WEBGL_lose_context')
-      ext?.loseContext()
-      // Note: Texture has no .remove() in OGL — intentionally omitted.
+      gl.deleteTexture(texture.texture)
     }
   }, [src, hover, mouseX, mouseY])
 

@@ -13,7 +13,8 @@
  * • `near` (IntersectionObserver) starts `false` → first client render ===
  *   SSR output (children-only). No hydration mismatch possible.
  * • IO mount/unmount: the effect component is mounted only when near viewport
- *   AND enabled AND not hidden. Unmounting frees the GL context offscreen.
+ *   AND enabled AND not hidden. Unmounting removes the canvas offscreen; its GL
+ *   context is reclaimed by GC (NOT via loseContext — see EFFECT CONTRACT below).
  * • Hidden-tab pause: `visibilitychange` flips `hidden` state → unmounts
  *   the effect (stops RAF *and* frees context, simplest correct pause).
  * • `children` is ALWAYS rendered — it is the SSR HTML / static fallback
@@ -30,7 +31,11 @@
  *   `requestAnimationFrame`. They must also:
  *   - Cap DPR: `Math.min(window.devicePixelRatio, 2)`
  *   - Handle context loss: `addEventListener('webglcontextlost', e => e.preventDefault())`
- *   - Dispose on unmount: `WEBGL_lose_context?.loseContext()` + `cancelFrame(draw)`
+ *   - Dispose on unmount: free GL resources (`program.remove()` + `geometry.remove()`
+ *     + `gl.deleteTexture()`) + `cancelFrame(draw)`. Do NOT call
+ *     `WEBGL_lose_context.loseContext()` — React Strict Mode re-runs the effect on the
+ *     SAME canvas, and losing the context hands the remount a dead context → the OGL
+ *     program fails to link → `uniformLocations` is undefined → `forEach` crash.
  *   - Cancel `frame.render(draw)` when this component unmounts (via useEffect cleanup).
  *
  * RAF DECISION

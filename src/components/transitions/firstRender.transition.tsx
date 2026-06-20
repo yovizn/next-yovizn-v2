@@ -54,10 +54,16 @@ export function FirstRenderTransition() {
                     className="fill-foreground stroke-foreground -rotate-150 stroke-3"
                     {...mountAnim(rectVariant)}
                     onAnimationComplete={(definition) => {
-                      // Gate on the 'exit' variant — that is the phase which lands y at '-50%'.
-                      // One-shot guard: fire completeFirstRender exactly once even if
-                      // AnimatePresence somehow triggers the callback multiple times.
-                      if (definition === 'exit' && !completedRef.current) {
+                      // Drive completion from the ENTER (draw-in) finishing — NOT exit.
+                      // Gating on 'exit' deadlocks: a Motion `exit` variant only plays
+                      // once the element is removed from <AnimatePresence>, but the
+                      // element is only removed by completeFirstRender (isTransitionDone
+                      // → true), which here would only run after exit completes. Nothing
+                      // ever starts the exit, so the overlay hangs on the drawn mark.
+                      // Completing on 'enter' removes the overlay, which THEN plays the
+                      // exit variants (mark flies up + blur) as the leave animation.
+                      // One-shot guard against repeat callbacks.
+                      if (definition === 'enter' && !completedRef.current) {
                         completedRef.current = true
                         completeFirstRender()
                       }
