@@ -2,14 +2,12 @@ import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io',
-      },
-    ],
-    formats: ['image/avif', 'image/webp'],
-    minimumCacheTTL: 2678400,
+    // Custom loader: serve Sanity images directly from Sanity's CDN (already
+    // optimized) instead of round-tripping through Next's optimizer. See
+    // src/sanity/image-loader.ts. (remotePatterns/formats/minimumCacheTTL only
+    // applied to the built-in optimizer, which this replaces, so they're dropped.)
+    loader: 'custom',
+    loaderFile: './src/sanity/image-loader.ts',
   },
   webpack(config) {
     const svgr = {
