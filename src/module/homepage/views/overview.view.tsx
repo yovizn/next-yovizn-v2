@@ -30,7 +30,7 @@ export function Overview() {
               text="Hello, I'm Yovi."
               by="word"
               stagger={0.08}
-              className="font-nohemi text-paper clamp-[text,2xl,5xl] leading-none font-bold"
+              className="font-sans text-paper clamp-[text,2xl,5xl] leading-none font-bold"
             />
           </div>
 
