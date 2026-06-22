@@ -35,7 +35,7 @@ function ProjectCard({ project }: ProjectCardProps) {
   const name = project.slug.current.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
 
   return (
-    <li className="bg-graphite-2 relative aspect-video overflow-clip">
+    <li className="bg-graphite-2 relative aspect-video overflow-clip lg:last:odd:col-span-2 lg:last:odd:aspect-21/9">
       <TLink
         href={`/projects/${project.slug.current}`}
         aria-label={`${name} — view project`}
