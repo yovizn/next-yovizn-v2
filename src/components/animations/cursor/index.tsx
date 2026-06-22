@@ -1,6 +1,7 @@
 'use client'
 
-import { motion, useMotionValue } from 'motion/react'
+import { motion, useMotionValue, useReducedMotion } from 'motion/react'
+import { cancelFrame, frame } from 'motion'
 import { useCallback, useEffect, useRef } from 'react'
 
 import { useCursor } from '@/hooks/stores/useCursor.hook'
@@ -9,7 +10,6 @@ import { easing } from '@/lib/constants/animation.constant'
 import { lerp } from '@/lib/utils/math'
 
 export function Cursor() {
-  const rafId = useRef(0)
   const mouse = useRef({ x: 0, y: 0 })
   const position = useRef({ x: 0, y: 0 })
   const positionChildren = useRef({ x: 0, y: 0 })
@@ -23,26 +23,32 @@ export function Cursor() {
   }
   const { page } = usePageTransition()
   const { cursor } = useCursor()
+  const isReduceMotion = useReducedMotion()
 
   const render = useCallback(() => {
     const { current: pos } = position
     const { current: posChildren } = positionChildren
     const { current: m } = mouse
 
-    pos.x = lerp(pos.x, m.x, 0.075)
-    pos.y = lerp(pos.y, m.y, 0.075)
+    // Reduced motion: snap to the pointer (factor 1) instead of trailing-lerp.
+    const lead = isReduceMotion ? 1 : 0.075
+    const trail = isReduceMotion ? 1 : 0.04
+
+    pos.x = lerp(pos.x, m.x, lead)
+    pos.y = lerp(pos.y, m.y, lead)
     smoothCursor.x.set(pos.x - cursor.size.width / 2)
     smoothCursor.y.set(pos.y - cursor.size.height / 2)
 
-    posChildren.x = lerp(posChildren.x, m.x, 0.04)
-    posChildren.y = lerp(posChildren.y, m.y, 0.04)
+    posChildren.x = lerp(posChildren.x, m.x, trail)
+    posChildren.y = lerp(posChildren.y, m.y, trail)
     smoothCursorChildren.x.set(posChildren.x - cursor.size.width / 2)
     smoothCursorChildren.y.set(posChildren.y - cursor.size.height / 2)
-
-    rafId.current = requestAnimationFrame(render)
+    // No self-reschedule — frame.update(render, true) keeps this on Motion's
+    // single shared frame loop (the same one that drives Lenis). SINGLE-RAF rule.
   }, [
     cursor.size.height,
     cursor.size.width,
+    isReduceMotion,
     smoothCursor.x,
     smoothCursor.y,
     smoothCursorChildren.x,
@@ -50,16 +56,20 @@ export function Cursor() {
   ])
 
   useEffect(() => {
+    // No mouse to track on coarse pointers — skip the loop entirely.
+    // (The element is also CSS-hidden in globals.css; this stops wasted work.)
+    if (!window.matchMedia('(pointer: fine)').matches) return
+
     const handleMouseMove = ({ clientX, clientY }: MouseEvent) => {
       mouse.current = { x: clientX, y: clientY }
     }
 
     window.addEventListener('mousemove', handleMouseMove)
-    rafId.current = requestAnimationFrame(render)
+    frame.update(render, true)
 
     return () => {
       window.removeEventListener('mousemove', handleMouseMove)
-      cancelAnimationFrame(rafId.current)
+      cancelFrame(render)
     }
   }, [render])
 
@@ -70,7 +80,7 @@ export function Cursor() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: page.isTransitionComplete ? 1 : 0 }}
-      className="pointer-events-none fixed top-0 left-0 z-50 h-screen w-full"
+      className="cursor-root pointer-events-none fixed top-0 left-0 z-50 h-screen w-full"
     >
       <motion.div style={{ x: smoothCursor.x, y: smoothCursor.y }} className="absolute size-fit z-20">
         <motion.div

@@ -1,27 +1,44 @@
-import { TextBlur } from '@/components/animations/text/blur.text'
-import { ArrowUpLeft } from 'lucide-react'
-import { ExperienceDetail } from './experience-detail.view'
+import { KineticText } from '@/components/animations/text/kinetic.text'
+import { ExperienceList } from './experience-detail.view'
 
+/**
+ * CUE · EXPERIENCE
+ *
+ * Typed timeline from experience.constant.ts — a genuine chronological sequence,
+ * so numbered cues carry real ordering information (honest numbering per the brief).
+ * Section header = h2; KineticText is aria-hidden with sr-only companion.
+ * ExperienceList renders entries with scrollReveal on each row.
+ */
 export function Experience() {
   return (
-    <div className="grid grid-cols-4 gap-px lg:grid-cols-6 xl:grid-cols-8">
-      <section id="experience" className="col-span-full grid grid-cols-subgrid gap-px">
-        <div className="relative z-20 col-span-full grid w-full grid-cols-subgrid gap-px">
-          <div className="bg-background clamp-[px,4,5] col-span-2 grid gap-px py-5 lg:col-span-3 xl:col-span-4">
-            <span className="sr-only">Arrow Up Icon</span>
-            <ArrowUpLeft aria-hidden className="clamp-[size,2rem,8rem]" />
+    <section aria-labelledby="experience-heading" className="col-span-full">
+      {/* CUE · EXPERIENCE eyebrow */}
+      <p
+        className="font-data text-paper-dim px-6 pt-16 pb-4 text-[11px] tracking-[0.12em] uppercase lg:px-10"
+        aria-hidden
+      >
+        CUE &nbsp;·&nbsp; EXPERIENCE
+      </p>
+
+      {/* Section header: KineticText + sr-only h2 companion */}
+      <h2 id="experience-heading" className="sr-only">
+        Experience
+      </h2>
+
+      <div className="bg-graphite-2 border-graphite-2 border-t">
+        <div className="px-6 py-12 lg:px-10 lg:py-16">
+          <div aria-hidden className="mb-10">
+            <KineticText
+              text="Experience"
+              by="char"
+              stagger={0.04}
+              className="font-nohemi text-paper clamp-[text,3xl,7xl] leading-none font-bold"
+            />
           </div>
 
-          <div className="bg-background clamp-[px,4,5] col-span-2 grid gap-px py-5 lg:col-span-3 xl:col-span-4">
-            <h3 className="font-helvetica clamp-[text,2xl,9xl] justify-self-end leading-none font-bold lg:tracking-tighter">
-              <span className="sr-only">This is my experience</span>
-              <TextBlur text="Experience" direction="left" />
-            </h3>
-          </div>
+          <ExperienceList />
         </div>
-
-        <ExperienceDetail />
-      </section>
-    </div>
+      </div>
+    </section>
   )
 }

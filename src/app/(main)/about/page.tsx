@@ -1,23 +1,42 @@
-import { TextReveal } from '@/components/animations/text/reveal.text'
+import type { Metadata } from 'next'
+
+import JsonLd from '@/components/common/json-ld'
+import { buildPersonGraph } from '@/lib/seo/structured-data'
+import { AboutContact } from '@/module/about/views/contact.view'
 import { Experience } from '@/module/about/views/experience.view'
-import { HeroImage, HeroSection } from '@/module/about/views/hero.view'
+import { AboutProfile } from '@/module/about/views/hero.view'
+
+// ISR: hourly regeneration so Sanity edits go live without a redeploy. See page.tsx.
+export const revalidate = 3600
+
+export const metadata: Metadata = {
+  title: 'About',
+  description:
+    'About Yovi Zulkarnaen — a frontend developer specializing in web animation, micro-interactions, and performant interfaces built with Motion.',
+  alternates: {
+    canonical: '/about',
+  },
+  openGraph: {
+    title: 'About — yovizn',
+    description:
+      'About Yovi Zulkarnaen — a frontend developer specializing in web animation, micro-interactions, and performant interfaces built with Motion.',
+  },
+}
 
 export default function AboutPage() {
   return (
-    <main style={{ perspective: '1000px', perspectiveOrigin: 'center' }}>
-      <HeroImage />
+    <main className="bg-graphite text-paper min-h-screen">
+      {/* Phase 0 SEO — MUST-PRESERVE: Person + WebSite @graph JSON-LD */}
+      <JsonLd data={buildPersonGraph()} />
 
-      <section className="text-background bg-foreground flex items-center justify-center py-40">
-        <h1 className="text-fixed font-helvetica flex flex-col items-end uppercase">
-          <span className="sr-only">Hello I&apos;m Yovi, and this is about me.</span>
-          <TextReveal text="About" />
-          <TextReveal text="Me?" />
-        </h1>
-      </section>
+      {/* CUE · PROFILE — portrait (useParallax) + kinetic intro */}
+      <AboutProfile />
 
-      <HeroSection />
-
+      {/* CUE · EXPERIENCE — typed timeline, honest chronological sequence */}
       <Experience />
+
+      {/* CUE · CONTACT — mono mailto CTA */}
+      <AboutContact />
     </main>
   )
 }

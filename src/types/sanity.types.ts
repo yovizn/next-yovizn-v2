@@ -12,7 +12,9 @@
  * ---------------------------------------------------------------------------------
  */
 
-// Source: schema.json
+export declare const internalGroqTypeReferenceTo: unique symbol
+
+// Source: src/sanity/sanity-schemas.json
 export type SanityImagePaletteSwatch = {
   _type: 'sanity.imagePaletteSwatch'
   background?: string
@@ -283,8 +285,8 @@ export type AllSanitySchemaTypes =
   | SanityImageAsset
   | SanityAssetSourceData
   | SanityImageMetadata
-export declare const internalGroqTypeReferenceTo: unique symbol
-// Source: ./src/sanity/queries.ts
+
+// Source: src/sanity/queries.ts
 // Variable: queryClientsView
 // Query: *[_type == "clientsView"][0]{        clients[]->{            name,            logo,            link        }    }
 export type QueryClientsViewResult = {
@@ -306,6 +308,8 @@ export type QueryClientsViewResult = {
     link: string | null
   }> | null
 } | null
+
+// Source: src/sanity/queries.ts
 // Variable: queryProjectsOverview
 // Query: *[_type == 'projects'][0...4] | order(date desc){        slug,        cover,    }
 export type QueryProjectsOverviewResult = Array<{
@@ -324,6 +328,8 @@ export type QueryProjectsOverviewResult = Array<{
     _type: 'imageAlt'
   }
 }>
+
+// Source: src/sanity/queries.ts
 // Variable: queryProjectsAll
 // Query: *[_type == 'projects'] | order(date desc){        slug,        cover,        title,        service,        date,        _updatedAt,        _createdAt,    }
 export type QueryProjectsAllResult = Array<{
@@ -347,8 +353,10 @@ export type QueryProjectsAllResult = Array<{
   _updatedAt: string
   _createdAt: string
 }>
+
+// Source: src/sanity/queries.ts
 // Variable: queryProjectsBySlug
-// Query: *[_type == 'projects' && slug.current == $slug][0]{        ...,        client->{            logo,            link        },    }
+// Query: *[_type == 'projects' && slug.current == $slug][0]{        ...,        client->{            name,            logo,            link        },    }
 export type QueryProjectsBySlugResult = {
   _id: string
   _type: 'projects'
@@ -375,6 +383,7 @@ export type QueryProjectsBySlugResult = {
   service: string
   credits?: Array<string>
   client: {
+    name: string
     logo: {
       asset?: {
         _ref: string
@@ -419,6 +428,6 @@ declare module '@sanity/client' {
     '*[_type == "clientsView"][0]{\n        clients[]->{\n            name,\n            logo,\n            link\n        }\n    }': QueryClientsViewResult
     "*[_type == 'projects'][0...4] | order(date desc){\n        slug,\n        cover,\n    }": QueryProjectsOverviewResult
     "*[_type == 'projects'] | order(date desc){\n        slug,\n        cover,\n        title,\n        service,\n        date,\n        _updatedAt,\n        _createdAt,\n    }": QueryProjectsAllResult
-    "*[_type == 'projects' && slug.current == $slug][0]{\n        ...,\n        client->{\n            logo,\n            link\n        },\n    }": QueryProjectsBySlugResult
+    "*[_type == 'projects' && slug.current == $slug][0]{\n        ...,\n        client->{\n            name,\n            logo,\n            link\n        },\n    }": QueryProjectsBySlugResult
   }
 }

@@ -1,77 +1,100 @@
-import { ViewCursor, ViewCursorTrigger } from '@/components/animations/cursor/view.cursor'
-import { TextBlur } from '@/components/animations/text/blur.text'
+'use client'
+
+/**
+ * CUE 04 — Selected Work
+ *
+ * ProjectCard: each card is its own component so CoverDisplace's useMotionValue
+ * calls happen at component mount (one per card), not inside a map callback.
+ * This satisfies the "create MotionValues at component mount, NOT inside a map"
+ * requirement.
+ *
+ * Grayscale decision: REMOVED from the Image className.
+ * Rationale: The WebGLIsland canvas is always opaque and full-color at idle
+ * (uHover=0). Keeping grayscale-100 only affects the no-JS / coarse-pointer /
+ * reduced-motion fallback image — it would create a visual inconsistency where
+ * capable devices see color and fallback devices see grayscale. Removing it
+ * makes both paths consistent: full-color static cover everywhere.
+ */
+
+import Image from 'next/image'
+import { CoverDisplace } from '@/components/webgl/cover-displace'
+import { KineticText } from '@/components/animations/text/kinetic.text'
+import { TLink } from '@/components/common/transitionLink'
 import { urlFor } from '@/sanity/lib/image'
 import { QueryProjectsOverviewResult } from '@/types/sanity.types'
-import { ArrowDown } from 'lucide-react'
-import Image from 'next/image'
+
+interface ProjectCardProps {
+  project: QueryProjectsOverviewResult[number]
+}
+
+function ProjectCard({ project }: ProjectCardProps) {
+  const src = urlFor(project.cover).width(1200).auto('format').url()
+  // The card is an image-only link; name it by the project (derived from the
+  // slug — the overview query omits `title`) so its accessible name announces
+  // the destination, not the cover's image description. (WCAG 2.4.4)
+  const name = project.slug.current.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+
+  return (
+    <li className="bg-graphite-2 relative aspect-video overflow-clip lg:last:odd:col-span-2 lg:last:odd:aspect-21/9">
+      <TLink
+        href={`/projects/${project.slug.current}`}
+        aria-label={`${name} — view project`}
+        className="group block size-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-signal"
+      >
+        <CoverDisplace src={src} className="size-full">
+          <Image
+            fill
+            src={src}
+            alt={project.cover.alt}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+          />
+        </CoverDisplace>
+      </TLink>
+    </li>
+  )
+}
 
 export function Projects({ data }: { data: QueryProjectsOverviewResult }) {
   return (
-    <section className="col-span-full grid grid-cols-subgrid gap-px">
-      <div className="col-span-full row-span-1 grid grid-cols-8 gap-px">
-        {Array.from({ length: 8 }).map((_, index) => {
-          return (
-            <div key={index} className="bg-background grid aspect-square place-content-center" />
-          )
-        })}
+    <section
+      aria-labelledby="projects-heading"
+      // KEEP IN SYNC with the eyebrow below — TransportRail scroll-spies data-cue.
+      data-cue="CUE 04 · SELECTED WORK"
+      className="col-span-full"
+    >
+      {/* CUE 04 eyebrow — mirrors data-cue on the <section> (TransportRail reads it) */}
+      <p
+        className="font-data text-paper-dim px-6 pt-16 pb-4 text-[11px] tracking-[0.12em] uppercase lg:px-10"
+        aria-hidden
+      >
+        CUE 04 &nbsp;·&nbsp; SELECTED WORK
+      </p>
+
+      {/* Section header: sr-only first, KineticText second (a11y requirement) */}
+      <h2 id="projects-heading" className="sr-only">
+        Selected Work
+      </h2>
+      <div aria-hidden className="px-6 pb-8 lg:px-10">
+        <KineticText
+          text="Selected Work"
+          by="word"
+          stagger={0.06}
+          className="font-nohemi text-paper clamp-[text,3xl,7xl] leading-none font-bold uppercase"
+        />
       </div>
 
-      <div className="relative z-20 col-span-full grid aspect-[8/calc(200/180)] w-full grid-cols-4 gap-px">
-        <h3 className="sr-only">Here&apos;s my recent projects</h3>
-
-        <div
-          aria-hidden
-          className="bg-background z-20 col-span-1 grid place-content-end p-1 sm:p-4"
-        ></div>
-
-        <div
-          aria-hidden
-          className="bg-background before:bg-foreground relative z-10 col-span-2 flex flex-col justify-center p-4 before:absolute before:bottom-0 before:left-0 before:h-full before:w-1 before:content-[''] sm:items-center"
-        >
-          <TextBlur
-            text="Recent"
-            className="clamp-[text,xl,2xl] font-sans leading-none font-bold uppercase"
-          />
-
-          <TextBlur
-            text="Projects"
-            className="clamp-[text,3xl,7xl] font-sans leading-none font-bold uppercase"
-          />
-        </div>
-
-        <div
-          aria-hidden
-          className="bg-background z-20 col-span-1 grid place-content-end p-1 sm:p-4"
-        >
-          <ArrowDown className="clamp-[size,1rem,3rem]" />
-        </div>
-      </div>
-      <div className="bg-background sticky top-0 z-20 col-span-full h-24"></div>
-
-      <ViewCursor as="ul" className="col-span-full grid gap-px lg:grid-cols-2">
-        {data.map((project) => {
-          return (
-            <li
-              key={project.slug.current}
-              className="bg-background relative aspect-video overflow-clip"
-            >
-              <ViewCursorTrigger
-                key={project.slug.current}
-                href={`/projects/${project.slug.current}`}
-                className="size-full"
-              >
-                <Image
-                  fill
-                  src={urlFor(project.cover).url()}
-                  alt={project.cover.alt}
-                  sizes="(max-width: 640px) 640px,(max-width: 1024px) 1024px,(max-width: 1280px) 1280px, 100vw"
-                  className="size-full object-cover grayscale-100"
-                />
-              </ViewCursorTrigger>
-            </li>
-          )
-        })}
-      </ViewCursor>
+      {/* Project grid */}
+      <ul className="border-graphite-2 grid gap-px border-t lg:grid-cols-2">
+        {data.length > 0 ? (
+          data.map((project) => <ProjectCard key={project.slug.current} project={project} />)
+        ) : (
+          // Empty-state: never leave the heading dangling over a bare border.
+          <li className="bg-graphite-2 text-paper-dim font-data flex aspect-video items-center justify-center px-6 text-center text-sm tracking-[0.12em] uppercase lg:col-span-2">
+            Selected work coming soon.
+          </li>
+        )}
+      </ul>
     </section>
   )
 }

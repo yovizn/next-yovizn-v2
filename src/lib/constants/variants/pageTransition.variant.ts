@@ -15,6 +15,6 @@ export const pageTransitionOverlayVariant: Variants = {
   },
   exit: {
     opacity: 0,
-    transition: { duration: duration.short, ease: easing.inOut, type: 'linear' },
+    transition: { duration: duration.short, ease: easing.inOut },
   },
 }

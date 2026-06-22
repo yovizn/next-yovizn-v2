@@ -44,7 +44,6 @@ export const menuLinkVariant: Variants = {
     opacity: 0,
     transform: 'translate3d(0px, -140px, 0px)',
     transition: {
-      type: 'linear',
       duration: duration.medium,
       ease: easing.out,
     },

@@ -1,82 +1,121 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
-import { useState } from 'react'
+/**
+ * ExperienceList
+ *
+ * Honest timeline from experience.constant.ts (React/Next/TS/CMS/Three/WebGL).
+ * Ordinal indices (01..N) reflect real ordering — oldest exposure first — per brief.
+ * Float values (e.g. 3.2) + "year"/"years" suffix in font-data mono readout.
+ * Each row scrollReveal-s in via Li stagger (no fabricated dates — the constant
+ * has no dates, only years-of-experience floats; index IS the ordering info).
+ *
+ * Signal line separates rows. Active state = --signal border-left accent (line only).
+ */
 
-import { Li } from '@/components/animations/li.animation'
-import { Button } from '@/components/ui/button'
-import { TextReveal } from '@/components/animations/text/reveal.text'
-import { SlidingNumber } from '@/components/animations/number/slidingNumber'
+import { motion, useInView, useReducedMotion } from 'motion/react'
+import { useRef } from 'react'
 
+import { cn } from '@/lib/utils/cn'
+import { duration, easing } from '@/lib/constants/animation.constant'
 import { experiences } from '@/lib/constants/experience.constant'
-import { mountAnim, TRANSITION } from '@/lib/constants/animation.constant'
-import { yearVariant } from '@/lib/constants/variants/about.variant'
 
-export function ExperienceDetail() {
-  const [value, setValue] = useState(experiences[0].value)
+function ExperienceRow({
+  index,
+  label,
+  value,
+}: {
+  index: number
+  label: string
+  value: number
+}) {
+  const ref = useRef<HTMLLIElement>(null)
+  const isInView = useInView(ref, { amount: 0.5, once: true })
+  const prefersReduced = useReducedMotion()
+
+  const ordinal = String(index + 1).padStart(2, '0')
+  const suffix = value > 1 ? 'years' : 'year'
 
   return (
-    <div className="col-span-full grid grid-cols-1 gap-px lg:grid-cols-8">
-      <div className="clamp-[pt,20,24] bg-background clamp-[px,4,5] clamp-[pb,4,5] grid lg:col-span-4">
-        <span className="clamp-[text,6xl,15rem] font-nohemi flex w-fit justify-self-end leading-none font-bold">
-          <SlidingNumber value={value} decimal />
-          <span
-            className="clamp-[text,base,4rem] clamp-[w,20,50] block leading-none capitalize"
-            style={{ clipPath: 'inset(0 0 0 0)' }}
-          >
-            <AnimatePresence initial={false} mode="popLayout">
-              {value > 1 && (
-                <motion.span
-                  key="years"
-                  layoutId="years"
-                  {...mountAnim(yearVariant)}
-                  transition={TRANSITION}
-                  className="block"
-                >
-                  years
-                </motion.span>
-              )}
+    <li
+      ref={ref}
+      className="border-graphite group relative flex items-center justify-between gap-6 border-t py-5 first:border-t-0"
+    >
+      {/* Signal left-edge accent line — appears on viewport entry */}
+      <motion.div
+        aria-hidden
+        className="bg-signal absolute left-0 top-0 h-full w-px"
+        initial={{ scaleY: 0, transformOrigin: 'top' }}
+        animate={
+          isInView && !prefersReduced
+            ? { scaleY: 1, transition: { duration: duration.long, ease: easing.out } }
+            : prefersReduced
+              ? { scaleY: 1 }
+              : { scaleY: 0 }
+        }
+      />
 
-              {value <= 1 && (
-                <motion.span
-                  key="year"
-                  layoutId="year"
-                  {...mountAnim(yearVariant)}
-                  transition={TRANSITION}
-                  className="block"
-                >
-                  year
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </span>
+      {/* Row content */}
+      <motion.div
+        className="flex items-baseline gap-5"
+        initial={{ opacity: prefersReduced ? 1 : 0, x: prefersReduced ? 0 : 24 }}
+        animate={
+          isInView
+            ? {
+                opacity: 1,
+                x: 0,
+                transition: {
+                  opacity: { duration: duration.medium, delay: 0.08, ease: easing.out },
+                  x: { duration: duration.long, delay: 0.08, ease: easing.out },
+                },
+              }
+            : prefersReduced
+              ? { opacity: 1, x: 0 }
+              : { opacity: 0, x: 24 }
+        }
+      >
+        {/* Ordinal index — honest sequence, not decoration */}
+        <span
+          className="font-data text-paper-dim w-7 shrink-0 text-[11px] tracking-[0.1em]"
+          aria-hidden
+        >
+          {ordinal}
         </span>
-      </div>
 
-      <div className="grid grid-cols-subgrid gap-px lg:col-span-4">
-        <ul className="col-span-full grid grid-cols-subgrid gap-px">
-          {experiences.map((exp) => {
-            return (
-              <Li
-                key={exp.label}
-                className="bg-background col-span-full h-full w-full px-4 outline-none"
-              >
-                <Button
-                  name={exp.label}
-                  onClick={() => setValue(exp.value)}
-                  className="h-full justify-start py-3 lg:w-full"
-                >
-                  <span className="sr-only">{exp.label}</span>
-                  <TextReveal
-                    text={'— ' + exp.label}
-                    className={{ text: 'clamp-[text,base,xl] font-nohemi uppercase' }}
-                  />
-                </Button>
-              </Li>
-            )
-          })}
-        </ul>
-      </div>
-    </div>
+        {/* Skill label */}
+        <span className="font-nohemi text-paper clamp-[text,lg,3xl] font-bold uppercase leading-none">
+          {label}
+        </span>
+      </motion.div>
+
+      {/* Duration readout — mono, right-aligned */}
+      <motion.div
+        className="font-data text-paper-dim flex shrink-0 items-baseline gap-1 text-right"
+        initial={{ opacity: prefersReduced ? 1 : 0 }}
+        animate={
+          isInView
+            ? {
+                opacity: 1,
+                transition: { duration: duration.medium, delay: 0.15, ease: easing.out },
+              }
+            : prefersReduced
+              ? { opacity: 1 }
+              : { opacity: 0 }
+        }
+        aria-label={`${value} ${suffix}`}
+      >
+        <span className="text-paper clamp-[text,base,xl] font-semibold">{value}</span>
+        <span className="text-[11px] tracking-[0.1em] uppercase">{suffix}</span>
+      </motion.div>
+    </li>
+  )
+}
+
+export function ExperienceList() {
+  return (
+    <ul className={cn('w-full')} aria-label="Skills and experience timeline">
+      {experiences.map((exp, idx) => (
+        <ExperienceRow key={exp.label} index={idx} label={exp.label} value={exp.value} />
+      ))}
+    </ul>
   )
 }

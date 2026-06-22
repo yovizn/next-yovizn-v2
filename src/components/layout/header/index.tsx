@@ -9,7 +9,7 @@ export function Header() {
   return (
     <>
       <header className="fixed top-0 left-0 z-40 h-24 w-full mix-blend-difference">
-        <div className="flex size-full items-center justify-between px-4">
+        <div className="flex size-full items-center justify-between px-4 lg:px-16">
           <TLink className="relative z-40 flex items-center justify-center" href="/">
             <LogoHeader className="text-foreground size-12 md:size-16" />
           </TLink>

@@ -11,7 +11,7 @@ import { useMenu } from '@/hooks/stores/useMenu.hook'
 import { duration, easing, mountAnim } from '@/lib/constants/animation.constant'
 import { links } from '@/lib/constants/link.constant'
 
-import BlackOne from '@public/images/black-one.jpg'
+import BlackTwo from '@public/images/black-two.webp'
 import {
   menuDividerVariant,
   menuImageVariant,
@@ -23,14 +23,16 @@ import { socials } from '@/lib/constants/social.constant'
 import { GAnchor } from '@/components/common/googleAnchor'
 import { Li } from '@/components/animations/li.animation'
 
+// Hoisted out of render: motion.create() must run once, not per-render — inside
+// the component it rebuilt the wrapper every render (remounting the image).
+const MImage = motion.create(Image)
+
 export function Menu() {
   const navRef = useRef<HTMLDivElement>(null)
   const { menu, setMenu } = useMenu()
   const pathname = usePathname()
   const isReduceMotion = useReducedMotion()
   const isDesktop = useMatchMedia(640, 'min')
-
-  const MImage = motion.create(Image)
 
   useEffect(() => {
     setMenu({ isOpen: false })
@@ -47,10 +49,20 @@ export function Menu() {
     return () => window.removeEventListener('click', handleClick)
   }, [])
 
+  // Keyboard dismiss: Escape closes the open drawer (modal nav needs Esc).
+  useEffect(() => {
+    if (!menu.isOpen) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMenu({ isOpen: false })
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [menu.isOpen, setMenu])
+
   return (
     <AnimatePresence mode="wait" initial={!isReduceMotion}>
       {menu.isOpen && (
-        <nav ref={navRef} className="fixed top-0 left-0 isolate z-30 h-dvh w-full lg:h-[412px]">
+        <nav id="primary-menu" ref={navRef} className="fixed top-0 left-0 isolate z-30 h-dvh w-full lg:h-[412px]">
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{
@@ -58,7 +70,7 @@ export function Menu() {
               scaleX: 1,
               transition: { duration: duration.short, delay: duration.short, ease: easing.in },
             }}
-            exit={{ opacity: 0, scaleX: 0, transition: { duration: 0.1, type: 'linear' } }}
+            exit={{ opacity: 0, scaleX: 0, transition: { duration: 0.1, ease: 'linear' } }}
             className="bg-background/20 absolute bottom-0 left-0 z-10 hidden h-px w-full origin-left lg:block"
           />
           <motion.div
@@ -70,13 +82,14 @@ export function Menu() {
             {isDesktop && (
               <MImage
                 key="menu-image"
-                src={BlackOne}
-                alt="Image Black One by Josh Nuttall"
+                src={BlackTwo}
+                alt=""
                 width={640}
                 height={400}
                 sizes="(max-width: 640px) 10vw, 500px"
+                priority
                 {...(!isReduceMotion ? mountAnim(menuImageVariant) : {})}
-                className="relative z-10 aspect-video h-auto w-auto rounded-xs object-cover sm:h-full"
+                className="relative z-10 aspect-video h-auto w-auto rounded-xs object-cover ml-10 sm:h-full"
               />
             )}
 

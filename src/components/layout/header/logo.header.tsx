@@ -4,19 +4,21 @@ export function LogoHeader({ className }: { className?: string }) {
   return (
     <svg
       id="b"
+      role="img"
+      aria-label="Yovi Zulkarnaen, home"
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
       viewBox="0 0 1000 1000"
       className={cn('group', className)}
     >
-      <g id="c" className="origin-center transition-all duration-500 group-hover:rotate-60">
+      <g id="c" className="origin-center [transform-box:fill-box] transition-transform duration-500 group-hover:rotate-60">
         <g>
           <rect width="1000" height="1000" fill="none" opacity="0" strokeWidth="0" />
           <polygon
             points="395.46 828.6 696.03 308 94.89 308 395.46 828.6"
             fill="currentColor"
             strokeWidth="20"
-            className="stroke-foreground transition-all duration-300 group-hover:fill-transparent"
+            className="stroke-foreground transition-[fill] duration-300 group-hover:fill-transparent"
           />
           <rect
             x="717.6"

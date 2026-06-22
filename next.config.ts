@@ -1,13 +1,18 @@
 import type { NextConfig } from 'next'
 
 const nextConfig: NextConfig = {
+  // React Compiler (Next 16 top-level, needs babel-plugin-react-compiler).
+  // EXPERIMENTAL TRIAL on beta-v3.0.0 — auto-memoizes components. Adds a Babel
+  // pass (slower build/dev). Verify the imperative WebGL/Motion surfaces before
+  // keeping; switch to { compilationMode: 'annotation' } to opt-in per-component.
+  reactCompiler: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'cdn.sanity.io',
-      },
-    ],
+    // Custom loader: serve Sanity images directly from Sanity's CDN (already
+    // optimized) instead of round-tripping through Next's optimizer. See
+    // src/sanity/image-loader.ts. (remotePatterns/formats/minimumCacheTTL only
+    // applied to the built-in optimizer, which this replaces, so they're dropped.)
+    loader: 'custom',
+    loaderFile: './src/sanity/image-loader.ts',
   },
   webpack(config) {
     const svgr = {
@@ -21,7 +26,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     rules: {
       '*.svg': {
-        loaders: ['@svgr/webpack'],
+        loaders: [{ loader: '@svgr/webpack', options: { icon: true } }],
         as: '*.js',
       },
     },

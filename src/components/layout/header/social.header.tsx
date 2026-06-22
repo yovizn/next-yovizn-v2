@@ -26,7 +26,7 @@ export function SocialHeader() {
           }}
           exit={{
             opacity: 0,
-            transition: { duration: 0.1, type: 'linear' },
+            transition: { duration: 0.1, ease: 'linear' },
           }}
           className="hidden w-fit items-center gap-4 sm:flex"
         >
@@ -35,7 +35,7 @@ export function SocialHeader() {
               <GAnchor
                 href={social.href}
                 target="_blank"
-                className="outline-foreground block font-light uppercase outline focus-within:outline"
+                className="block font-light uppercase"
               >
                 {social.name === 'Email' ? 'Contact' : social.name}
               </GAnchor>

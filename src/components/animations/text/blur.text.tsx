@@ -15,6 +15,7 @@ export function TextBlur({
   distance = 0.25,
   className,
   once = true,
+  scrollReveal = false,
 }: {
   text: string
   delay?: number
@@ -22,6 +23,8 @@ export function TextBlur({
   distance?: number
   className?: string
   once?: boolean
+  /** Fire on viewport entry alone, skipping the page-transition gate. Default false. */
+  scrollReveal?: boolean
 }) {
   const textRef = useRef(null)
   const isInView = useInView(textRef, { amount: 'all', once })
@@ -29,6 +32,10 @@ export function TextBlur({
   const {
     page: { isTransitionComplete },
   } = usePageTransition()
+
+  const triggered = isInView && (scrollReveal || isTransitionComplete)
+  // Reduced motion: render fully revealed immediately, no blur/translate motion.
+  const revealed = triggered || isReduceMotion
 
   const splitText = text.split('')
   const getDelay = (idx: number) => {
@@ -55,22 +62,17 @@ export function TextBlur({
               filter: !isReduceMotion ? 'blur(2px)' : 'blur(0px)',
               opacity: !isReduceMotion ? 0 : 1,
               translateZ: !isReduceMotion ? '-10px' : '0px',
-              translateX: !isReduceMotion
-                ? '0em'
-                : `${distance * (direction === 'left' ? -1 : 1)}em`,
+              translateX: '0em',
             }}
             animate={{
-              filter: isInView && isTransitionComplete ? 'blur(0px)' : 'blur(2px)',
-              opacity: isInView && isTransitionComplete ? 1 : 0,
-              translateZ: isInView && isTransitionComplete ? '0px' : '-10px',
-              translateX:
-                isInView && isTransitionComplete
-                  ? '0em'
-                  : `${distance * (direction === 'left' ? -1 : 1)}em`,
+              filter: revealed ? 'blur(0px)' : 'blur(2px)',
+              opacity: revealed ? 1 : 0,
+              translateZ: revealed ? '0px' : '-10px',
+              translateX: revealed ? '0em' : `${distance * (direction === 'left' ? -1 : 1)}em`,
               transition: {
                 translateX: { duration: duration.medium + 0.45, delay: getDelay(idx), ease },
                 translateZ: { duration: duration.long + 0.45, delay: getDelay(idx), ease },
-                opacity: { duration: 1.5, delay: getDelay(idx), easing: easing.out },
+                opacity: { duration: 1.5, delay: getDelay(idx), ease: easing.out },
                 filter: { duration: 1, delay: getDelay(idx), ease: easing.out },
               },
             }}

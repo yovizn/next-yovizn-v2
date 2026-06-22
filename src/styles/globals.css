@@ -12,6 +12,14 @@
   --secondary: 0.69 0.0341 73.36;
 
   --font-sz: clamp(2rem, 8vw + 1rem, 10rem);
+
+  /* TRANSPORT palette — additive, do not rebind --background/--foreground */
+  --graphite: #17151A;
+  --graphite-2: #211E25;
+  --paper: #F2EDE4;
+  --paper-dim: #9A958C;
+  --signal: #FF6A3D;
+  --phosphor: #C7F7E9;
 }
 
 @theme inline {
@@ -21,8 +29,17 @@
   --color-primary: oklch(var(--primary));
   --color-secondary: oklch(var(--secondary));
 
+  /* TRANSPORT color utilities */
+  --color-graphite: var(--graphite);
+  --color-graphite-2: var(--graphite-2);
+  --color-paper: var(--paper);
+  --color-paper-dim: var(--paper-dim);
+  --color-signal: var(--signal);
+  --color-phosphor: var(--phosphor);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-data: var(--font-geist-mono);
   --font-nohemi: var(--font-nohemi);
   --font-helvetica: var(--font-helvetica);
 }
@@ -71,6 +88,27 @@
   code {
     font-family: var(--font-mono);
   }
+
+  /* Designed keyboard focus ring — the dark graphite theme washes out the UA
+     default outline, so keyboard users couldn't see focus. Keyboard-only via
+     :focus-visible, in the signal accent. (Cards inside overflow-clip set their
+     own inset ring since an outer outline would be clipped.) */
+  :focus-visible {
+    outline: 2px solid var(--signal);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  /* Mobile interaction polish: drop the 300ms double-tap-zoom delay and the
+     grey tap-flash on our custom-styled interactive elements. */
+  a,
+  button,
+  [role='button'],
+  summary,
+  label {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
 }
 
 @layer utilities {
@@ -95,5 +133,50 @@
 
   .about-clip {
     clip-path: inset(calc(var(--nav) + var(--font-size) + 15vh) 0 0 0);
+  }
+
+  /* Custom cursor is always rendered (no hydration mismatch) but hidden
+     on coarse-pointer / no-hover devices where there is no mouse to
+     augment. This replaces the former server `headers()` device gate. */
+  @media (pointer: coarse), (hover: none) {
+    .cursor-root {
+      display: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@layer utilities {
+  .scroll-progress-bar {
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+}
+
+@supports (animation-timeline: scroll()) {
+  @keyframes scroll-progress-grow {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+  .scroll-progress-bar--css {
+    animation: scroll-progress-grow linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-progress-bar,
+  .scroll-progress-bar--css {
+    display: none !important;
   }
 }

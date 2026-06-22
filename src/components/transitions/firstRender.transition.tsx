@@ -1,10 +1,9 @@
 'use client'
 
 import { AnimatePresence, motion } from 'motion/react'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useScrollControl } from '@/hooks/useScrollControl.hook'
-import { usePageTransition } from '@/hooks/stores/usePage.hook'
 import { useFirstRender } from '@/hooks/useFirstRender.hook'
 import {
   firstRenderVariant,
@@ -13,23 +12,22 @@ import {
 } from '@/lib/constants/variants/firstRender.variant'
 import { mountAnim } from '@/lib/constants/animation.constant'
 
-interface FirstRenderTransitionProps {
-  isFirstRender: boolean
-}
-
-export function FirstRenderTransition({ isFirstRender }: FirstRenderTransitionProps) {
-  const [isTransitionDone, setIsTransitionDone] = useState(isFirstRender)
-  const { setPageTransition } = usePageTransition()
+export function FirstRenderTransition() {
+  // Default `true` = skip intro (fail-safe for repeat visits). The
+  // cookie is read post-hydration inside useFirstRender, which flips
+  // this to `false` (play) only on a genuine first visit.
+  const [isTransitionDone, setIsTransitionDone] = useState(true)
+  const completedRef = useRef(false)
 
   useScrollControl(isTransitionDone)
-  useFirstRender(isFirstRender, setIsTransitionDone)
+  const { completeFirstRender } = useFirstRender(setIsTransitionDone)
 
   return (
     <AnimatePresence mode="wait">
       {!isTransitionDone && (
         <motion.div
           {...mountAnim(firstRenderVariant)}
-          className="bg-secondary fixed top-0 left-0 z-100 flex h-dvh w-full items-center justify-center overflow-clip"
+          className="bg-graphite fixed top-0 left-0 z-100 flex h-dvh w-full items-center justify-center overflow-clip"
         >
           <svg
             id="b"
@@ -44,7 +42,7 @@ export function FirstRenderTransition({ isFirstRender }: FirstRenderTransitionPr
                   <motion.polygon
                     key="triangle"
                     points="395.46 828.6 696.03 308 94.89 308 395.46 828.6"
-                    className="fill-foreground stroke-foreground stroke-3"
+                    className="fill-paper stroke-3"
                     {...mountAnim(polygonVariant)}
                   />
                   <motion.rect
@@ -53,10 +51,22 @@ export function FirstRenderTransition({ isFirstRender }: FirstRenderTransitionPr
                     y="162.83"
                     width="83.56"
                     height="438.15"
-                    className="fill-foreground stroke-foreground -rotate-150 stroke-3"
+                    className="fill-paper -rotate-150 stroke-3"
                     {...mountAnim(rectVariant)}
-                    onUpdate={(latest) => {
-                      if (latest.y === '-50%') setPageTransition({ isTransitionComplete: true })
+                    onAnimationComplete={(definition) => {
+                      // Drive completion from the ENTER (draw-in) finishing — NOT exit.
+                      // Gating on 'exit' deadlocks: a Motion `exit` variant only plays
+                      // once the element is removed from <AnimatePresence>, but the
+                      // element is only removed by completeFirstRender (isTransitionDone
+                      // → true), which here would only run after exit completes. Nothing
+                      // ever starts the exit, so the overlay hangs on the drawn mark.
+                      // Completing on 'enter' removes the overlay, which THEN plays the
+                      // exit variants (mark flies up + blur) as the leave animation.
+                      // One-shot guard against repeat callbacks.
+                      if (definition === 'enter' && !completedRef.current) {
+                        completedRef.current = true
+                        completeFirstRender()
+                      }
                     }}
                   />
                 </AnimatePresence>

@@ -1,106 +1,121 @@
 'use client'
 
-import { motion } from 'motion/react'
-import Image from 'next/image'
-import { useEffect } from 'react'
+/**
+ * CUE · INDEX — Projects reel
+ *
+ * Per-row CoverDisplace (option b) — each ProjectRow is its own component
+ * so CoverDisplace's useMotionValue calls happen at component mount
+ * (one per row), never inside a .map() callback.
+ *
+ * Cover-hover approach chosen: per-row <CoverDisplace> (option b).
+ * Rationale: reuses the shipped primitive as-is; no new swap-renderer code
+ * needed (cover-displace.tsx's own note flags that changing src on a single
+ * monitor-panel renderer tears down + rebuilds the canvas — that variant
+ * doesn't exist yet). With 4 projects the per-row cost is negligible.
+ * The design brief's monitor-panel is noted as the intended long-term form,
+ * but option (b) is the clean path given current primitives.
+ *
+ * Zero-JS: rows are TLink <a> anchors; Image is always rendered as the SSR
+ * static fallback inside CoverDisplace's children. Layout does not shift
+ * when WebGL activates (canvas overlays the Image, same slot).
+ */
 
+import Image from 'next/image'
+
+import { CoverDisplace } from '@/components/webgl/cover-displace'
 import { TLink } from '@/components/common/transitionLink'
-import { useCursor } from '@/hooks/stores/useCursor.hook'
-import { cn } from '@/lib/utils/cn'
 import { urlFor } from '@/sanity/lib/image'
 import { QueryProjectsAllResult } from '@/types/sanity.types'
 
-const size = {
-  width: 400,
-  height: 400,
+// ── Shared image sizes hint ───────────────────────────────────────────────────
+const COVER_SIZES = '(max-width: 640px) 160px, (max-width: 1024px) 220px, 280px'
+
+interface ProjectRowProps {
+  project: QueryProjectsAllResult[number]
+  index: number
 }
 
-export function ProjectsList({ data }: { data: QueryProjectsAllResult }) {
-  const { setCursor } = useCursor()
-
-  useEffect(() => {
-    setCursor({ size, children: <RenderCursor data={data} /> })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data])
+/**
+ * Single project row — owns its own <CoverDisplace> so MotionValues are
+ * created at component mount, not inside the parent's .map() callback.
+ */
+function ProjectRow({ project, index }: ProjectRowProps) {
+  const src = urlFor(project.cover).width(600).auto('format').url()
+  const idx = String(index + 1).padStart(2, '0')
 
   return (
-    <section className="col-span-full grid gap-px md:grid-cols-6">
-      <div className="bg-background col-span-1 hidden md:block"></div>
-
-      <div
-        className="col-span-4 grid grid-cols-subgrid gap-px"
-        onMouseLeave={() => setCursor({ isVisible: false })}
+    <li className="border-paper/10 border-t first:border-t-0">
+      <TLink
+        href={`/projects/${project.slug.current}`}
+        className="group flex items-center gap-4 px-6 py-6 transition-colors duration-300 hover:bg-graphite-2 lg:px-10 lg:py-8"
       >
-        {data.map((project, index) => {
-          return (
-            <TLink
-              href={`/projects/${project.slug.current}`}
-              key={project.slug.current}
-              onMouseOver={() => {
-                setCursor({ index, isVisible: true })
-              }}
-              className="col-span-full grid grid-cols-6 gap-px md:grid-cols-4"
-            >
-              {/* <div className="bg-background col-span-2 hidden md:block md:col-span-1 px-4 py-3 sm:py-10"></div> */}
-              <div className="bg-background before:bg-foreground font-helvetica clamp-[px,4,10] clamp-[py,6,12] relative col-span-4 font-medium before:absolute before:top-0 before:left-0 before:h-1/2 before:w-1 before:content-[''] md:col-span-3">
-                <span className="clamp-[text,sm,4xl] line-clamp-1">{project.title}</span>
-              </div>
-              <p className="bg-background clamp-[px,4,10] clamp-[py,6,12] col-span-2 md:col-span-1">
-                <span className="clamp-[text,xs,xl] line-clamp-1 leading-none md:line-clamp-none">
-                  {project.service}
-                </span>
-              </p>
-            </TLink>
-          )
-        })}
-      </div>
+        {/* Index — mono instrument readout */}
+        <span
+          className="font-data text-paper-dim w-8 shrink-0 text-[11px] leading-none tracking-[0.1em] select-none"
+          aria-hidden
+        >
+          {idx}
+        </span>
 
-      <div className="bg-background col-span-1 hidden md:block"></div>
-    </section>
+        {/* Project title */}
+        <span className="font-nohemi text-paper clamp-[text,xl,4xl] min-w-0 flex-1 leading-none font-bold uppercase tracking-tight">
+          {project.title}
+        </span>
+
+        {/* Service tag — mono instrument label */}
+        <span className="font-data text-paper-dim hidden shrink-0 text-[11px] tracking-[0.12em] uppercase md:block">
+          {project.service}
+        </span>
+
+        {/* Arrow affordance */}
+        <span
+          className="text-paper-dim group-hover:text-signal shrink-0 transition-colors duration-200"
+          aria-hidden
+        >
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+            <path
+              d="M4 16L16 4M16 4H8M16 4V12"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+
+        {/* Per-row cover: CoverDisplace — always rendered as <Image> fallback */}
+        <div className="relative ml-4 hidden aspect-video w-36 shrink-0 overflow-clip rounded-sm md:w-44 lg:block lg:w-56">
+          <CoverDisplace src={src} className="size-full">
+            <Image
+              fill
+              src={src}
+              alt={project.cover.alt}
+              sizes={COVER_SIZES}
+              className="size-full object-cover"
+            />
+          </CoverDisplace>
+        </div>
+      </TLink>
+    </li>
   )
 }
 
-const RenderCursor = ({ data }: { data: QueryProjectsAllResult }) => {
-  const { height, width } = size
-  const {
-    cursor: { index },
-  } = useCursor()
-
-  const colors = {
-    0: 'bg-blue-300',
-    1: 'bg-neutral-500',
-    2: 'bg-accent',
-    3: 'bg-orange-200',
-  }
-
+export function ProjectsList({ data }: { data: QueryProjectsAllResult }) {
   return (
-    <div className="pointer-events-none relative overflow-hidden" style={{ height, width }}>
-      <motion.ul animate={{ y: `${index * -100}%` }} transition={{ duration: 0.2 }}>
-        {data.map((project, idx) => {
-          const randomColor = Math.floor(Math.random() * 4) as 0 | 1 | 2 | 3
-          const color = colors[randomColor]
+    <section
+      aria-labelledby="projects-reel-heading"
+      className="col-span-full border-t border-paper/10 px-0"
+    >
+      {/* Accessible label for the list region */}
+      <h2 id="projects-reel-heading" className="sr-only">
+        All Projects
+      </h2>
 
-          return (
-            <li
-              key={project.slug.current}
-              className={cn(
-                'relative grid place-content-center p-6 transition-colors duration-500',
-                color,
-                idx !== 0 ? 'absolute left-0' : '',
-              )}
-              style={{ width, height, top: idx !== 0 ? `${idx * 100}%` : '' }}
-            >
-              <Image
-                src={urlFor(project.cover).url()}
-                alt={project.cover.alt}
-                width={width}
-                height={height}
-                className="aspect-video size-auto object-contain"
-              />
-            </li>
-          )
-        })}
-      </motion.ul>
-    </div>
+      <ul>
+        {data.map((project, index) => (
+          <ProjectRow key={project.slug.current} project={project} index={index} />
+        ))}
+      </ul>
+    </section>
   )
 }
