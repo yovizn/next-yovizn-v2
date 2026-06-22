@@ -42,7 +42,7 @@ export function FirstRenderTransition() {
                   <motion.polygon
                     key="triangle"
                     points="395.46 828.6 696.03 308 94.89 308 395.46 828.6"
-                    className="fill-paper stroke-paper stroke-3"
+                    className="fill-paper stroke-3"
                     {...mountAnim(polygonVariant)}
                   />
                   <motion.rect
@@ -51,7 +51,7 @@ export function FirstRenderTransition() {
                     y="162.83"
                     width="83.56"
                     height="438.15"
-                    className="fill-signal stroke-signal -rotate-150 stroke-3"
+                    className="fill-paper -rotate-150 stroke-3"
                     {...mountAnim(rectVariant)}
                     onAnimationComplete={(definition) => {
                       // Drive completion from the ENTER (draw-in) finishing — NOT exit.
