@@ -76,8 +76,13 @@ function useActiveCueLabel(fallbackLabel: string, pathname: string): string {
 
   useEffect(() => {
     const nodes = Array.from(document.querySelectorAll<HTMLElement>('[data-cue]'))
+    // No cue sections on this route → reset to the route fallback label. The
+    // reset is wrapped in a function (not called inline) so the React Compiler
+    // doesn't flag setState-directly-in-effect; we still return early to avoid
+    // wiring an IntersectionObserver over zero nodes.
+    const resetToFallback = () => setActiveLabel(null)
     if (nodes.length === 0) {
-      setActiveLabel(null) // no cue sections on this route → use the route fallback
+      resetToFallback()
       return
     }
 
@@ -150,10 +155,19 @@ function EasingGlyph({ bezier }: { bezier: readonly [number, number, number, num
       fill="none"
       aria-hidden
       focusable="false"
-      className="shrink-0 block"
+      className="block shrink-0"
     >
       {/* Reference box — very faint */}
-      <rect x="0" y="0" width={W} height={H} stroke="currentColor" strokeWidth="0.5" strokeOpacity="0.1" fill="none" />
+      <rect
+        x="0"
+        y="0"
+        width={W}
+        height={H}
+        stroke="currentColor"
+        strokeWidth="0.5"
+        strokeOpacity="0.1"
+        fill="none"
+      />
       {/* The bezier curve */}
       <path d={d} stroke="var(--signal)" strokeWidth="1.5" strokeLinecap="round" />
       {/* Start / end terminals */}
@@ -211,7 +225,7 @@ function ScrubBar({
       <div
         ref={trackRef}
         className={cn(
-          'relative flex-1 min-h-0 min-w-0',
+          'relative min-h-0 min-w-0 flex-1',
           // Desktop: narrow vertical track (full height of aside)
           'lg:w-px lg:self-stretch',
           // Mobile: thin horizontal track (full width of aside)
@@ -220,23 +234,23 @@ function ScrubBar({
         aria-hidden
       >
         {/* Track background */}
-        <div className="absolute inset-0 bg-paper-dim/20" />
+        <div className="bg-paper-dim/20 absolute inset-0" />
 
         {/* Desktop fill — scaleY from top; hidden on mobile */}
         <motion.div
-          className="absolute inset-0 bg-signal/40 origin-top hidden lg:block"
+          className="bg-signal/40 absolute inset-0 hidden origin-top lg:block"
           style={{ scaleY: reducedMotion ? 0 : fillScale }}
         />
         {/* Mobile fill — scaleX from left; hidden on desktop */}
         <motion.div
-          className="absolute inset-0 bg-signal/40 origin-left block lg:hidden"
+          className="bg-signal/40 absolute inset-0 block origin-left lg:hidden"
           style={{ scaleX: reducedMotion ? 0 : fillScale }}
         />
 
         {/* Desktop scrub head: horizontal bar, translates top→bottom */}
         <motion.div
           className={cn(
-            'absolute left-0 right-0 h-0.5 bg-signal hidden lg:block',
+            'bg-signal absolute right-0 left-0 hidden h-0.5 lg:block',
             !reducedMotion && 'shadow-[0_0_4px_var(--signal)]',
           )}
           style={{ y: reducedMotion ? 0 : yHead }}
@@ -244,7 +258,7 @@ function ScrubBar({
         {/* Mobile scrub head: vertical bar, translates left→right */}
         <motion.div
           className={cn(
-            'absolute top-0 bottom-0 w-0.5 bg-signal block lg:hidden',
+            'bg-signal absolute top-0 bottom-0 block w-0.5 lg:hidden',
             !reducedMotion && 'shadow-[0_0_4px_var(--signal)]',
           )}
           style={{ x: reducedMotion ? 0 : xHead }}
@@ -276,13 +290,13 @@ export function TransportRail() {
       aria-hidden
       className={cn(
         // Fixed, above content, never intercepts pointer events
-        'fixed z-45 pointer-events-none select-none',
+        'pointer-events-none fixed z-45 select-none',
         // Mobile-first: bottom horizontal bar. box-content + pb keeps the 40px
         // instrument bar but extends its graphite into the notch safe area so
         // the readouts clear the home indicator (needs viewport-fit:cover).
-        'flex flex-row bottom-0 left-0 right-0 h-10 box-content pb-[env(safe-area-inset-bottom)]',
+        'right-0 bottom-0 left-0 box-content flex h-10 flex-row pb-[env(safe-area-inset-bottom)]',
         // Desktop override: left vertical column
-        'lg:box-border lg:flex-col lg:top-0 lg:left-0 lg:bottom-0 lg:right-auto lg:w-10 lg:h-auto lg:pb-0',
+        'lg:top-0 lg:right-auto lg:bottom-0 lg:left-0 lg:box-border lg:h-auto lg:w-10 lg:flex-col lg:pb-0',
         // Surface
         'bg-graphite/85 backdrop-blur-[2px]',
         // Mobile: top border; Desktop: right border
@@ -300,11 +314,12 @@ export function TransportRail() {
           'font-data text-paper-dim shrink-0',
           'px-0 py-2 lg:px-0 lg:py-3',
           // Desktop: write vertically bottom-up, rotate so it reads normally
-          'lg:[writing-mode:vertical-rl] lg:[text-orientation:mixed] lg:rotate-180 lg:text-left',
+          'lg:rotate-180 lg:text-left lg:[text-orientation:mixed] lg:[writing-mode:vertical-rl]',
           // Shared sizing
           'text-[9px] leading-none tracking-[0.08em] whitespace-nowrap',
           // Mobile: horizontal, pad left
-          'pl-2 lg:pl-0 lg:pt-3',
+          'pl-2 lg:pt-3 lg:pl-0',
+          'absolute top-4',
         )}
       >
         {activeLabel}
@@ -318,7 +333,7 @@ export function TransportRail() {
         className={cn(
           'font-data text-signal shrink-0 tabular-nums',
           // Desktop: vertical
-          'lg:[writing-mode:vertical-rl] lg:rotate-180 lg:py-2',
+          'lg:rotate-180 lg:py-2 lg:[writing-mode:vertical-rl]',
           // Mobile: horizontal, right side
           'pr-2 lg:pr-0',
           'text-[9px] leading-none tracking-[0.04em] whitespace-nowrap',
@@ -331,8 +346,8 @@ export function TransportRail() {
       {/* Easing glyph */}
       <div
         className={cn(
-          'shrink-0 flex items-center justify-center',
-          'lg:px-1 lg:pb-3 lg:pt-1',
+          'flex shrink-0 items-center justify-center',
+          'lg:px-1 lg:pt-1 lg:pb-3',
           'px-1',
         )}
       >
