@@ -28,7 +28,7 @@ export function LogoHeader({ className }: { className?: string }) {
             transform="translate(292.69 -328.53) rotate(30)"
             fill="currentColor"
             strokeWidth="20"
-            className="stroke-foreground transition-[transform,fill] duration-300 group-hover:-translate-x-32 group-hover:translate-y-[25%] group-hover:fill-transparent"
+            className="stroke-foreground transition-all duration-300 group-hover:-translate-x-32 group-hover:translate-y-[25%] group-hover:fill-transparent"
           />
         </g>
       </g>
