@@ -14,8 +14,9 @@ import { motion } from 'motion/react'
 import { KineticText } from '@/components/animations/text/kinetic.text'
 import { TextReveal } from '@/components/animations/text/reveal.text'
 import { useParallax } from '@/components/animations/scroll'
+import { CoverDisplace } from '@/components/webgl/cover-displace'
 
-import profileBlur from '@public/images/profile-blur.png'
+import profileBlur from '@public/images/profile-blur.webp'
 
 export function AboutProfile() {
   const { ref, value, enabled } = useParallax({
@@ -88,14 +89,19 @@ export function AboutProfile() {
       {/* Parallax portrait — useParallax (Phase 3 Task 9 — KEEP) */}
       <div className="absolute top-[-10vh] left-0 h-[110vh] w-full" aria-hidden>
         <motion.div style={enabled ? { y: value } : undefined} className="relative size-full">
-          <Image
-            src={profileBlur}
-            alt=""
-            fill
-            className="object-cover opacity-30"
-            sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 100vw"
-            priority
-          />
+          {/* Same WebGL hover-displacement as the home overview portrait + project
+              covers (shared shader via CoverDisplace). opacity-30 moves to the wrapper
+              so the live canvas matches the static <Image> fallback — the canvas renders
+              the raw texture, so an opacity filter on the <Image> alone never reaches it. */}
+          <CoverDisplace src={profileBlur.src} className="size-full opacity-30">
+            <Image
+              src={profileBlur}
+              alt=""
+              fill
+              className="object-cover"
+              sizes="(max-width: 640px) 640px, (max-width: 1024px) 1024px, 100vw"
+            />
+          </CoverDisplace>
         </motion.div>
       </div>
 

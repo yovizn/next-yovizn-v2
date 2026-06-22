@@ -4,8 +4,9 @@ import Image from 'next/image'
 import { motion } from 'motion/react'
 
 import { useParallax } from '@/components/animations/scroll'
+import { CoverDisplace } from '@/components/webgl/cover-displace'
 
-import ProfileBlur from '@public/images/profile-blur.png'
+import ProfileBlur from '@public/images/profile-blur.webp'
 
 // CUE 02 portrait column. Uses Yovi's real motion-blurred portrait — the same
 // asset the /about hero uses — instead of the old stock succulent placeholder.
@@ -31,13 +32,20 @@ export function OverviewImage() {
         style={enabled ? { y: value } : undefined}
         className="relative h-[calc(100%+100px)] w-full"
       >
-        <Image
-          src={ProfileBlur}
-          alt="Motion-blurred portrait of Yovi Zulkarnaen"
-          fill
-          className="object-cover object-center brightness-90 contrast-105"
-          sizes="(max-width: 1024px) 100vw, 50vw"
-        />
+        {/* Same WebGL hover-displacement as the project covers (shared shader via
+            CoverDisplace). The brightness/contrast lift moves to the wrapper so the
+            live canvas matches the static <Image> fallback — the canvas renders the
+            raw texture, so a filter on the <Image> alone would never reach it.
+            ProfileBlur.src is the static asset URL the shader uploads as its texture. */}
+        <CoverDisplace src={ProfileBlur.src} className="size-full brightness-90 contrast-105">
+          <Image
+            src={ProfileBlur}
+            alt="Motion-blurred portrait of Yovi Zulkarnaen"
+            fill
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            className="size-full object-cover object-center"
+          />
+        </CoverDisplace>
       </motion.div>
 
       {/* Graphite scrims ground the portrait into the dark theme + the gap-px
