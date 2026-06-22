@@ -1,7 +1,7 @@
 'use client'
 
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
@@ -17,6 +17,7 @@ import { Logo } from '../common/icon'
 export function PageTransition() {
   const { page, setPageTransition } = usePageTransition()
   const pathname = usePathname()
+  const router = useRouter()
   const isReduceMotion = useReducedMotion()
 
   const currentPath = pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'home'
@@ -35,6 +36,21 @@ export function PageTransition() {
       })
     }
   }, [isReduceMotion, page.isTransition, setPageTransition])
+
+  // Deferred navigation: the cover is fully down (phase 'covered') but the route
+  // has NOT committed yet (pathname is still the old one). Push NOW — the content
+  // swap then happens hidden behind the opaque overlay, never in the transparent
+  // cover-in window. This is the other half of TLink's preventDefault. Once the
+  // push commits, pathname === targetPath and the arrival effect below uncovers.
+  useEffect(() => {
+    if (
+      page.phase === 'covered' &&
+      page.targetPath &&
+      normalizePath(pathname) !== normalizePath(page.targetPath)
+    ) {
+      router.push(page.targetPath)
+    }
+  }, [page.phase, page.targetPath, pathname, router])
 
   // REAL navigation-arrival signal: once we are fully covered AND the router has
   // committed to the target path (new segment rendered), begin uncovering.
@@ -87,7 +103,7 @@ export function PageTransition() {
       {/* Overlay stays mounted through covering + covered, and only EXITS when
           phase is uncovering. Removing the node triggers AnimatePresence exit. */}
       {page.isTransition && page.phase !== 'uncovering' && (
-        <div className="fixed top-0 left-0 z-[999] h-dvh w-full">
+        <div className="fixed top-0 left-0 z-999 h-dvh w-full">
           <motion.div
             {...mountAnim(pageTransitionVariant)}
             className="absolute top-0 left-0 size-full"
@@ -98,7 +114,7 @@ export function PageTransition() {
                 // Fully covered: hand off to the pathname-arrival effect above.
                 if (page.phase === 'covering') setPageTransition({ phase: 'covered' })
               }}
-              className="bg-secondary absolute top-0 left-0 size-full"
+              className="bg-graphite absolute top-0 left-0 size-full"
             />
 
             <motion.div
@@ -132,13 +148,13 @@ export function PageTransition() {
                     opacity: 0,
                     transition: { duration: duration.short, ease: easing.in },
                   }}
-                  className="text-foreground font-helvetica absolute right-6 bottom-6  font-bold uppercase clamp-[text,xl,5xl]"
+                  className="text-signal font-helvetica absolute right-6 bottom-6  font-bold uppercase clamp-[text,xl,5xl]"
                 >
                   {currentPath}
                 </motion.p>
               </AnimatePresence>
 
-              <Logo className="text-foreground size-40 translate-x-[10%] md:size-60" />
+              <Logo className="text-paper size-40 translate-x-[10%] md:size-60" />
             </motion.div>
           </motion.div>
         </div>

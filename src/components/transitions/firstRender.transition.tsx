@@ -27,7 +27,7 @@ export function FirstRenderTransition() {
       {!isTransitionDone && (
         <motion.div
           {...mountAnim(firstRenderVariant)}
-          className="bg-secondary fixed top-0 left-0 z-100 flex h-dvh w-full items-center justify-center overflow-clip"
+          className="bg-graphite fixed top-0 left-0 z-100 flex h-dvh w-full items-center justify-center overflow-clip"
         >
           <svg
             id="b"
@@ -42,7 +42,7 @@ export function FirstRenderTransition() {
                   <motion.polygon
                     key="triangle"
                     points="395.46 828.6 696.03 308 94.89 308 395.46 828.6"
-                    className="fill-foreground stroke-foreground stroke-3"
+                    className="fill-paper stroke-paper stroke-3"
                     {...mountAnim(polygonVariant)}
                   />
                   <motion.rect
@@ -51,7 +51,7 @@ export function FirstRenderTransition() {
                     y="162.83"
                     width="83.56"
                     height="438.15"
-                    className="fill-foreground stroke-foreground -rotate-150 stroke-3"
+                    className="fill-signal stroke-signal -rotate-150 stroke-3"
                     {...mountAnim(rectVariant)}
                     onAnimationComplete={(definition) => {
                       // Drive completion from the ENTER (draw-in) finishing — NOT exit.

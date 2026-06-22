@@ -2,6 +2,7 @@
 
 import Link, { LinkProps } from 'next/link'
 import { usePathname } from 'next/navigation'
+import { useReducedMotion } from 'motion/react'
 import { handleGoogleEvent } from '@/lib/analytic/googleEvent'
 import { useLenis } from 'lenis/react'
 import { usePageTransition } from '@/hooks/stores/usePage.hook'
@@ -14,6 +15,7 @@ type TLinkProps = Omit<React.HTMLProps<HTMLAnchorElement> & LinkProps, 'onClick'
 export function TLink({ href, ...props }: TLinkProps) {
   const lenis = useLenis()
   const pathname = usePathname()
+  const prefersReduced = useReducedMotion()
   const {
     page: { phase },
     setPageTransition,
@@ -43,6 +45,17 @@ export function TLink({ href, ...props }: TLinkProps) {
       return
     }
 
+    // Reduced motion: no cover choreography, so let Next navigate inline. Do NOT
+    // preventDefault here — there'd be no cover to drive the deferred push, and
+    // the navigation would be silently cancelled.
+    if (prefersReduced) return
+
+    // Defer the REAL navigation until the cover is fully down. preventDefault
+    // cancels Next's immediate client nav; PageTransition issues router.push once
+    // phase === 'covered', so the route commits hidden behind the opaque cover
+    // (fixes the "page swaps before the animation" flash in the transparent
+    // cover-in window). <Link> still prefetches → the deferred push is warm.
+    e.preventDefault()
     setPageTransition({
       isTransition: true,
       isTransitionComplete: false,
