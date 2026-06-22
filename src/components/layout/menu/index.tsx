@@ -11,7 +11,7 @@ import { useMenu } from '@/hooks/stores/useMenu.hook'
 import { duration, easing, mountAnim } from '@/lib/constants/animation.constant'
 import { links } from '@/lib/constants/link.constant'
 
-import BlackOne from '@public/images/black-one.jpg'
+import BlackTwo from '@public/images/black-two.webp'
 import {
   menuDividerVariant,
   menuImageVariant,
@@ -82,13 +82,14 @@ export function Menu() {
             {isDesktop && (
               <MImage
                 key="menu-image"
-                src={BlackOne}
-                alt="Image Black One by Josh Nuttall"
+                src={BlackTwo}
+                alt=""
                 width={640}
                 height={400}
                 sizes="(max-width: 640px) 10vw, 500px"
+                priority
                 {...(!isReduceMotion ? mountAnim(menuImageVariant) : {})}
-                className="relative z-10 aspect-video h-auto w-auto rounded-xs object-cover sm:h-full"
+                className="relative z-10 aspect-video h-auto w-auto rounded-xs object-cover ml-10 sm:h-full"
               />
             )}
 
