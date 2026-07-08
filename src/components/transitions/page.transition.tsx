@@ -20,7 +20,14 @@ export function PageTransition() {
   const router = useRouter()
   const isReduceMotion = useReducedMotion()
 
-  const currentPath = pathname.split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'home'
+  // Label the cover with the DESTINATION (targetPath is set once at transition
+  // start), not the live pathname. Deriving from pathname made the label's key
+  // swap mid-cover when the deferred push committed — and a nested
+  // <AnimatePresence propagate mode="wait"> key-swap racing the outer overlay's
+  // exit deadlocks AnimatePresence in production: onExitComplete never fires,
+  // isTransitionComplete stays false, and scroll stays locked until a refresh.
+  const targetLabel =
+    (page.targetPath ?? pathname).split('/').filter(Boolean).pop()?.replace(/-/g, ' ') || 'home'
 
   useScrollControl(page.isTransitionComplete)
 
@@ -86,6 +93,27 @@ export function PageTransition() {
     return () => clearTimeout(t)
   }, [page.phase, setPageTransition])
 
+  // 3) Same backstop for the uncover leg. If AnimatePresence's onExitComplete
+  //    ever fails to fire (an interrupted/entangled exit — the class of bug that
+  //    locked scroll in production), never leave the page frozen behind an
+  //    invisible overlay: force-complete. Exit choreography tops out at 0.75s,
+  //    so 4s only catches a genuinely dead exit; normal completion clears this
+  //    via the phase change to 'idle', and a late onExitComplete is idempotent.
+  useEffect(() => {
+    if (page.phase !== 'uncovering') return
+    const t = setTimeout(
+      () =>
+        setPageTransition({
+          isTransition: false,
+          isTransitionComplete: true,
+          phase: 'idle',
+          targetPath: null,
+        }),
+      4000,
+    )
+    return () => clearTimeout(t)
+  }, [page.phase, setPageTransition])
+
   if (isReduceMotion) return null
 
   return (
@@ -130,29 +158,28 @@ export function PageTransition() {
               exit={{ opacity: 0, transition: { duration: duration.short, ease: easing.inOut } }}
               className="relative flex size-full flex-col items-center justify-center"
             >
-              <AnimatePresence mode="wait" propagate initial={false}>
-                <motion.p
-                  key={currentPath}
-                  initial={{ y: '50%', opacity: 0 }}
-                  animate={{
-                    y: '20%',
-                    opacity: 1,
-                    transition: {
-                      duration: duration.medium,
-                      delay: duration.short,
-                      ease: easing.out,
-                    },
-                  }}
-                  exit={{
-                    y: '-50%',
-                    opacity: 0,
-                    transition: { duration: duration.short, ease: easing.in },
-                  }}
-                  className="text-signal font-helvetica absolute right-6 bottom-6  font-bold uppercase clamp-[text,xl,5xl]"
-                >
-                  {currentPath}
-                </motion.p>
-              </AnimatePresence>
+              {/* Single label for the overlay's whole life — it mounts and exits
+                  with the overlay itself, so no nested AnimatePresence is needed. */}
+              <motion.p
+                initial={{ y: '50%', opacity: 0 }}
+                animate={{
+                  y: '20%',
+                  opacity: 1,
+                  transition: {
+                    duration: duration.medium,
+                    delay: duration.short,
+                    ease: easing.out,
+                  },
+                }}
+                exit={{
+                  y: '-50%',
+                  opacity: 0,
+                  transition: { duration: duration.short, ease: easing.in },
+                }}
+                className="text-signal font-helvetica absolute right-6 bottom-6  font-bold uppercase clamp-[text,xl,5xl]"
+              >
+                {targetLabel}
+              </motion.p>
 
               <Logo className="text-paper size-40 translate-x-[10%] md:size-60" />
             </motion.div>
