@@ -38,7 +38,7 @@ function ExperienceRow({
   return (
     <li
       ref={ref}
-      className="border-graphite group relative flex items-center justify-between gap-6 border-t py-5 first:border-t-0"
+      className="border-hairline group relative flex items-center justify-between gap-6 border-t py-5 first:border-t-0"
     >
       {/* Signal left-edge accent line — appears on viewport entry */}
       <motion.div
@@ -82,7 +82,7 @@ function ExperienceRow({
         </span>
 
         {/* Skill label */}
-        <span className="font-nohemi text-paper clamp-[text,lg,3xl] font-bold uppercase leading-none">
+        <span className="font-nohemi text-paper text-display-md leading-none font-bold uppercase">
           {label}
         </span>
       </motion.div>

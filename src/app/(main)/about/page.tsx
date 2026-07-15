@@ -25,7 +25,7 @@ export const metadata: Metadata = {
 
 export default function AboutPage() {
   return (
-    <main className="bg-graphite text-paper min-h-screen">
+    <main className="bg-graphite text-paper grid min-h-screen grid-cols-4 gap-px lg:grid-cols-6">
       {/* Phase 0 SEO — MUST-PRESERVE: Person + WebSite @graph JSON-LD */}
       <JsonLd data={buildPersonGraph()} />
 
