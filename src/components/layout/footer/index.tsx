@@ -7,7 +7,7 @@ import { socials } from '@/lib/constants/social.constant'
 
 export function Footer() {
   return (
-    <footer className="border-accent/5 bg-accent/5 grid grid-cols-4 gap-px border-t lg:grid-cols-6">
+    <footer className="border-accent/5 bg-accent/5 grid grid-cols-4 gap-px border-t pb-12 sm:pb-0 lg:grid-cols-6">
       <div className="col-span-full grid grid-cols-6 gap-px">
         {Array.from({ length: 6 }).map((_, index) => (
           <div key={index} className="bg-background grid place-content-end">
@@ -40,7 +40,9 @@ export function Footer() {
               target="_blank"
               className="clamp-[text,1rem,2rem] bg-foreground text-background hover:bg-foreground/80 w-full rounded-xs tracking-normal transition-colors"
             >
-              <span className="block size-fit w-full text-center font-medium">contact@yovizn.com</span>
+              <span className="block size-fit w-full text-center font-medium">
+                contact@yovizn.com
+              </span>
             </GAnchor>
           </div>
         </div>
