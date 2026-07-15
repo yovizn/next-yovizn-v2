@@ -11,8 +11,6 @@
   --primary: 0.86 0.0309 90.35;
   --secondary: 0.69 0.0341 73.36;
 
-  --font-sz: clamp(2rem, 8vw + 1rem, 10rem);
-
   /* TRANSPORT palette — the single source of truth for the site's hex values.
      Keep in lockstep with src/lib/constants/palette.constant.ts (PALETTE),
      which mirrors these for WebGL shaders and Motion colour interpolation. */
@@ -134,23 +132,12 @@
 }
 
 @layer utilities {
-  .text-hero {
-    font-size: clamp(2rem, 10vw, 11rem);
-  }
-
   .tailwind:is(.bg-background) {
     background-color: oklch(var(--background));
   }
 
   .p-fluid-24-40 {
     padding: clamp(1.5rem, -0.2143rem + 2.8571vi, 2.5rem);
-  }
-
-  .text-fixed {
-    font-size: var(--font-sz);
-    line-height: 0.85;
-    transition: color 0.5s;
-    translate: 0 4%;
   }
 
   .about-clip {
