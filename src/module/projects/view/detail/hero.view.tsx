@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { Cue } from '@/components/common/cue'
 import { KineticText } from '@/components/animations/text/kinetic.text'
 import { CoverDisplace } from '@/components/webgl/cover-displace'
 import { urlFor } from '@/sanity/lib/image'
@@ -26,14 +27,11 @@ export function Hero({ projects, index }: HeroProps) {
       className="col-span-full grid grid-cols-subgrid gap-px"
     >
       {/* ── CUE header row ────────────────────────────────────────────── */}
-      <div className="col-span-full flex min-h-[40svh] flex-col items-start justify-end gap-4 px-6 pb-12 pt-32 lg:px-10 lg:pt-40">
+      <div className="col-span-full flex min-h-[40svh] flex-col items-start justify-end gap-4 px-6 pt-32 pb-12 lg:px-10 lg:pt-40">
         {/* CUE eyebrow */}
-        <p
-          className="font-data text-paper-dim text-[11px] leading-none tracking-[0.12em] uppercase"
-          aria-hidden
-        >
+        <Cue aria-hidden className="leading-none">
           CUE &nbsp;·&nbsp; CASE
-        </p>
+        </Cue>
 
         {/* Accessible h1 — project title only (no index; one page heading) */}
         <h1 id="project-detail-heading" className="sr-only">
@@ -51,20 +49,34 @@ export function Hero({ projects, index }: HeroProps) {
             text={projects.title}
             by="char"
             stagger={0.03}
-            className="font-nohemi text-paper clamp-[text,2xl,7xl] leading-none font-bold uppercase tracking-tight"
+            className="font-nohemi text-paper text-display-md leading-none font-bold uppercase tracking-tight"
           />
         </div>
 
-        {/* Meta row — CLIENT · YEAR · SERVICE. Values are real text (read by AT);
-            only the decorative · separators are hidden. (aria-label is prohibited
-            on a <p>, so it was dropping all three values for screen readers.) */}
-        <p className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase">
-          <span>{clientName}</span>
-          <span className="text-signal mx-2" aria-hidden>·</span>
-          <time dateTime={projects.date}>{year}</time>
-          <span className="text-signal mx-2" aria-hidden>·</span>
-          <span>{projects.service}</span>
-        </p>
+        {/* Meta grid — CLIENT / SERVICE / YEAR as labelled columns (real schema
+            fields only; no invented role/stack). dl/dt/dd keeps it accessible. */}
+        <dl className="border-hairline mt-2 grid w-full max-w-2xl grid-cols-2 gap-x-6 gap-y-4 border-t pt-4 sm:grid-cols-3">
+          <div className="flex flex-col gap-1">
+            <dt className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase">
+              Client
+            </dt>
+            <dd className="font-data text-paper text-sm">{clientName}</dd>
+          </div>
+          <div className="flex flex-col gap-1">
+            <dt className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase">
+              Service
+            </dt>
+            <dd className="font-data text-paper text-sm">{projects.service}</dd>
+          </div>
+          <div className="flex flex-col gap-1">
+            <dt className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase">
+              Year
+            </dt>
+            <dd className="font-data text-paper text-sm">
+              <time dateTime={projects.date}>{year}</time>
+            </dd>
+          </div>
+        </dl>
       </div>
 
       {/* ── Cover image — CoverDisplace (WebGL hover displacement) ───── */}

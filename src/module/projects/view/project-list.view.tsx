@@ -44,10 +44,10 @@ function ProjectRow({ project, index }: ProjectRowProps) {
   const idx = String(index + 1).padStart(2, '0')
 
   return (
-    <li className="border-paper/10 border-t first:border-t-0">
+    <li className="border-hairline border-t first:border-t-0">
       <TLink
         href={`/projects/${project.slug.current}`}
-        className="group flex items-center gap-4 px-6 py-6 transition-colors duration-300 hover:bg-graphite-2 lg:px-10 lg:py-8"
+        className="group hover:bg-graphite-2 flex items-center gap-4 px-6 py-6 transition-colors duration-300 lg:px-10 lg:py-8"
       >
         {/* Index — mono instrument readout */}
         <span
@@ -57,8 +57,8 @@ function ProjectRow({ project, index }: ProjectRowProps) {
           {idx}
         </span>
 
-        {/* Project title */}
-        <span className="font-nohemi text-paper clamp-[text,xl,4xl] min-w-0 flex-1 leading-none font-bold uppercase tracking-tight">
+        {/* Project title — slides right on hover (ease-out-quint) */}
+        <span className="font-nohemi text-paper text-display-md ease-out-quint min-w-0 flex-1 leading-none font-bold uppercase transition-transform duration-500 group-hover:translate-x-2">
           {project.title}
         </span>
 
@@ -67,9 +67,9 @@ function ProjectRow({ project, index }: ProjectRowProps) {
           {project.service}
         </span>
 
-        {/* Arrow affordance */}
+        {/* Arrow affordance — slides with the title, warms to signal */}
         <span
-          className="text-paper-dim group-hover:text-signal shrink-0 transition-colors duration-200"
+          className="text-paper-dim group-hover:text-signal ease-out-quint shrink-0 transition-[color,transform] duration-300 group-hover:translate-x-1"
           aria-hidden
         >
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
@@ -83,8 +83,9 @@ function ProjectRow({ project, index }: ProjectRowProps) {
           </svg>
         </span>
 
-        {/* Per-row cover: CoverDisplace — always rendered as <Image> fallback */}
-        <div className="relative ml-4 hidden aspect-video w-36 shrink-0 overflow-clip rounded-sm md:w-44 lg:block lg:w-56">
+        {/* Per-row cover: CoverDisplace — always rendered as <Image> fallback.
+            Visible from md+ (was lg-only) so the tablet reel is not text-only. */}
+        <div className="relative ml-4 hidden aspect-video w-40 shrink-0 overflow-clip rounded-sm md:block lg:w-56">
           <CoverDisplace src={src} className="size-full">
             <Image
               fill
@@ -104,7 +105,7 @@ export function ProjectsList({ data }: { data: QueryProjectsAllResult }) {
   return (
     <section
       aria-labelledby="projects-reel-heading"
-      className="col-span-full border-t border-paper/10 px-0"
+      className="border-hairline col-span-full border-t px-0"
     >
       {/* Accessible label for the list region */}
       <h2 id="projects-reel-heading" className="sr-only">

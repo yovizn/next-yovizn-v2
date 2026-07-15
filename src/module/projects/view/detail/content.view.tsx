@@ -3,6 +3,7 @@
 import { useRef } from 'react'
 import { motion, useInView, useReducedMotion } from 'motion/react'
 
+import { Cue } from '@/components/common/cue'
 import { TextReveal } from '@/components/animations/text/reveal.text'
 import { PortableText } from '@/components/common/portableText'
 import { BlockContent } from '@/types/sanity.types'
@@ -22,12 +23,9 @@ export function ProjectDetailContent({ content }: { content: BlockContent | unde
 
       <div className="bg-graphite clamp-[p,4,10] clamp-[py,6,12] col-span-full lg:col-span-4">
         {/* CUE eyebrow */}
-        <p
-          className="font-data text-paper-dim mb-4 text-[11px] tracking-[0.12em] uppercase"
-          aria-hidden
-        >
+        <Cue aria-hidden className="mb-4">
           CUE &nbsp;·&nbsp; OVERVIEW
-        </p>
+        </Cue>
 
         {/* Accessible h2 companion */}
         <h2 id="overview-heading" className="sr-only">
@@ -40,7 +38,7 @@ export function ProjectDetailContent({ content }: { content: BlockContent | unde
             text="Overview"
             scrollReveal
             className={{
-              text: 'font-nohemi text-paper clamp-[text,2xl,5xl] leading-none font-bold uppercase tracking-tight',
+              text: 'font-nohemi text-paper text-display-md leading-none font-bold uppercase tracking-tight',
             }}
           />
         </div>
@@ -66,7 +64,7 @@ export function ProjectDetailContent({ content }: { content: BlockContent | unde
               translateY: { duration: duration.long * 1.2, ease: easing.out },
             },
           }}
-          className="prose-sm text-paper-dim lg:prose-xl"
+          className="text-paper-dim max-w-[68ch] space-y-5 font-sans text-base leading-relaxed [&>p:first-child]:text-paper [&>p:first-child]:text-xl [&>p:first-child]:leading-snug"
         >
           {content && <PortableText content={content} />}
         </motion.div>

@@ -1,7 +1,36 @@
 import { cn } from '@/lib/utils/cn'
 import { urlFor } from '@/sanity/lib/image'
 import { QueryProjectsBySlugResult } from '@/types/sanity.types'
-import Image from 'next/image'
+import { GalleryImage } from './gallery-image.view'
+
+// Film-strip ruler cadence, shared by both transport dividers.
+const RULER =
+  'repeating-linear-gradient(90deg, var(--color-paper-dim) 0px, var(--color-paper-dim) 1px, transparent 1px, transparent 14px)'
+
+/**
+ * TransportDivider — the instrument strip that marks a gallery cut (ruler gauge
+ * + optional frame readout + a signal hairline on one edge). Deduplicated from
+ * the two near-identical opening/closing dividers.
+ */
+function TransportDivider({ signalEdge, frames }: { signalEdge: 'top' | 'bottom'; frames?: number }) {
+  return (
+    <div className="bg-graphite-2 relative col-span-full flex h-16 items-center gap-5 px-6 lg:px-10">
+      <div aria-hidden className="h-2.5 flex-1 opacity-20" style={{ backgroundImage: RULER }} />
+      {frames ? (
+        <p
+          className="font-data text-paper-dim shrink-0 text-[11px] tracking-[0.12em] tabular-nums uppercase"
+          aria-hidden
+        >
+          {String(frames).padStart(2, '0')} Frames
+        </p>
+      ) : null}
+      <span
+        aria-hidden
+        className={cn('bg-signal absolute inset-x-0 h-px', signalEdge === 'top' ? 'top-0' : 'bottom-0')}
+      />
+    </div>
+  )
+}
 
 export function ProjectGallery({ projects }: { projects: QueryProjectsBySlugResult | undefined }) {
   const layout = {
@@ -26,37 +55,9 @@ export function ProjectGallery({ projects }: { projects: QueryProjectsBySlugResu
   const frameCount = projects?.images?.length ?? 0
 
   return (
-    <section
-      aria-labelledby="gallery-heading"
-      className="col-span-full grid grid-cols-subgrid gap-px"
-    >
-      {/* Transport divider — marks the Overview→Gallery cut as a deliberate
-          instrument strip (ruler + frame readout + signal edge). Replaces the
-          old empty spacer squares, which read as unfilled gallery cells. */}
-      <div className="bg-graphite-2 relative col-span-full flex h-16 items-center gap-5 px-6 lg:px-10">
-        {/* Ruler ticks — film-strip cadence, decorative gauge */}
-        <div
-          aria-hidden
-          className="h-2.5 flex-1 opacity-25"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(90deg, var(--color-paper-dim) 0px, var(--color-paper-dim) 1px, transparent 1px, transparent 14px)',
-          }}
-        />
-        {/* Instrument readout — real frame total. aria-hidden: decorative chrome,
-            consistent with the ruler + the CUE eyebrows; gallery images carry
-            their own alt text and the "Showcase" heading announces the section. */}
-        {frameCount > 0 && (
-          <p
-            className="font-data text-paper-dim shrink-0 text-[11px] tracking-[0.12em] uppercase tabular-nums"
-            aria-hidden
-          >
-            {String(frameCount).padStart(2, '0')} Frames
-          </p>
-        )}
-        {/* Signal hairline — bottom edge, ties to hero + gallery-bar signal lines */}
-        <span aria-hidden className="bg-signal absolute inset-x-0 bottom-0 h-px" />
-      </div>
+    <section aria-labelledby="gallery-heading" className="col-span-full grid grid-cols-subgrid gap-px">
+      {/* Opening divider — marks the Overview→Gallery cut, frame readout + signal edge */}
+      <TransportDivider signalEdge="bottom" frames={frameCount} />
 
       {/* Sticky gallery bar — TRANSPORT restyle; subgrid child kept intact */}
       <div className="sticky top-0 z-20 col-span-full grid h-24 grid-cols-subgrid gap-px">
@@ -67,10 +68,7 @@ export function ProjectGallery({ projects }: { projects: QueryProjectsBySlugResu
           <div className="bg-signal absolute bottom-0 left-0 h-px w-full" aria-hidden />
 
           {/* CUE eyebrow */}
-          <p
-            className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase"
-            aria-hidden
-          >
+          <p className="font-data text-paper-dim text-[11px] tracking-[0.12em] uppercase" aria-hidden>
             CUE &nbsp;·&nbsp; GALLERY
           </p>
 
@@ -88,20 +86,15 @@ export function ProjectGallery({ projects }: { projects: QueryProjectsBySlugResu
 
       {/* Gallery grid — 6-col subgrid child; DO NOT restructure */}
       <div className="col-span-4 grid grid-cols-6 gap-px">
-        {projects?.images.map((item) => (
-          <div
-            key={item._key}
-            className={cn('relative clamp-[p,4,10] bg-graphite-2', layout[item.layout])}
-          >
-            <div className={cn('relative overflow-hidden rounded-sm', aspect[item.layout])}>
-              <Image
-                src={urlFor(item.image).width(1600).auto('format').url()}
-                alt={item.image.alt}
-                fill
-                sizes={sizes[item.layout]}
-                className="object-cover"
-              />
-            </div>
+        {projects?.images.map((item, index) => (
+          <div key={item._key} className={cn('clamp-[p,4,10] bg-graphite-2 relative', layout[item.layout])}>
+            <GalleryImage
+              src={urlFor(item.image).width(1600).auto('format').url()}
+              alt={item.image.alt}
+              sizes={sizes[item.layout]}
+              aspect={aspect[item.layout]}
+              index={index}
+            />
           </div>
         ))}
       </div>
@@ -109,20 +102,8 @@ export function ProjectGallery({ projects }: { projects: QueryProjectsBySlugResu
       {/* Side gutter */}
       <div className="bg-graphite col-span-1 hidden lg:block" />
 
-      {/* Closing divider — quiet terminator band; mirrors the opening divider
-          with the signal edge on top to "shut" the gallery before the next case. */}
-      <div className="bg-graphite-2 relative col-span-full flex h-16 items-center px-6 lg:px-10">
-        <div
-          aria-hidden
-          className="h-2.5 w-full opacity-[0.12]"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(90deg, var(--color-paper-dim) 0px, var(--color-paper-dim) 1px, transparent 1px, transparent 14px)',
-          }}
-        />
-        {/* Signal hairline — top edge, closes the gallery */}
-        <span aria-hidden className="bg-signal absolute inset-x-0 top-0 h-px" />
-      </div>
+      {/* Closing divider — quiet terminator, signal edge on top to "shut" the gallery */}
+      <TransportDivider signalEdge="top" />
     </section>
   )
 }

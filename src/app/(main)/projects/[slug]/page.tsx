@@ -103,7 +103,11 @@ export default async function ProjectsDetailPage({ params }: Props) {
       <ProjectGallery projects={project} />
 
       {/* CUE · NEXT — next case TLink, advances the transport reel */}
-      <NextCase title={nextProject?.title} slug={nextProject?.slug.current} />
+      <NextCase
+        title={nextProject?.title}
+        slug={nextProject?.slug.current}
+        cover={nextProject?.cover}
+      />
     </main>
   )
 }
