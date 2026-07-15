@@ -45,7 +45,10 @@ export function Footer() {
 
         <div className="bg-graphite text-paper before:bg-signal relative col-span-full grid place-content-center before:absolute before:h-1 before:w-full before:content-[''] lg:col-span-4">
           <h3 className="text-display-xl font-nohemi flex flex-col py-4 leading-none font-bold uppercase">
-            <span className="flex gap-4 self-start md:gap-10">
+            {/* Accessible name: every TextBlur child is aria-hidden, so without
+                this the h3 would expose no name to assistive tech. */}
+            <span className="sr-only">Get in touch</span>
+            <span aria-hidden className="flex gap-4 self-start md:gap-10">
               <TextBlur text="Get" delay={0.3} />
               <TextBlur text="In" delay={0.5} />
             </span>

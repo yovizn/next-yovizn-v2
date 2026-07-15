@@ -28,14 +28,17 @@ interface ProjectCardProps {
 function ProjectCard({ project, index }: ProjectCardProps) {
   const src = urlFor(project.cover).width(1200).auto('format').url()
   const ordinal = String(index + 1).padStart(2, '0')
-  const year = new Date(project.date).getFullYear()
+  // Slice the year straight off the ISO string. new Date(...).getFullYear() reads
+  // the LOCAL timezone, so a date near a year boundary yields a different year on
+  // the server (UTC) than the client → hydration mismatch in this 'use client' card.
+  const year = project.date.slice(0, 4)
 
   return (
     <li className="bg-graphite-2 relative aspect-video overflow-clip lg:last:odd:col-span-2 lg:last:odd:aspect-21/9">
       <TLink
         href={`/projects/${project.slug.current}`}
         aria-label={`${project.title} — view project`}
-        className="group block size-full focus-visible:ring-signal focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none"
+        className="group focus-visible:ring-signal block size-full focus-visible:ring-2 focus-visible:outline-none focus-visible:ring-inset"
       >
         <CoverDisplace src={src} className="size-full">
           <Image
@@ -43,7 +46,7 @@ function ProjectCard({ project, index }: ProjectCardProps) {
             src={src}
             alt={project.cover.alt}
             sizes="(max-width: 1024px) 100vw, 50vw"
-            className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
+            className="size-full object-cover grayscale-100 transition-transform duration-500 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] hover:grayscale-0 motion-reduce:transform-none motion-reduce:transition-none"
           />
         </CoverDisplace>
 

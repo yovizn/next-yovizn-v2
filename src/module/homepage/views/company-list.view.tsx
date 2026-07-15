@@ -27,6 +27,14 @@ export async function CompanyList() {
 
   const clients: Client[] = data.clients
 
+  // A seamless -50% loop needs a single track at least as wide as the strip, or a
+  // blank gap opens at the right edge on wide screens. The body is capped at
+  // 2048px, so repeat the (few, short) client names until one track clears it.
+  const MAX_STRIP = 2048
+  const EST_ITEM = 120 // conservative px per item (padding + short mono name + dot)
+  const repeats = Math.max(2, Math.ceil(MAX_STRIP / (clients.length * EST_ITEM)))
+  const track: Client[] = Array.from({ length: repeats }, () => clients).flat()
+
   return (
     <section
       aria-labelledby="clients-heading"
@@ -43,11 +51,20 @@ export async function CompanyList() {
         Clients
       </h2>
 
-      {/* Seamless mono marquee — two identical tracks shifted -50% (see globals.css) */}
+      {/* The animated marquee is decorative; expose the real client list once,
+          statically, so assistive tech reads each name a single time. */}
+      <ul className="sr-only">
+        {clients.map((client, index) => (
+          <li key={index}>{client.name}</li>
+        ))}
+      </ul>
+
+      {/* Seamless mono marquee — two identical repeated tracks shifted -50% (see
+          globals.css). Pauses on hover so a reader can settle on a name. */}
       <div className="border-hairline overflow-clip border-y">
-        <div className="marquee-track flex w-max">
-          <MarqueeTrack clients={clients} />
-          <MarqueeTrack clients={clients} ariaHidden />
+        <div className="marquee-track flex w-max hover:[animation-play-state:paused]">
+          <MarqueeTrack clients={track} ariaHidden />
+          <MarqueeTrack clients={track} ariaHidden />
         </div>
       </div>
     </section>

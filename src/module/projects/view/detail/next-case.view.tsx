@@ -45,7 +45,7 @@ export function NextCase({ title, slug, cover }: NextCaseProps) {
 
         <TLink
           href={`/projects/${slug}`}
-          className="group relative flex min-h-[60svh] flex-col items-start justify-end gap-4 px-6 pt-16 pb-12 lg:px-10"
+          className="group focus-visible:ring-signal relative flex min-h-[60svh] flex-col items-start justify-end gap-4 px-6 pt-16 pb-12 focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none lg:px-10"
           aria-label={`Next case: ${title}`}
         >
           {/* Progress cue — signal tick + mono label */}

@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useReducedMotion } from 'motion/react'
 
 import { cn } from '@/lib/utils/cn'
 import { SlidingNumber } from './slidingNumber'
@@ -19,6 +20,8 @@ function getJakartaTime() {
   return { h: get('hour'), m: get('minute'), s: get('second') }
 }
 
+const pad = (n: number) => String(n).padStart(2, '0')
+
 /**
  * Live GMT+7 clock rendered with the SlidingNumber odometer (spring-rolled
  * digits). Hydration-safe: server and first client paint both show a static
@@ -30,6 +33,10 @@ export function LocalTime({ className }: { className?: string }) {
   // (the placeholder), avoiding a hydration mismatch. State is only ever set from
   // callbacks (setTimeout/setInterval), never synchronously inside the effect.
   const [time, setTime] = useState<{ h: number; m: number; s: number } | null>(null)
+  // Reduced-motion users still get the live-ticking number, but as static text —
+  // the SlidingNumber odometer is a JS spring (motion value), which the global
+  // CSS reduced-motion kill-switch cannot reach.
+  const prefersReduced = useReducedMotion()
 
   useEffect(() => {
     const update = () => setTime(getJakartaTime())
@@ -48,13 +55,19 @@ export function LocalTime({ className }: { className?: string }) {
       </span>
       <span className="sr-only">Local time in Jakarta, GMT+7</span>
       {time ? (
-        <span aria-hidden className="font-data text-paper flex items-center tabular-nums">
-          <SlidingNumber value={time.h} padStart />
-          <span className="px-0.5">:</span>
-          <SlidingNumber value={time.m} padStart />
-          <span className="px-0.5">:</span>
-          <SlidingNumber value={time.s} padStart />
-        </span>
+        prefersReduced ? (
+          <span aria-hidden className="font-data text-paper tabular-nums">
+            {pad(time.h)}:{pad(time.m)}:{pad(time.s)}
+          </span>
+        ) : (
+          <span aria-hidden className="font-data text-paper flex items-center tabular-nums">
+            <SlidingNumber value={time.h} padStart />
+            <span className="px-0.5">:</span>
+            <SlidingNumber value={time.m} padStart />
+            <span className="px-0.5">:</span>
+            <SlidingNumber value={time.s} padStart />
+          </span>
+        )
       ) : (
         <span aria-hidden className="font-data text-paper tabular-nums">
           --:--:--
