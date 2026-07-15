@@ -5,12 +5,6 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-  --background: 0.1 0 0.25;
-  --foreground: 1 0 0;
-  --accent: 0.89 0 0;
-  --primary: 0.86 0.0309 90.35;
-  --secondary: 0.69 0.0341 73.36;
-
   /* TRANSPORT palette — the single source of truth for the site's hex values.
      Keep in lockstep with src/lib/constants/palette.constant.ts (PALETTE),
      which mirrors these for WebGL shaders and Motion colour interpolation. */
@@ -23,12 +17,6 @@
 }
 
 @theme inline {
-  --color-background: oklch(var(--background));
-  --color-foreground: oklch(var(--foreground));
-  --color-accent: oklch(var(--accent));
-  --color-primary: oklch(var(--primary));
-  --color-secondary: oklch(var(--secondary));
-
   /* TRANSPORT color utilities */
   --color-graphite: var(--graphite);
   --color-graphite-2: var(--graphite-2);
@@ -68,13 +56,13 @@
 
 @layer base {
   *::selection {
-    background: oklch(var(--accent) / 0.5);
-    color: oklch(var(--primary));
+    background: var(--signal);
+    color: var(--graphite);
   }
 
   body {
-    background: oklch(var(--background));
-    color: oklch(var(--foreground));
+    background: var(--graphite);
+    color: var(--paper);
     font-family: var(--font-sans);
     max-width: 2048px;
     margin: 0 auto;
