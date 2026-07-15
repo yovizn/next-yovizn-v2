@@ -1,5 +1,7 @@
 import { ImageResponse } from 'next/og'
 
+import { PALETTE } from '@/lib/constants/palette.constant'
+
 export const alt = 'yovizn logo'
 export const size = {
   width: 1200,
@@ -18,35 +20,29 @@ export default async function Image() {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'white',
+          background: PALETTE.graphite,
         }}
       >
         <svg
-          id="b"
           xmlns="http://www.w3.org/2000/svg"
-          fill="black"
           style={{ width: '500px', height: '500px' }}
           viewBox="0 0 1000 1000"
         >
-          <g id="c">
-            <g>
-              <rect width="1000" height="1000" fill="none" opacity="0" strokeWidth="0" />
-              <polygon
-                points="395.46 828.6 696.03 308 94.89 308 395.46 828.6"
-                fill="currentColor"
-                strokeWidth="0"
-              />
-              <rect
-                x="717.6"
-                y="162.83"
-                width="83.56"
-                height="438.15"
-                transform="translate(292.69 -328.53) rotate(30)"
-                fill="currentColor"
-                strokeWidth="0"
-              />
-            </g>
-          </g>
+          <rect width="1000" height="1000" fill="none" opacity="0" strokeWidth="0" />
+          <polygon
+            points="395.46 828.6 696.03 308 94.89 308 395.46 828.6"
+            fill={PALETTE.paper}
+            strokeWidth="0"
+          />
+          <rect
+            x="717.6"
+            y="162.83"
+            width="83.56"
+            height="438.15"
+            transform="translate(292.69 -328.53) rotate(30)"
+            fill={PALETTE.signal}
+            strokeWidth="0"
+          />
         </svg>
       </div>
     ),
