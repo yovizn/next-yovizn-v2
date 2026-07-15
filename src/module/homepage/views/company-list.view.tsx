@@ -1,13 +1,31 @@
-import { GAnchor } from '@/components/common/googleAnchor'
-import { KineticText } from '@/components/animations/text/kinetic.text'
-import { urlFor } from '@/sanity/lib/image'
+import { Cue } from '@/components/common/cue'
 import { getClientsView } from '@/services/getClientsView.service'
-import { Image } from 'next-sanity/image'
+
+type Client = { name: string | null }
+
+function MarqueeTrack({ clients, ariaHidden }: { clients: Client[]; ariaHidden?: boolean }) {
+  return (
+    <ul className="flex shrink-0 items-center" aria-hidden={ariaHidden}>
+      {clients.map((client, index) => (
+        <li key={index} className="flex items-center">
+          <span className="font-data text-paper px-8 py-6 text-sm tracking-[0.12em] whitespace-nowrap uppercase">
+            {client.name}
+          </span>
+          <span className="text-signal select-none" aria-hidden>
+            ·
+          </span>
+        </li>
+      ))}
+    </ul>
+  )
+}
 
 export async function CompanyList() {
   const [data, error] = await getClientsView()
 
-  if (error || !data?.clients) return null
+  if (error || !data?.clients?.length) return null
+
+  const clients: Client[] = data.clients
 
   return (
     <section
@@ -17,71 +35,20 @@ export async function CompanyList() {
       className="col-span-full"
     >
       {/* CUE 03 eyebrow — mirrors data-cue on the <section> (TransportRail reads it) */}
-      <p
-        className="font-data text-paper-dim px-6 pt-16 pb-4 text-[11px] tracking-[0.12em] uppercase lg:px-10"
-        aria-hidden
-      >
+      <Cue aria-hidden className="px-6 pt-16 pb-4 lg:px-10">
         CUE 03 &nbsp;·&nbsp; CLIENTS
-      </p>
+      </Cue>
 
-      {/* Section header: sr-only first, KineticText second (a11y requirement) */}
       <h2 id="clients-heading" className="sr-only">
         Clients
       </h2>
-      <div aria-hidden className="px-6 pb-8 lg:px-10">
-        <KineticText
-          text="Clients"
-          by="char"
-          stagger={0.035}
-          className="font-nohemi text-paper clamp-[text,3xl,7xl] leading-none font-bold uppercase"
-        />
-      </div>
 
-      {/* Logo wall — DOM/SVG, staggered reveal via animation-delay CSS */}
-      <div className="border-graphite-2 grid grid-cols-3 gap-px border-t lg:grid-cols-6">
-        {Array.from({ length: 6 }).map((_, index) => {
-          const client = data.clients?.[index]
-          if (!client)
-            return (
-              <div
-                key={index}
-                className="bg-graphite-2 grid aspect-square place-content-center"
-              />
-            )
-
-          const logo = (
-            <Image
-              src={urlFor(client.logo).url()}
-              alt={client.logo.alt}
-              width={100}
-              height={100}
-              // Quiet monochrome wall at rest (grayscale + dim) so mixed-brand
-              // logos read as one cohesive row on the dark theme; hover/focus
-              // brings the real client to life in full colour. Opacity+filter
-              // only — no scale (a tight grid + everything-scales reads as noise).
-              className="clamp-[size,56px,70px] aspect-video object-contain opacity-60 grayscale transition-[opacity,filter] duration-500 group-hover:opacity-100 group-hover:grayscale-0 group-focus-within:opacity-100 group-focus-within:grayscale-0"
-            />
-          )
-          const cellClass =
-            'bg-graphite-2 group grid aspect-square place-content-center transition-colors duration-300 hover:bg-graphite'
-
-          // Only emit an anchor when there's a real destination — a linkless
-          // client previously rendered a focusable href="#" no-op (dead link).
-          return client.link ? (
-            <GAnchor
-              key={index}
-              href={client.link}
-              className={cellClass}
-              style={{ animationDelay: `${index * 0.08}s` }}
-            >
-              {logo}
-            </GAnchor>
-          ) : (
-            <div key={index} className={cellClass} style={{ animationDelay: `${index * 0.08}s` }}>
-              {logo}
-            </div>
-          )
-        })}
+      {/* Seamless mono marquee — two identical tracks shifted -50% (see globals.css) */}
+      <div className="border-hairline overflow-clip border-y">
+        <div className="marquee-track flex w-max">
+          <MarqueeTrack clients={clients} />
+          <MarqueeTrack clients={clients} ariaHidden />
+        </div>
       </div>
     </section>
   )

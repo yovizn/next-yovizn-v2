@@ -132,6 +132,25 @@
 }
 
 @layer utilities {
+  /* Seamless client marquee: the track holds two identical copies, so shifting
+     it by -50% loops without a seam. transform-only (GPU-safe). Defined only
+     under no-preference so reduced motion leaves the track static (first copy
+     visible) rather than snapping to the mid-point via the global kill-switch. */
+  @keyframes marquee-x {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee-track {
+      animation: marquee-x 32s linear infinite;
+    }
+  }
+
   .p-fluid-24-40 {
     padding: clamp(1.5rem, -0.2143rem + 2.8571vi, 2.5rem);
   }

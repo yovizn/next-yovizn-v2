@@ -73,7 +73,7 @@ export function HeroShear({ text = 'YOVI ZULKARNAEN', className }: HeroShearProp
         id="hero-wordmark"
         ref={wordmarkRef as React.RefObject<HTMLHeadingElement>}
         className={cn(
-          'font-nohemi text-paper clamp-[text,3xl,11rem] w-full leading-none font-bold uppercase tracking-tight',
+          'font-nohemi text-paper text-display-xl w-full leading-none font-bold uppercase tracking-tight',
         )}
       >
         {text}
