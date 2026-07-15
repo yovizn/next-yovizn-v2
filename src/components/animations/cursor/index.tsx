@@ -95,7 +95,7 @@ export function Cursor() {
             height: cursor?.size.height || 0,
           }}
         >
-          <div className="font-nohemi text-background bg-primary absolute top-1/2 left-1/2 z-30 grid size-25 -translate-x-1/2 -translate-y-1/2 place-content-center rounded-full text-2xl font-bold uppercase">
+          <div className="font-nohemi text-graphite bg-paper absolute top-1/2 left-1/2 z-30 grid size-25 -translate-x-1/2 -translate-y-1/2 place-content-center rounded-full text-2xl font-bold uppercase">
             View
           </div>
         </motion.div>
@@ -121,7 +121,7 @@ export function Cursor() {
               height: cursor?.size.height || 0,
             }}
           >
-            <div className="font-nohemi text-background bg-primary absolute top-1/2 left-1/2 z-30 grid size-25 -translate-x-1/2 -translate-y-1/2 place-content-center rounded-full text-2xl font-bold uppercase">
+            <div className="font-nohemi text-graphite bg-paper absolute top-1/2 left-1/2 z-30 grid size-25 -translate-x-1/2 -translate-y-1/2 place-content-center rounded-full text-2xl font-bold uppercase">
               {cursor.children}
             </div>
           </motion.div>

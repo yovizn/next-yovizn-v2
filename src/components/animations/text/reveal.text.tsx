@@ -77,7 +77,7 @@ export function TextReveal({
       <>
         {segments.map((segment, index) =>
           segment.highlighted ? (
-            <span key={index} className={cn('text-primary font-bold', className?.highlight)}>
+            <span key={index} className={cn('text-signal font-bold', className?.highlight)}>
               {segment.text}
             </span>
           ) : (

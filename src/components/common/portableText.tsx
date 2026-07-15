@@ -25,10 +25,10 @@ export function PortableText({ content, className }: PortableTextProps) {
   const components: PortableTextComponents = {
     marks: {
       strong: ({ children }) => (
-        <strong className={cn('text-foreground font-medium', className?.strong)}>{children}</strong>
+        <strong className={cn('text-paper font-medium', className?.strong)}>{children}</strong>
       ),
       em: ({ children }) => (
-        <em className={cn('text-foreground italic', className?.emphasis)}>{children}</em>
+        <em className={cn('text-paper italic', className?.emphasis)}>{children}</em>
       ),
       link: ({ children, value }) => (
         <a
@@ -67,12 +67,12 @@ export function PortableText({ content, className }: PortableTextProps) {
     },
     listItem: {
       bullet: ({ children }) => (
-        <li className={cn('text-muted-foreground marker:text-primary', className?.listItem)}>
+        <li className={cn('text-paper-dim marker:text-signal', className?.listItem)}>
           {children}
         </li>
       ),
       number: ({ children }) => (
-        <li className={cn('text-muted-foreground marker:text-foreground', className?.listItem)}>
+        <li className={cn('text-paper-dim marker:text-paper', className?.listItem)}>
           {children}
         </li>
       ),

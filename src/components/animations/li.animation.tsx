@@ -26,7 +26,7 @@ export function Li({ children, className, onClick }: { children: React.ReactNode
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ duration: duration.medium, ease: easing.inOut }}
-            className="bg-foreground absolute bottom-0 left-0 h-px w-full mix-blend-difference"
+            className="bg-paper absolute bottom-0 left-0 h-px w-full mix-blend-difference"
           />
         )}
       </AnimatePresence>
