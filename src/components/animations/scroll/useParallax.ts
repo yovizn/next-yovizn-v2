@@ -5,7 +5,7 @@ import { useScroll, useTransform, useReducedMotion } from 'motion/react'
 
 import { useMatchMedia } from '@/hooks/useMedia.hook'
 
-// Derive the offset type from useScroll's signature (see useScrollProgress.ts note).
+// Derive the offset type from useScroll's own signature so it stays in lockstep.
 type ScrollOffset = NonNullable<Parameters<typeof useScroll>[0]>['offset']
 
 interface UseParallaxOptions {
