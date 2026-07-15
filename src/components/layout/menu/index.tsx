@@ -8,7 +8,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import { TLink } from '@/components/common/transitionLink'
 import { useMenu } from '@/hooks/stores/useMenu.hook'
 
-import { duration, easing, mountAnim } from '@/lib/constants/animation.constant'
+import { mountAnim } from '@/lib/constants/animation.constant'
 import { links } from '@/lib/constants/link.constant'
 
 import BlackTwo from '@public/images/black-two.webp'
@@ -32,7 +32,9 @@ export function Menu() {
   const { menu, setMenu } = useMenu()
   const pathname = usePathname()
   const isReduceMotion = useReducedMotion()
-  const isDesktop = useMatchMedia(640, 'min')
+  // lg+ only: the image is a side-column accent that only exists where the
+  // overlay is flex-row. Below lg it must not mount (it would fill the column).
+  const isDesktop = useMatchMedia(1024, 'min')
 
   useEffect(() => {
     setMenu({ isOpen: false })
@@ -64,19 +66,9 @@ export function Menu() {
       {menu.isOpen && (
         <nav id="primary-menu" ref={navRef} className="fixed top-0 left-0 isolate z-30 h-dvh w-full">
           <motion.div
-            initial={{ opacity: 0, scaleX: 0 }}
-            animate={{
-              opacity: 1,
-              scaleX: 1,
-              transition: { duration: duration.short, delay: duration.short, ease: easing.out },
-            }}
-            exit={{ opacity: 0, scaleX: 0, transition: { duration: 0.1, ease: 'linear' } }}
-            className="bg-hairline absolute bottom-0 left-0 z-10 hidden h-px w-full origin-left lg:block"
-          />
-          <motion.div
             key="overlay"
             {...mountAnim(menuOverlayVariant)}
-            className="bg-paper text-graphite relative flex h-full w-full flex-col justify-between gap-6 overflow-clip px-4 pt-28 pb-4 sm:justify-normal sm:px-6 sm:pb-6 lg:flex-row"
+            className="bg-paper text-graphite relative flex h-full w-full flex-col justify-between gap-6 overflow-clip px-4 pt-28 pb-4 sm:justify-normal sm:px-6 sm:pb-6 lg:flex-row lg:items-stretch lg:gap-12"
             style={{ perspective: '120px', perspectiveOrigin: 'center' }}
           >
             {isDesktop && (
@@ -86,14 +78,14 @@ export function Menu() {
                 alt=""
                 width={640}
                 height={400}
-                sizes="(max-width: 640px) 10vw, 500px"
+                sizes="(max-width: 1024px) 0px, 36vw"
                 priority
                 {...(!isReduceMotion ? mountAnim(menuImageVariant) : {})}
-                className="relative z-10 aspect-video h-auto w-auto rounded-xs object-cover ml-10 sm:h-full"
+                className="relative z-10 hidden rounded-xs object-cover lg:block lg:h-full lg:w-[36%] lg:shrink-0"
               />
             )}
 
-            <ul key="menu-list" className="relative z-10 flex w-full flex-col gap-4">
+            <ul key="menu-list" className="relative z-10 flex w-full flex-col justify-center gap-1 lg:flex-1">
               {links.map((link, idx) => (
                 <li key={link.id} style={{ perspective: '120px', perspectiveOrigin: 'bottom' }}>
                   <motion.div custom={idx} {...mountAnim(menuLinkVariant)}>
@@ -110,7 +102,7 @@ export function Menu() {
 
             <div
               key="menu-social"
-              className="flex w-full flex-col gap-4 sm:h-full sm:flex-row sm:gap-0 lg:gap-6"
+              className="flex w-full flex-col gap-4 sm:h-full sm:flex-row sm:gap-0 lg:w-auto lg:shrink-0 lg:gap-6"
             >
               <motion.div
                 {...mountAnim(menuDividerVariant)}
