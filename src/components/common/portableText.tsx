@@ -44,13 +44,13 @@ export function PortableText({ content, className }: PortableTextProps) {
     block: {
       normal: ({ children }) => <p className={cn('text-base', className?.paragraph)}>{children}</p>,
       h2: ({ children }) => (
-        <h2 className={cn('font-helvetica text-2xl font-bold', className?.h2)}>{children}</h2>
+        <h2 className={cn('font-sans text-2xl font-bold', className?.h2)}>{children}</h2>
       ),
       h3: ({ children }) => (
-        <h3 className={cn('font-helvetica text-xl font-bold', className?.h3)}>{children}</h3>
+        <h3 className={cn('font-sans text-xl font-bold', className?.h3)}>{children}</h3>
       ),
       h4: ({ children }) => (
-        <h4 className={cn('font-helvetica text-lg font-bold', className?.h4)}>{children}</h4>
+        <h4 className={cn('font-sans text-lg font-bold', className?.h4)}>{children}</h4>
       ),
     },
     list: {

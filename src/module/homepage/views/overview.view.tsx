@@ -39,7 +39,7 @@ export function Overview() {
             design, and slick animations. Still got a lot to learn, but hey—we all start somewhere.
           </p>
 
-          <div aria-hidden className="font-helvetica text-paper clamp-[text,base,xl] font-medium">
+          <div aria-hidden className="font-sans text-paper clamp-[text,base,xl] font-medium">
             <TextReveal
               text="I'm a front-end developer who loves working on web interactions, responsive design, and slick animations. Still got a lot to learn, but hey—we all start somewhere."
               highlight={['start somewhere.']}

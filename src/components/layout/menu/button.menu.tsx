@@ -30,7 +30,7 @@ export function MenuHeader() {
       <span
         data-open={isOpen}
         aria-hidden
-        className="font-helvetica block transform-gpu font-bold uppercase data-[open=true]:-translate-y-full data-[open=true]:opacity-0"
+        className="font-nohemi block transform-gpu font-bold uppercase data-[open=true]:-translate-y-full data-[open=true]:opacity-0"
         style={{ transition }}
       >
         Menu
@@ -38,7 +38,7 @@ export function MenuHeader() {
       <span
         data-open={isOpen}
         aria-hidden
-        className="font-helvetica absolute block translate-y-full transform-gpu font-bold uppercase opacity-0 data-[open=true]:translate-y-0 data-[open=true]:opacity-100"
+        className="font-nohemi absolute block translate-y-full transform-gpu font-bold uppercase opacity-0 data-[open=true]:translate-y-0 data-[open=true]:opacity-100"
         style={{ transition }}
       >
         Close

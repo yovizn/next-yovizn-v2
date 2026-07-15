@@ -99,7 +99,7 @@ export function Menu() {
                   <motion.div custom={idx} {...mountAnim(menuLinkVariant)}>
                     <TLink
                       href={link.href}
-                      className="text-background font-helvetica block text-5xl font-semibold uppercase"
+                      className="text-background font-nohemi block text-5xl font-bold uppercase"
                     >
                       {link.name}
                     </TLink>
