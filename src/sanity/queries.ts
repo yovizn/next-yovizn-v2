@@ -14,6 +14,9 @@ export const queryProjectsOverview = defineQuery(
   `*[_type == 'projects'][0...4] | order(date desc){
         slug,
         cover,
+        title,
+        service,
+        date,
     }`,
 )
 

@@ -5,41 +5,37 @@
  *
  * ProjectCard: each card is its own component so CoverDisplace's useMotionValue
  * calls happen at component mount (one per card), not inside a map callback.
- * This satisfies the "create MotionValues at component mount, NOT inside a map"
- * requirement.
  *
- * Grayscale decision: REMOVED from the Image className.
- * Rationale: The WebGLIsland canvas is always opaque and full-color at idle
- * (uHover=0). Keeping grayscale-100 only affects the no-JS / coarse-pointer /
- * reduced-motion fallback image — it would create a visual inconsistency where
- * capable devices see color and fallback devices see grayscale. Removing it
- * makes both paths consistent: full-color static cover everywhere.
+ * The cover is now captioned — an ordinal, the real project title (Nohemi), and
+ * a mono service · year meta line — over a graphite scrim, matching the
+ * studio.freight "work index is type + image" pattern. The accessible name uses
+ * the real title (the query now selects it) instead of a slug-derived string.
  */
 
 import Image from 'next/image'
 import { CoverDisplace } from '@/components/webgl/cover-displace'
 import { KineticText } from '@/components/animations/text/kinetic.text'
+import { Cue } from '@/components/common/cue'
 import { TLink } from '@/components/common/transitionLink'
 import { urlFor } from '@/sanity/lib/image'
 import { QueryProjectsOverviewResult } from '@/types/sanity.types'
 
 interface ProjectCardProps {
   project: QueryProjectsOverviewResult[number]
+  index: number
 }
 
-function ProjectCard({ project }: ProjectCardProps) {
+function ProjectCard({ project, index }: ProjectCardProps) {
   const src = urlFor(project.cover).width(1200).auto('format').url()
-  // The card is an image-only link; name it by the project (derived from the
-  // slug — the overview query omits `title`) so its accessible name announces
-  // the destination, not the cover's image description. (WCAG 2.4.4)
-  const name = project.slug.current.replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase())
+  const ordinal = String(index + 1).padStart(2, '0')
+  const year = new Date(project.date).getFullYear()
 
   return (
     <li className="bg-graphite-2 relative aspect-video overflow-clip lg:last:odd:col-span-2 lg:last:odd:aspect-21/9">
       <TLink
         href={`/projects/${project.slug.current}`}
-        aria-label={`${name} — view project`}
-        className="group block size-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-signal"
+        aria-label={`${project.title} — view project`}
+        className="group block size-full focus-visible:ring-signal focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none"
       >
         <CoverDisplace src={src} className="size-full">
           <Image
@@ -50,6 +46,21 @@ function ProjectCard({ project }: ProjectCardProps) {
             className="size-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03] group-focus-visible:scale-[1.03] motion-reduce:transform-none motion-reduce:transition-none"
           />
         </CoverDisplace>
+
+        {/* Caption overlay — a scrim carries the type so it reads over any cover */}
+        <div className="from-graphite/85 to-graphite/10 pointer-events-none absolute inset-0 flex flex-col justify-between bg-linear-to-t via-transparent p-5 lg:p-6">
+          <span className="font-data text-paper/80 text-[11px] tracking-[0.12em] tabular-nums">
+            {ordinal}
+          </span>
+          <div className="flex items-end justify-between gap-4">
+            <p className="font-nohemi text-paper text-2xl leading-none font-bold uppercase md:text-4xl">
+              {project.title}
+            </p>
+            <p className="font-data text-paper/70 shrink-0 text-[11px] tracking-[0.12em] uppercase">
+              {project.service}&nbsp;·&nbsp;{year}
+            </p>
+          </div>
+        </div>
       </TLink>
     </li>
   )
@@ -64,12 +75,9 @@ export function Projects({ data }: { data: QueryProjectsOverviewResult }) {
       className="col-span-full"
     >
       {/* CUE 04 eyebrow — mirrors data-cue on the <section> (TransportRail reads it) */}
-      <p
-        className="font-data text-paper-dim px-6 pt-16 pb-4 text-[11px] tracking-[0.12em] uppercase lg:px-10"
-        aria-hidden
-      >
+      <Cue aria-hidden className="px-6 pt-16 pb-4 lg:px-10">
         CUE 04 &nbsp;·&nbsp; SELECTED WORK
-      </p>
+      </Cue>
 
       {/* Section header: sr-only first, KineticText second (a11y requirement) */}
       <h2 id="projects-heading" className="sr-only">
@@ -80,14 +88,16 @@ export function Projects({ data }: { data: QueryProjectsOverviewResult }) {
           text="Selected Work"
           by="word"
           stagger={0.06}
-          className="font-nohemi text-paper clamp-[text,3xl,7xl] leading-none font-bold uppercase"
+          className="font-nohemi text-paper text-display-lg leading-none font-bold uppercase"
         />
       </div>
 
       {/* Project grid */}
-      <ul className="border-graphite-2 grid gap-px border-t lg:grid-cols-2">
+      <ul className="border-hairline grid gap-px border-t lg:grid-cols-2">
         {data.length > 0 ? (
-          data.map((project) => <ProjectCard key={project.slug.current} project={project} />)
+          data.map((project, index) => (
+            <ProjectCard key={project.slug.current} project={project} index={index} />
+          ))
         ) : (
           // Empty-state: never leave the heading dangling over a bare border.
           <li className="bg-graphite-2 text-paper-dim font-data flex aspect-video items-center justify-center px-6 text-center text-sm tracking-[0.12em] uppercase lg:col-span-2">

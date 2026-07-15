@@ -311,7 +311,7 @@ export type QueryClientsViewResult = {
 
 // Source: src/sanity/queries.ts
 // Variable: queryProjectsOverview
-// Query: *[_type == 'projects'][0...4] | order(date desc){        slug,        cover,    }
+// Query: *[_type == 'projects'][0...4] | order(date desc){        slug,        cover,        title,        service,        date,    }
 export type QueryProjectsOverviewResult = Array<{
   slug: Slug
   cover: {
@@ -327,6 +327,9 @@ export type QueryProjectsOverviewResult = Array<{
     alt: string
     _type: 'imageAlt'
   }
+  title: string
+  service: string
+  date: string
 }>
 
 // Source: src/sanity/queries.ts
@@ -426,7 +429,7 @@ import '@sanity/client'
 declare module '@sanity/client' {
   interface SanityQueries {
     '*[_type == "clientsView"][0]{\n        clients[]->{\n            name,\n            logo,\n            link\n        }\n    }': QueryClientsViewResult
-    "*[_type == 'projects'][0...4] | order(date desc){\n        slug,\n        cover,\n    }": QueryProjectsOverviewResult
+    "*[_type == 'projects'][0...4] | order(date desc){\n        slug,\n        cover,\n        title,\n        service,\n        date,\n    }": QueryProjectsOverviewResult
     "*[_type == 'projects'] | order(date desc){\n        slug,\n        cover,\n        title,\n        service,\n        date,\n        _updatedAt,\n        _createdAt,\n    }": QueryProjectsAllResult
     "*[_type == 'projects' && slug.current == $slug][0]{\n        ...,\n        client->{\n            name,\n            logo,\n            link\n        },\n    }": QueryProjectsBySlugResult
   }
