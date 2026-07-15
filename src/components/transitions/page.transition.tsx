@@ -176,7 +176,7 @@ export function PageTransition() {
                   opacity: 0,
                   transition: { duration: duration.short, ease: easing.in },
                 }}
-                className="text-signal font-helvetica absolute right-6 bottom-6  font-bold uppercase clamp-[text,xl,5xl]"
+                className="text-signal font-nohemi absolute right-6 bottom-6 font-bold uppercase text-display-md"
               >
                 {targetLabel}
               </motion.p>
