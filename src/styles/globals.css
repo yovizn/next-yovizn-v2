@@ -43,6 +43,29 @@
   --font-mono: var(--font-geist-mono);
   --font-data: var(--font-geist-mono);
   --font-nohemi: var(--font-nohemi);
+
+  /* Display type scale — one modular scale (text-display-xl/lg/md) replacing the
+     former three competing scales (.text-hero, .text-fixed/--font-sz, ad-hoc clamps). */
+  --text-display-xl: clamp(3rem, 10vw, 11rem);
+  --text-display-xl--line-height: 0.85;
+  --text-display-lg: clamp(2.5rem, 7.5vw, 8.5rem);
+  --text-display-lg--line-height: 0.9;
+  --text-display-md: clamp(1.75rem, 4.5vw, 5rem);
+  --text-display-md--line-height: 0.95;
+
+  /* Hairline — one recipe for every 1px seam (paper at ~10% over graphite),
+     replacing the four disagreeing recipes (bg-accent/5, bg-background/20,
+     border-paper/10, border-graphite-2). Utilities: bg-hairline / border-hairline. */
+  --color-hairline: color-mix(in oklab, var(--paper) 10%, transparent);
+
+  /* Motion vocabulary bridged to CSS so Tailwind transitions stop falling back to
+     defaults. Mirrors the easing and duration tokens in
+     lib/constants/animation.constant.ts. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out-quart: cubic-bezier(0.76, 0, 0.24, 1);
+  --duration-short: 300ms;
+  --duration-medium: 500ms;
+  --duration-long: 800ms;
 }
 
 @layer base {
