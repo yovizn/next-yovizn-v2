@@ -21,7 +21,7 @@ import {
 import { useMatchMedia } from '@/hooks/useMedia.hook'
 import { socials } from '@/lib/constants/social.constant'
 import { GAnchor } from '@/components/common/googleAnchor'
-import { Li } from '@/components/animations/li.animation'
+import HoverText from '@/components/animations/text/hover.text'
 
 // Hoisted out of render: motion.create() must run once, not per-render — inside
 // the component it rebuilt the wrapper every render (remounting the image).
@@ -62,7 +62,7 @@ export function Menu() {
   return (
     <AnimatePresence mode="wait" initial={!isReduceMotion}>
       {menu.isOpen && (
-        <nav id="primary-menu" ref={navRef} className="fixed top-0 left-0 isolate z-30 h-dvh w-full lg:h-[412px]">
+        <nav id="primary-menu" ref={navRef} className="fixed top-0 left-0 isolate z-30 h-dvh w-full">
           <motion.div
             initial={{ opacity: 0, scaleX: 0 }}
             animate={{
@@ -71,12 +71,12 @@ export function Menu() {
               transition: { duration: duration.short, delay: duration.short, ease: easing.out },
             }}
             exit={{ opacity: 0, scaleX: 0, transition: { duration: 0.1, ease: 'linear' } }}
-            className="bg-background/20 absolute bottom-0 left-0 z-10 hidden h-px w-full origin-left lg:block"
+            className="bg-hairline absolute bottom-0 left-0 z-10 hidden h-px w-full origin-left lg:block"
           />
           <motion.div
             key="overlay"
             {...mountAnim(menuOverlayVariant)}
-            className="bg-foreground text-background relative flex h-full w-full flex-col justify-between gap-6 overflow-clip px-4 pt-28 pb-4 sm:justify-normal sm:px-6 sm:pb-6 lg:flex-row"
+            className="bg-paper text-graphite relative flex h-full w-full flex-col justify-between gap-6 overflow-clip px-4 pt-28 pb-4 sm:justify-normal sm:px-6 sm:pb-6 lg:flex-row"
             style={{ perspective: '120px', perspectiveOrigin: 'center' }}
           >
             {isDesktop && (
@@ -99,7 +99,7 @@ export function Menu() {
                   <motion.div custom={idx} {...mountAnim(menuLinkVariant)}>
                     <TLink
                       href={link.href}
-                      className="text-background font-nohemi block text-5xl font-bold uppercase"
+                      className="text-graphite font-nohemi block text-display-lg font-bold uppercase"
                     >
                       {link.name}
                     </TLink>
@@ -119,15 +119,15 @@ export function Menu() {
 
               <ul className="flex w-full flex-wrap justify-between gap-x-4 gap-y-0 self-end sm:gap-x-6 lg:ml-auto">
                 {socials.map((social) => (
-                  <Li key={social.id}>
+                  <li key={social.id}>
                     <GAnchor
                       href={social.href}
                       target="_blank"
-                      className="uppercase sm:text-lg md:text-lg"
+                      className="group font-data block text-[11px] tracking-[0.12em] uppercase"
                     >
-                      {social.name}
+                      <HoverText>{social.name}</HoverText>
                     </GAnchor>
-                  </Li>
+                  </li>
                 ))}
               </ul>
             </div>

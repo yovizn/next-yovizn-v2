@@ -25,7 +25,7 @@ export function MenuHeader() {
       aria-expanded={isOpen}
       aria-controls="primary-menu"
       onClick={handleClick}
-      className="bg-foreground text-background relative z-50 flex cursor-pointer flex-col items-center justify-center overflow-clip rounded-xs px-2 py-1 uppercase transition-all sm:w-16 sm:px-3"
+      className="bg-paper text-graphite relative z-50 flex cursor-pointer flex-col items-center justify-center overflow-clip rounded-xs px-2 py-1 uppercase transition-all sm:w-16 sm:px-3"
     >
       <span
         data-open={isOpen}

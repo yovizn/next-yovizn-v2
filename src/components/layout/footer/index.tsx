@@ -1,16 +1,36 @@
-import { ArrowDownLeft } from 'lucide-react'
-
-import { Li } from '@/components/animations/li.animation'
 import { TextBlur } from '@/components/animations/text/blur.text'
+import HoverText from '@/components/animations/text/hover.text'
 import { GAnchor } from '@/components/common/googleAnchor'
 import { socials } from '@/lib/constants/social.constant'
 
-export function Footer() {
+// Ultra-light down-left arrow (stroke 1.5), replacing the stock lucide glyph so
+// the footer's one icon matches the rest of the hand-drawn chrome.
+function ArrowDownLeft({ className }: { className?: string }) {
   return (
-    <footer className="border-accent/5 bg-accent/5 grid grid-cols-4 gap-px border-t pb-12 sm:pb-0 lg:grid-cols-6">
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+      aria-hidden
+    >
+      <path d="M17 7 7 17" />
+      <path d="M15 17H7V9" />
+    </svg>
+  )
+}
+
+export function Footer() {
+  const year = new Date().getFullYear()
+
+  return (
+    <footer className="border-hairline bg-hairline grid grid-cols-4 gap-px border-t pb-12 sm:pb-0 lg:grid-cols-6">
       <div className="col-span-full grid grid-cols-6 gap-px">
         {Array.from({ length: 6 }).map((_, index) => (
-          <div key={index} className="bg-background grid place-content-end">
+          <div key={index} className="bg-graphite text-paper grid place-content-end">
             {index === 5 && <ArrowDownLeft className="clamp-[size,3rem,7rem] justify-self-end" />}
           </div>
         ))}
@@ -19,52 +39,57 @@ export function Footer() {
       <div className="col-span-full grid grid-cols-subgrid gap-px">
         <div className="hidden grid-rows-2 gap-px lg:grid">
           {Array.from({ length: 2 }).map((_, idx) => (
-            <div key={idx} className="bg-background aspect-square" />
+            <div key={idx} className="bg-graphite aspect-square" />
           ))}
         </div>
 
-        <div className="bg-background before:bg-foreground relative col-span-full grid place-content-center before:absolute before:h-1 before:w-full before:content-[''] lg:col-span-4">
-          <h3 className="clamp-[text,5rem,8rem] font-nohemi flex flex-col py-4 leading-none font-bold uppercase">
-            <div className="flex gap-4 self-start md:gap-10">
-              <TextBlur text="Get" className="" delay={0.3} />
-              <TextBlur text="In" className="" delay={0.5} />
-            </div>
-            <div className="self-end">
-              <TextBlur text="Touch" direction="left" className="" delay={0.8} />
-            </div>
+        <div className="bg-graphite text-paper before:bg-signal relative col-span-full grid place-content-center before:absolute before:h-1 before:w-full before:content-[''] lg:col-span-4">
+          <h3 className="text-display-xl font-nohemi flex flex-col py-4 leading-none font-bold uppercase">
+            <span className="flex gap-4 self-start md:gap-10">
+              <TextBlur text="Get" delay={0.3} />
+              <TextBlur text="In" delay={0.5} />
+            </span>
+            <span className="block self-end">
+              <TextBlur text="Touch" direction="left" delay={0.8} />
+            </span>
           </h3>
 
           <div className="flex w-full flex-col gap-10">
             <GAnchor
               href="mailto:contact@yovizn.com"
               target="_blank"
-              className="clamp-[text,1rem,2rem] bg-foreground text-background hover:bg-foreground/80 w-full rounded-xs tracking-normal transition-colors"
+              className="group bg-paper text-graphite active:scale-[0.98] flex w-full items-center justify-center rounded-xs px-6 py-4 font-data text-sm tracking-[0.08em] uppercase transition-transform duration-300 ease-out-quint"
             >
-              <span className="block size-fit w-full text-center font-medium">
-                contact@yovizn.com
-              </span>
+              <HoverText>contact@yovizn.com</HoverText>
             </GAnchor>
           </div>
         </div>
 
         <div className="hidden grid-rows-2 gap-px lg:grid">
           {Array.from({ length: 2 }).map((_, idx) => (
-            <div key={idx} className="bg-background aspect-square" />
+            <div key={idx} className="bg-graphite aspect-square" />
           ))}
         </div>
       </div>
-      <div className="bg-background text-accent/50 col-span-full flex flex-col items-center justify-between px-4 py-2 sm:flex-row">
-        <p className="text-xs text-nowrap uppercase">2025 &copy; Yovi Zulkarnaen.</p>
 
-        <ul className="hidden gap-4 sm:flex">
+      <div className="bg-graphite text-paper-dim col-span-full flex flex-col items-center justify-between px-4 py-3 sm:flex-row">
+        <p className="font-data text-[11px] tracking-[0.12em] text-nowrap uppercase">
+          {year} &copy; Yovi Zulkarnaen
+        </p>
+
+        <ul className="hidden gap-5 sm:flex">
           {socials.map(
             (social) =>
               social.id !== 'email' && (
-                <Li key={social.id}>
-                  <GAnchor href={social.href} target="_blank" className="text-xs uppercase">
-                    {social.name}
+                <li key={social.id}>
+                  <GAnchor
+                    href={social.href}
+                    target="_blank"
+                    className="group font-data hover:text-paper block text-[11px] tracking-[0.12em] uppercase transition-colors duration-300"
+                  >
+                    <HoverText>{social.name}</HoverText>
                   </GAnchor>
-                </Li>
+                </li>
               ),
           )}
         </ul>

@@ -2,10 +2,10 @@
 
 import { AnimatePresence, motion } from 'motion/react'
 
+import HoverText from '@/components/animations/text/hover.text'
 import { GAnchor } from '@/components/common/googleAnchor'
 import { socials } from '@/lib/constants/social.constant'
 import { duration, easing } from '@/lib/constants/animation.constant'
-import { Li } from '@/components/animations/li.animation'
 import { useMenu } from '@/hooks/stores/useMenu.hook'
 
 const headerSocialMedia = socials.filter(
@@ -24,22 +24,19 @@ export function SocialHeader() {
             opacity: 1,
             transition: { duration: duration.short, delay: duration.short, ease: easing.out },
           }}
-          exit={{
-            opacity: 0,
-            transition: { duration: 0.1, ease: 'linear' },
-          }}
-          className="hidden w-fit items-center gap-4 sm:flex"
+          exit={{ opacity: 0, transition: { duration: duration.short, ease: easing.in } }}
+          className="hidden w-fit items-center gap-5 sm:flex"
         >
           {headerSocialMedia.map((social) => (
-            <Li key={social.id}>
+            <li key={social.id}>
               <GAnchor
                 href={social.href}
                 target="_blank"
-                className="block font-light uppercase"
+                className="group text-paper font-data block text-[11px] tracking-[0.12em] uppercase"
               >
-                {social.name === 'Email' ? 'Contact' : social.name}
+                <HoverText>{social.name === 'Email' ? 'Contact' : social.name}</HoverText>
               </GAnchor>
-            </Li>
+            </li>
           ))}
         </motion.ul>
       )}
