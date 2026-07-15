@@ -12,13 +12,17 @@ const PAPER = PALETTE.paper
 const initial = { pathLength: 0, fillOpacity: 0, x: 0, y: 0, stroke: SIGNAL }
 const animate = { fillOpacity: 1, pathLength: 1, x: 0, y: 0, stroke: PAPER }
 
+// Easing names updated to the corrected vocabulary; the resolved curves are
+// unchanged so the tuned intro plays identically:
+//   old easing.out ([0.76,0,0.24,1]) -> easing.inOut  (path draw / exits)
+//   old easing.in  ([0.22,1,0.36,1]) -> easing.out    (fill / stroke warm-up)
 export const firstRenderVariant: Variants = {
   initial: { opacity: 0, filter: 'blur(10px)' },
   enter: { opacity: 1, filter: 'blur(0px)' },
   exit: {
     opacity: 0,
     filter: 'blur(10px)',
-    transition: { duration: duration.long, delay: duration.short, ease: easing.out },
+    transition: { duration: duration.long, delay: duration.short, ease: easing.inOut },
   },
 }
 
@@ -27,9 +31,9 @@ export const polygonVariant: Variants = {
   enter: {
     ...animate,
     transition: {
-      pathLength: { duration: 1.25, ease: easing.out },
-      fillOpacity: { duration: 2, delay: 1.25, ease: easing.in },
-      stroke: { duration: 2, delay: 1.25, ease: easing.in },
+      pathLength: { duration: 1.25, ease: easing.inOut },
+      fillOpacity: { duration: 2, delay: 1.25, ease: easing.out },
+      stroke: { duration: 2, delay: 1.25, ease: easing.out },
     },
   },
   exit: {
@@ -38,9 +42,9 @@ export const polygonVariant: Variants = {
     x: 50,
     y: -100,
     transition: {
-      pathLength: { duration: 1, ease: easing.out },
-      fillOpacity: { duration: 2, delay: 1.25, ease: easing.in },
-      default: { duration: 1, ease: easing.out },
+      pathLength: { duration: 1, ease: easing.inOut },
+      fillOpacity: { duration: 2, delay: 1.25, ease: easing.out },
+      default: { duration: 1, ease: easing.inOut },
     },
   },
 }
@@ -53,10 +57,10 @@ export const rectVariant: Variants = {
   enter: {
     ...animate,
     transition: {
-      pathLength: { duration: 1, ease: easing.out },
-      fillOpacity: { duration: 2, delay: 1.25, ease: easing.in },
-      stroke: { duration: 2, delay: 1.25, ease: easing.in },
-      default: { duration: 1, ease: easing.out },
+      pathLength: { duration: 1, ease: easing.inOut },
+      fillOpacity: { duration: 2, delay: 1.25, ease: easing.out },
+      stroke: { duration: 2, delay: 1.25, ease: easing.out },
+      default: { duration: 1, ease: easing.inOut },
     },
   },
   exit: {
@@ -64,9 +68,9 @@ export const rectVariant: Variants = {
     pathLength: 1,
     y: '-50%',
     transition: {
-      pathLength: { duration: 1, ease: easing.out },
-      fillOpacity: { duration: 2, delay: 1.25, ease: easing.in },
-      default: { duration: 1, ease: easing.out },
+      pathLength: { duration: 1, ease: easing.inOut },
+      fillOpacity: { duration: 2, delay: 1.25, ease: easing.out },
+      default: { duration: 1, ease: easing.inOut },
     },
   },
 }

@@ -25,7 +25,7 @@ export function Li({ children, className, onClick }: { children: React.ReactNode
             initial={{ x: '-100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
-            transition={{ duration: duration.medium, ease: easing.inOut }}
+            transition={{ duration: duration.medium, ease: easing.outSoft }}
             className="bg-paper absolute bottom-0 left-0 h-px w-full mix-blend-difference"
           />
         )}

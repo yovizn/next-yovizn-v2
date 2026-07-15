@@ -22,7 +22,7 @@ export function SocialHeader() {
           initial={{ opacity: 0 }}
           animate={{
             opacity: 1,
-            transition: { duration: duration.short, delay: duration.short, ease: easing.in },
+            transition: { duration: duration.short, delay: duration.short, ease: easing.out },
           }}
           exit={{
             opacity: 0,

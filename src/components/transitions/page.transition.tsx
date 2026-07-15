@@ -152,10 +152,10 @@ export function PageTransition() {
                 transition: {
                   duration: duration.medium,
                   delay: duration.medium,
-                  ease: easing.inOut,
+                  ease: easing.outSoft,
                 },
               }}
-              exit={{ opacity: 0, transition: { duration: duration.short, ease: easing.inOut } }}
+              exit={{ opacity: 0, transition: { duration: duration.short, ease: easing.outSoft } }}
               className="relative flex size-full flex-col items-center justify-center"
             >
               {/* Single label for the overlay's whole life — it mounts and exits

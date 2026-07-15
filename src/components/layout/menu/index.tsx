@@ -68,7 +68,7 @@ export function Menu() {
             animate={{
               opacity: 1,
               scaleX: 1,
-              transition: { duration: duration.short, delay: duration.short, ease: easing.in },
+              transition: { duration: duration.short, delay: duration.short, ease: easing.out },
             }}
             exit={{ opacity: 0, scaleX: 0, transition: { duration: 0.1, ease: 'linear' } }}
             className="bg-background/20 absolute bottom-0 left-0 z-10 hidden h-px w-full origin-left lg:block"

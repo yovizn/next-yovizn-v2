@@ -16,7 +16,7 @@ export function MenuHeader() {
     setIsActive({ isOpen: !isOpen })
   }
 
-  const transition = `all ${duration.medium}s cubic-bezier(${easing.out.join(', ')}) 0.075s`
+  const transition = `all ${duration.medium}s cubic-bezier(${easing.inOut.join(', ')}) 0.075s`
 
   return (
     <button

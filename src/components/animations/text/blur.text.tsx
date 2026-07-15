@@ -43,7 +43,7 @@ export function TextBlur({
     return delay + idx * 0.075
   }
 
-  const ease = easing.inOut
+  const ease = easing.outSoft
 
   return (
     <span

@@ -1,9 +1,16 @@
 import { ReturnMountAnimType, Variants } from '@/types/motion.type'
 
+// Named by ACTUAL curve shape (the previous names were inverted — `in` held an
+// ease-out curve, etc.). Roles:
+//   out     — sharp decelerating attack; entrances and scroll/text reveals
+//   inOut   — symmetric; wipes, covers, roller swaps
+//   outSoft — gentle decelerating; secondary/settling motion
+//   in      — accelerating; exits
 export const easing = {
-  in: [0.22, 1, 0.36, 1],
-  out: [0.76, 0, 0.24, 1],
-  inOut: [0.215, 0.61, 0.355, 1],
+  out: [0.22, 1, 0.36, 1],
+  inOut: [0.76, 0, 0.24, 1],
+  outSoft: [0.215, 0.61, 0.355, 1],
+  in: [0.64, 0, 0.78, 0],
 } as const
 
 export const duration = {
@@ -22,6 +29,7 @@ export const mountAnim = (variants: Variants): ReturnMountAnimType => ({
 export const clipPath = {
   close: 'polygon(0% 0%, 100% 0%, 100% 0%, 0% 0%)',
   open: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+  closeBottom: 'polygon(0% 100%, 100% 100%, 100% 100%, 0% 100%)',
 } as const
 
 export const TRANSITION = {
