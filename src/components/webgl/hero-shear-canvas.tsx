@@ -35,13 +35,12 @@ import { useEffect, useRef } from 'react'
 import { cancelFrame, frame } from 'motion'
 import type { MotionValue } from 'motion/react'
 import { Renderer, Program, Mesh, Triangle, Texture } from 'ogl'
+import { PALETTE, hexToRgb01 } from '@/lib/constants/palette.constant'
 
-// ── CSS color tokens (static, not reactive) ───────────────────────────
-const GRAPHITE = '#17151A'
-const PAPER = '#F2EDE4'
-const PHOSPHOR_R = 199 / 255
-const PHOSPHOR_G = 247 / 255
-const PHOSPHOR_B = 233 / 255
+// ── CSS color tokens (static) — sourced from the single palette constant ──
+const GRAPHITE = PALETTE.graphite
+const PAPER = PALETTE.paper
+const [PHOSPHOR_R, PHOSPHOR_G, PHOSPHOR_B] = hexToRgb01(PALETTE.phosphor)
 
 // ── Shader sources ─────────────────────────────────────────────────────
 const VERT = /* glsl */ `

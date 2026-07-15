@@ -1,12 +1,13 @@
 import { Variants } from '@/types/motion.type'
+import { PALETTE } from '@/lib/constants/palette.constant'
 import { duration, easing } from '../animation.constant'
 
 // Stroke ignites orange (--signal) while the outline draws, then warms to the
 // logo colour (--paper) as the fill rises — orange only ever shows as the
 // drawing line, never as a fill. Concrete hex (not var()) so Motion can
-// interpolate the colour.
-const SIGNAL = '#FF6A3D'
-const PAPER = '#F2EDE4'
+// interpolate the colour — sourced from the single palette constant.
+const SIGNAL = PALETTE.signal
+const PAPER = PALETTE.paper
 
 const initial = { pathLength: 0, fillOpacity: 0, x: 0, y: 0, stroke: SIGNAL }
 const animate = { fillOpacity: 1, pathLength: 1, x: 0, y: 0, stroke: PAPER }

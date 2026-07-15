@@ -13,7 +13,9 @@
 
   --font-sz: clamp(2rem, 8vw + 1rem, 10rem);
 
-  /* TRANSPORT palette — additive, do not rebind --background/--foreground */
+  /* TRANSPORT palette — the single source of truth for the site's hex values.
+     Keep in lockstep with src/lib/constants/palette.constant.ts (PALETTE),
+     which mirrors these for WebGL shaders and Motion colour interpolation. */
   --graphite: #17151A;
   --graphite-2: #211E25;
   --paper: #F2EDE4;
