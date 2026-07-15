@@ -41,7 +41,6 @@
   --font-mono: var(--font-geist-mono);
   --font-data: var(--font-geist-mono);
   --font-nohemi: var(--font-nohemi);
-  --font-helvetica: var(--font-helvetica);
 }
 
 @layer base {
@@ -67,9 +66,7 @@
   h4,
   h5,
   h6 {
-    font-family:
-      var(--font-helvetica), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
-      'Liberation Mono', 'Courier New', monospace;
+    font-family: var(--font-sans), system-ui, -apple-system, 'Segoe UI', sans-serif;
     text-wrap: pretty;
   }
 
